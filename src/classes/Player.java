@@ -1,6 +1,6 @@
 package classes;
 
-public abstract class Player {
+public class Player {
 	
 	private String name;
 	private int health = 0;
@@ -10,13 +10,65 @@ public abstract class Player {
 	public Player(String name, PlayerType type) {
 		this.name = name;
 		this.type = type;
+		
+		switch(type) {
+			case BARBARIAN:
+				this.type = type;
+				this.health = 12;
+				break;
+			case BARD:
+				this.type = type;
+				this.health = 8;
+				break;
+			case CLERIC:
+				this.type = type;
+				this.health = 8;
+				break;
+			case DRUID:
+				this.type = type;
+				this.health = 8;
+				break;
+			case FIGHTER:
+				this.type = type;
+				this.health = 10;
+				break;
+			case MONK:
+				this.type = type;
+				this.health = 8;
+				break;
+			case PALADIN:
+				this.type = type;
+				this.health = 10;
+				break;
+			case RANGER:
+				this.type = type;
+				this.health = 10;
+				break;
+			case ROGUE:
+				this.type = type;
+				this.health = 8;
+				break;
+			case SORCERER:
+				this.type = type;
+				this.health = 6;
+				break;
+			case WARLOCK:
+				this.type = type;
+				this.health = 8;
+				break;
+			case WIZARD:
+				this.type = type;
+				this.health = 6;
+				break;
+		}
 	}
 	
 	public Player(String name, int health, int level, PlayerType type) {
 		this.name = name;
-		this.health = health;
 		this.level = level;
+		this.health = health;
 		this.type = type;
+		
 	}
 
 	public PlayerType getType() {

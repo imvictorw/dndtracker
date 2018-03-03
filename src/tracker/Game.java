@@ -1,5 +1,9 @@
 package tracker;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
 import classes.*;
 
 /* Commands
@@ -17,45 +21,49 @@ import classes.*;
 
 public class Game{
 	
-	public boolean add2(String type, String name, int health, int level) {
-		if(type.toLowerCase() != "wizard" || type.toLowerCase() != "cleric" || type.toLowerCase() != "ranger" || type.toLowerCase() != "rogue" || type.toLowerCase() != "warrior") {
-			System.out.println("Enter a correct type. \n Cleric, Ranger, Rogue, Warrior, Wizard");
+	private ArrayList<Player> currEncounterList = new ArrayList<Player>();
+	private Player[] order;
+	Scanner sc = new Scanner(System.in);
+	
+	public boolean add(String name, String type) {
+		
+		boolean check = false;
+		
+		//Checks the type giving to the types allowed
+		for(PlayerType typeTemp:  PlayerType.values()) {
+			if(type.equals(typeTemp.toString())) {
+				check = true;
+				break;
+			}
+		}
+		//If type was not found, then user input's type is invalid
+		if(check == false) {
+			System.out.println("Please enter a correct type");
 			return false;
 		}
 		
-		if(health < 1) {
-			//somecase
-		}
-		
-		if(level > 20) {
-			//somecase
-		}
-		
-		switch(type.toLowerCase()) {
-			case "cleric": 
-				classes.Cleric temp = new Cleric(name, health, level);
-				break;
-			case "ranger": 
-				classes.Ranger temp1 = new Ranger(name, health, level);
-				break;
-			case "rogue": 
-				classes.Rogue temp2 = new Rogue(name, health, level);
-				break;
-			case "warrior": 
-				classes.Warrior temp3 = new Warrior(name, health, level);
-				break;
-			case "wizard": 
-				classes.Wizard temp4 = new Wizard(name, health, level);
-				break;
-				
-		}
+		Player temp = new Player(name, PlayerType.valueOf(type));
+		currEncounterList.add(temp);
 		
 		return true;
 		
 	}
+	
+	public boolean setup(ArrayList<Player> elist) {
+		HashMap<String, Integer> temp = new HashMap(elist.size());
+		System.out.println("Enter each number which was rolled for each of these characters."
+				+ " The order will be automatically redone");
+		
+		//Need to sort this hashmap?
+		for(int i = 0; i < elist.size(); i++) {
+			System.out.println("Dice Number? for "+ elist.get(i).getName() + " the " + elist.get(i).getType());
+			int tempint = sc.nextInt();
+			temp.put(elist.get(i).getName(), tempint);
+		}
+		
+	}
 
 	public void startGame() {
-
 	}
 
 }
