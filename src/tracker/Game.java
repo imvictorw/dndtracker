@@ -3,6 +3,7 @@ package tracker;
 import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -19,6 +20,8 @@ import classes.*;
  * Edit(type, name, stat to edit)
  * 
  * stats()
+ * 
+ * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
  */
 
 public class Game{
@@ -92,7 +95,28 @@ public class Game{
 		
 		return false;
 	}
+
+	public void remove(Player del) {
+		
+		if(currEncounterList != null && currEncounterList.contains(del)) {
+			currEncounterList.remove(del);
+		}else {
+			System.out.println("Error in removing player");
+		}
+		
+
+	}
 	
+	
+	/**
+	 * Sort through encounter list to see if there are no more monsters left or no more humans left
+	 * Delete all of the players with < 0 health
+	 * Recreate encounterlist
+	 * add new players + monsters
+	 */
+	public void next() {
+		
+	}
 	public ArrayList<Player> setup(ArrayList<Player> elist) {
 		HashMap<String, Integer> temp = new HashMap<String, Integer>();
 		String tempname;
