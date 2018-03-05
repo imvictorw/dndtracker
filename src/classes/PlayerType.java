@@ -1,7 +1,6 @@
 package classes;
 
-public enum PlayerType
-{
+public enum PlayerType{
 	BARBARIAN,
 	BARD,
 	CLERIC,
