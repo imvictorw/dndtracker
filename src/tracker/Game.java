@@ -1,7 +1,9 @@
 package tracker;
 
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import classes.*;
@@ -49,17 +51,81 @@ public class Game{
 		
 	}
 	
-	public boolean setup(ArrayList<Player> elist) {
-		HashMap<String, Integer> temp = new HashMap(elist.size());
-		System.out.println("Enter each number which was rolled for each of these characters."
-				+ " The order will be automatically redone");
+	public boolean add2(String name, String type, int health, int level) {
 		
-		//Need to sort this hashmap?
-		for(int i = 0; i < elist.size(); i++) {
-			System.out.println("Dice Number? for "+ elist.get(i).getName() + " the " + elist.get(i).getType());
-			int tempint = sc.nextInt();
-			temp.put(elist.get(i).getName(), tempint);
+		boolean check = false;
+		
+		//Checks the type giving to the types allowed
+		for(PlayerType typeTemp:  PlayerType.values()) {
+			if(type.equals(typeTemp.toString())) {
+				check = true;
+				break;
+			}
 		}
+		//If type was not found, then user input's type is invalid
+		if(check == false) {
+			System.out.println("Please enter a correct type");
+			return false;
+		}
+		
+		Player temp = new Player(name, PlayerType.valueOf(type), health, level);
+		currEncounterList.add(temp);
+		
+		return true;
+		
+	}
+	
+	public boolean heal(Player healer, Player healed, int amount) {
+		if(healed.getHealth() < 0) {
+			System.out.println("Character is dead");
+			return false;
+		}
+		
+		if(healer.getType() == PlayerType.CLERIC) {
+			if(healed.getMaxHealth() < healed.getHealth() + amount) {
+				healed.setHealth(healed.getMaxHealth());
+			}else {
+				healed.setHealth(healed.getHealth() + amount);	
+			}	
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public ArrayList<Player> setup(ArrayList<Player> elist) {
+		HashMap<String, Integer> temp = new HashMap<String, Integer>();
+		String tempname;
+		int tempint;
+		
+		System.out.println("Enter each number which was rolled for each of these characters."
+				+ " The order will be automatically redone.");
+		
+		//For each index of the encounter list, add their initiative and then reorder the encounterlist 
+		for(int i = 0; i < elist.size(); i++) {
+			tempname = elist.get(i).getName();
+			System.out.println("Dice Number? for "+ tempname  + " the " + elist.get(i).getType());
+			tempint = sc.nextInt();
+			temp.put(tempname, tempint);
+		}
+		
+		return sortEncounter(temp);
+		
+	}
+	
+	/*TODO
+	 * Sort the list from the initiatives
+	 * https://stackoverflow.com/questions/8119366/sorting-hashmap-by-values
+	 */
+	
+	public ArrayList<Player> sortEncounter(HashMap<String, Integer> unsorted){
+		ArrayList<Player> sorted = new ArrayList<Player>();
+		
+		for(Entry<String, Integer> pair : unsorted.entrySet()) {
+			
+		}
+		
+		return sorted;
 		
 	}
 
