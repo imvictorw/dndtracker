@@ -18,6 +18,7 @@ import classes.*;
  * Add(type, name, health, level)
  * Remove(type, name)
  * Edit(type, name, stat to edit)
+ * Console, 1.health,2.level
  * 
  * stats()
  * 
@@ -78,22 +79,19 @@ public class Game{
 		
 	}
 	
-	public boolean heal(Player healer, Player healed, int amount) {
+	//Heal can be done by potion?
+	public boolean heal(Player healed, int amount) {
 		if(healed.getHealth() < 0) {
 			System.out.println("Character is dead");
 			return false;
 		}
-		
-		if(healer.getType() == PlayerType.CLERIC) {
 			if(healed.getMaxHealth() < healed.getHealth() + amount) {
 				healed.setHealth(healed.getMaxHealth());
 			}else {
 				healed.setHealth(healed.getHealth() + amount);	
 			}	
-			return true;
-		}
 		
-		return false;
+		return true;
 	}
 
 	public void remove(Player del) {
