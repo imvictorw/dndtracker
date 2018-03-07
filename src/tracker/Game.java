@@ -18,6 +18,7 @@ import classes.*;
  * Add(type, name, health, level)
  * Remove(type, name)
  * Edit(type, name, stat to edit)
+ * Console, 1.health,2.level
  * 
  * stats()
  * 
@@ -41,6 +42,14 @@ public class Game{
 				break;
 			}
 		}
+		
+		for(Player checkName: currEncounterList) {
+			if(checkName.getName().equals(name)) {
+				System.out.println("Cannot have the same name with somebody in the encounter");
+				return false;
+			}
+		}
+		
 		//If type was not found, then user input's type is invalid
 		if(check == false) {
 			System.out.println("Please enter a correct type");
@@ -65,6 +74,15 @@ public class Game{
 				break;
 			}
 		}
+		
+		for(Player checkName: currEncounterList) {
+			if(checkName.getName().equals(name)) {
+				System.out.println("Cannot have the same name with somebody in the encounter");
+				return false;
+			}
+		}
+		
+		
 		//If type was not found, then user input's type is invalid
 		if(check == false) {
 			System.out.println("Please enter a correct type");
@@ -78,22 +96,19 @@ public class Game{
 		
 	}
 	
-	public boolean heal(Player healer, Player healed, int amount) {
+	//Heal can be done by potion?
+	public boolean heal(Player healed, int amount) {
 		if(healed.getHealth() < 0) {
 			System.out.println("Character is dead");
 			return false;
 		}
-		
-		if(healer.getType() == PlayerType.CLERIC) {
 			if(healed.getMaxHealth() < healed.getHealth() + amount) {
 				healed.setHealth(healed.getMaxHealth());
 			}else {
 				healed.setHealth(healed.getHealth() + amount);	
 			}	
-			return true;
-		}
 		
-		return false;
+		return true;
 	}
 
 	public void remove(Player del) {
@@ -115,6 +130,8 @@ public class Game{
 	 * add new players + monsters
 	 */
 	public void next() {
+		boolean hCheck = false;
+		boolean mCheck = false;
 		
 	}
 	public ArrayList<Player> setup(ArrayList<Player> elist) {
