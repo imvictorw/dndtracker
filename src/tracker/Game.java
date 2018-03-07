@@ -130,6 +130,8 @@ public class Game{
 	 * add new players + monsters
 	 */
 	public void next() {
+		boolean hCheck = false;
+		boolean mCheck = false;
 		
 	}
 	public ArrayList<Player> setup(ArrayList<Player> elist) {
