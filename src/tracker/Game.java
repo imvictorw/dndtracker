@@ -18,7 +18,7 @@ import classes.*;
  * Add(type, name, health, level)
  * Remove(type, name)
  * Edit(type, name, stat to edit)
- * Console, 1.health,2.level
+ * 		Console, 1.health,2.level
  * 
  * stats()
  * 
@@ -96,6 +96,33 @@ public class Game{
 		
 	}
 	
+	public void remove(Player del) {
+		
+		if(currEncounterList != null && currEncounterList.contains(del)) {
+			currEncounterList.remove(del);
+		}else {
+			System.out.println("Error in removing player");
+		}
+		
+
+	}
+	
+	public boolean attack(Player attacked, int amount) {
+		for(Player checkName: currEncounterList) {
+			if(checkName == attacked) {
+				int currHealth = attacked.getHealth();
+				if(currHealth > 0) {
+					attacked.setHealth(currHealth - amount);
+					return true;
+				}else {
+					System.out.println("Player is already dead");
+				}
+				
+			}
+		}
+		return false;
+	}
+	
 	//Heal can be done by potion?
 	public boolean heal(Player healed, int amount) {
 		if(healed.getHealth() < 0) {
@@ -109,17 +136,6 @@ public class Game{
 			}	
 		
 		return true;
-	}
-
-	public void remove(Player del) {
-		
-		if(currEncounterList != null && currEncounterList.contains(del)) {
-			currEncounterList.remove(del);
-		}else {
-			System.out.println("Error in removing player");
-		}
-		
-
 	}
 	
 	
