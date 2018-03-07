@@ -42,6 +42,14 @@ public class Game{
 				break;
 			}
 		}
+		
+		for(Player checkName: currEncounterList) {
+			if(checkName.getName().equals(name)) {
+				System.out.println("Cannot have the same name with somebody in the encounter");
+				return false;
+			}
+		}
+		
 		//If type was not found, then user input's type is invalid
 		if(check == false) {
 			System.out.println("Please enter a correct type");
@@ -66,6 +74,15 @@ public class Game{
 				break;
 			}
 		}
+		
+		for(Player checkName: currEncounterList) {
+			if(checkName.getName().equals(name)) {
+				System.out.println("Cannot have the same name with somebody in the encounter");
+				return false;
+			}
+		}
+		
+		
 		//If type was not found, then user input's type is invalid
 		if(check == false) {
 			System.out.println("Please enter a correct type");
