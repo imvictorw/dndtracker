@@ -1,11 +1,9 @@
 package tracker;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -25,15 +23,16 @@ import classes.*;
  * stats()
  * 
  * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
+ * ###TODO - Monsters??? What to do - ####
  */
 
 public class Game {
 
-	private ArrayList<Player> currEncounterList = new ArrayList<Player>();
-	private Player[] order;
+	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); //To save every encounter
+	private ArrayList<Player> currEncounterList = new ArrayList<Player>(); //For every current encounter
 	Scanner sc = new Scanner(System.in);
 
-	public boolean add(String name, String type) {
+	public boolean addPlayer(String name, String type) {
 
 		boolean check = false;
 
@@ -65,7 +64,7 @@ public class Game {
 
 	}
 
-	public boolean add2(String name, String type, int health, int level) {
+	public boolean addPlayer2(String name, String type, int health, int level) {
 
 		boolean check = false;
 
@@ -139,7 +138,7 @@ public class Game {
 					}else if (choice == 3) {
 						break;
 					}else {
-						System.out.println("Enter a currect number choice.");
+						System.out.println("Enter a correct number choice");
 					}
 				}
 			}

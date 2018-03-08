@@ -1,5 +1,19 @@
 package classes;
 
 public enum MonsterType{
-	ZOMBIE
+	ABERRATION,
+	BEAST,
+	CELESTIAL,
+	CONSTRUCT,
+	DEMON,
+	DRAGON,
+	ELEMENTAL,
+	FEY,
+	FIEND,
+	GIANT,
+	HUMANOID,
+	MONSTROSITY,
+	OOZE,
+	PLANT,
+	UNDEAD
 }

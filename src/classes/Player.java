@@ -14,10 +14,11 @@ public class Player {
 	private int maxHealth = 0;
 	private int level = 0;
 	private PlayerType type;
+	private MonsterType mtype;
 	
+	//Players
 	public Player(String name, PlayerType type) {
 		this.name = name;
-		this.type = type;
 		
 		switch(type) {
 			case BARBARIAN:
@@ -90,6 +91,24 @@ public class Player {
 		this.maxHealth = health;
 		this.type = type;
 		
+	}
+	
+	//Monsters
+	public Player(String name, MonsterType mtype, int health, int level) {
+		this.name = name;
+		this.level = level;
+		this.health = health;
+		this.maxHealth = health;
+		this.mtype = mtype;
+	}
+	
+	
+	public MonsterType getMtype() {
+		return mtype;
+	}
+
+	public void setMtype(MonsterType mtype) {
+		this.mtype = mtype;
 	}
 
 	public int getMaxHealth() {
