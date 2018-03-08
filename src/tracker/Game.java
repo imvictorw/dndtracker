@@ -24,12 +24,14 @@ import classes.*;
  * 
  * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
  * ###TODO - Monsters??? What to do - ####
+ * ### WIll break if player name is called Zombie, and the monsters will be called zombie?##
+ * ###Maybe add a multiple of the same monster add function??###
  */
 
 public class Game {
 
-	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); //To save every encounter
-	private ArrayList<Player> currEncounterList = new ArrayList<Player>(); //For every current encounter
+	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // To save every encounter
+	private ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
 	Scanner sc = new Scanner(System.in);
 
 	public boolean addPlayer(String name, String type) {
@@ -53,8 +55,9 @@ public class Game {
 
 		// If type was not found, then user input's type is invalid
 		if (check == false) {
-			System.out.println("Please enter a correct type");
-			return false;
+			System.out.println("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+					+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
+					+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
 		}
 
 		Player temp = new Player(name, PlayerType.valueOf(type));
@@ -85,7 +88,9 @@ public class Game {
 
 		// If type was not found, then user input's type is invalid
 		if (check == false) {
-			System.out.println("Please enter a correct type");
+			System.out.println("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+					+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
+					+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
 			return false;
 		}
 
@@ -94,6 +99,39 @@ public class Game {
 
 		return true;
 
+	}
+
+	public boolean addMonster(String name, String type, int health, int level) {
+		boolean check = false;
+
+		// Checks the type giving to the types allowed
+		for (MonsterType typeTemp : MonsterType.values()) {
+			if (type.equals(typeTemp.toString())) {
+				check = true;
+				break;
+			}
+		}
+
+		for (Player checkName : currEncounterList) {
+			if (checkName.getName().equals(name)) {
+				System.out.println("Cannot have the same name with somebody in the encounter. If same type of monster, add a 1. Eg. Zombie, Zombie1");
+				return false;
+			}
+		}
+
+		// If type was not found, then user input's type is invalid
+		if (check == false) {
+			System.out.println("Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n" + "	CELESTIAL,\n"
+					+ "	CONSTRUCT,\n" + "	DEMON,\n" + "	DRAGON,\n" + "	ELEMENTAL,\n" + "	FEY,\n" + "	FIEND,\n"
+					+ "	GIANT,\n" + "	HUMANOID,\n" + "	MONSTROSITY,\n" + "	OOZE,\n" + "	PLANT,\n"
+					+ "	UNDEAD");
+			return false;
+		}
+
+		Player temp = new Player(name, MonsterType.valueOf(type), health, level);
+		currEncounterList.add(temp);
+
+		return true;
 	}
 
 	public void remove(Player del) {
@@ -112,7 +150,6 @@ public class Game {
 				System.out.println("Please enter the number on what you want to edit with " + name + "\n"
 						+ "1. Name\n2. Level+MaxHealth\nPress 3 or enter to quit");
 
-				
 				while (sc.hasNextInt()) {
 					int choice = sc.nextInt();
 					/** Need to add checks **/
@@ -135,9 +172,9 @@ public class Game {
 
 						System.out.println("Change in level is successful");
 
-					}else if (choice == 3) {
+					} else if (choice == 3) {
 						break;
-					}else {
+					} else {
 						System.out.println("Enter a correct number choice");
 					}
 				}
@@ -212,42 +249,40 @@ public class Game {
 	 * TODO Sort the list from the initiatives
 	 * https://stackoverflow.com/questions/8119366/sorting-hashmap-by-values
 	 */
-//	
+	//
 
 	public ArrayList<Player> sortEncounter(HashMap<String, Integer> unsorted) {
-		
-		Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>(){
-			
+
+		Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>() {
+
 			@Override
 			public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
-				int v1 = (int)obj1.getValue();
-				int v2 = (int)obj2.getValue();
-				
-				if(v1 > v2) {
+				int v1 = (int) obj1.getValue();
+				int v2 = (int) obj2.getValue();
+
+				if (v1 > v2) {
 					return 1;
-				}else if(v1 < v2) {
+				} else if (v1 < v2) {
 					return -1;
 				}
-				
+
 				return 0;
 			}
-		};	
-		
+		};
+
 		ArrayList<Player> sorted = new ArrayList<Player>();
 
 		ArrayList<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(unsorted.entrySet());
-		Collections.sort(listOfEntries, valueComparator); //sorted
-		
-		
-		for(int i = 0; i < currEncounterList.size(); i++) {
-			for(Entry<String, Integer> pair : listOfEntries) {
-				if(currEncounterList.get(i).getName().equals(pair.getKey())) {
+		Collections.sort(listOfEntries, valueComparator); // sorted
+
+		for (int i = 0; i < currEncounterList.size(); i++) {
+			for (Entry<String, Integer> pair : listOfEntries) {
+				if (currEncounterList.get(i).getName().equals(pair.getKey())) {
 					sorted.add(currEncounterList.get(i));
 				}
 			}
 		}
-		
-		
+
 		return sorted;
 
 	}
