@@ -2,6 +2,8 @@ package tracker;
 
 import java.awt.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -186,7 +188,7 @@ public class Game {
 
 	}
 
-	public ArrayList<Player> setup(ArrayList<Player> elist) {
+	public ArrayList<Player> setup() {
 		HashMap<String, Integer> temp = new HashMap<String, Integer>();
 		String tempname;
 		int tempint;
@@ -196,9 +198,9 @@ public class Game {
 
 		// For each index of the encounter list, add their initiative and then reorder
 		// the encounterlist
-		for (int i = 0; i < elist.size(); i++) {
-			tempname = elist.get(i).getName();
-			System.out.println("Dice Number? for " + tempname + " the " + elist.get(i).getType());
+		for (int i = 0; i < currEncounterList.size(); i++) {
+			tempname = currEncounterList.get(i).getName();
+			System.out.println("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getType());
 			tempint = sc.nextInt();
 			temp.put(tempname, tempint);
 		}
@@ -211,14 +213,42 @@ public class Game {
 	 * TODO Sort the list from the initiatives
 	 * https://stackoverflow.com/questions/8119366/sorting-hashmap-by-values
 	 */
+//	
 
 	public ArrayList<Player> sortEncounter(HashMap<String, Integer> unsorted) {
+		
+		Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>(){
+			
+			@Override
+			public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
+				int v1 = (int)obj1.getValue();
+				int v2 = (int)obj2.getValue();
+				
+				if(v1 > v2) {
+					return 1;
+				}else if(v1 < v2) {
+					return -1;
+				}
+				
+				return 0;
+			}
+		};	
+		
 		ArrayList<Player> sorted = new ArrayList<Player>();
 
-		for (Entry<String, Integer> pair : unsorted.entrySet()) {
-
+		ArrayList<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(unsorted.entrySet());
+		Collections.sort(listOfEntries, valueComparator); //sorted
+		
+		
+		for(int i = 0; i < currEncounterList.size(); i++) {
+			for(Entry<String, Integer> pair : listOfEntries) {
+				if(currEncounterList.get(i).getName().equals(pair.getKey())) {
+					sorted.add(currEncounterList.get(i));
+				}
+			}
 		}
-
+		
+		
 		return sorted;
 
 	}
