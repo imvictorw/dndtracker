@@ -1,3 +1,15 @@
+/**
+ * 
+ * @author Victor
+ * 
+ * TODO:
+ * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
+ * ###TODO - Monsters??? What to do - ####
+ * ### WIll break if player name is called Zombie, and the monsters will be called zombie?##
+ * ###Maybe add a multiple of the same monster add function??###
+ *
+ */
+
 package tracker;
 
 import java.util.ArrayList;
@@ -22,10 +34,6 @@ import classes.*;
  * 
  * stats()
  * 
- * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
- * ###TODO - Monsters??? What to do - ####
- * ### WIll break if player name is called Zombie, and the monsters will be called zombie?##
- * ###Maybe add a multiple of the same monster add function??###
  */
 
 public class Game {
@@ -221,6 +229,39 @@ public class Game {
 	public void next() {
 		boolean hCheck = false;
 		boolean mCheck = false;
+		
+		
+		// Checks if there are either only Monsters or only Players are left
+		for(int i = 0; i < currEncounterList.size(); i++) {
+			if(currEncounterList.get(i).checkClass() == "Monster") {
+				mCheck = true;
+				break;
+			}
+		}
+		
+		if(mCheck == true) {
+			for(int j = 0; j < currEncounterList.size(); j++) {
+				if(currEncounterList.get(j).checkClass() == "Player") {
+					hCheck = true;
+					break;
+				}
+			}
+		}
+		
+		//Removes all characters with less than 1 health
+		if(hCheck == false && mCheck == true || hCheck == true && mCheck == false) {
+			for(int k = 0; k < currEncounterList.size(); k++) {
+				Player character = currEncounterList.get(k);
+				if(character.getHealth() <= 0) {
+					remove(character);
+				}
+			}
+			
+			//Add it to encounterArray to print out
+			encounterArray.add(currEncounterList);
+		}else {
+			System.out.println("There are still monsters or players alive in the encounter");
+		}
 
 	}
 

@@ -102,7 +102,6 @@ public class Player {
 		this.mtype = mtype;
 	}
 	
-	
 	public MonsterType getMtype() {
 		return mtype;
 	}
@@ -151,5 +150,13 @@ public class Player {
 		this.level = level;
 	}
 	
-
+	public String checkClass() {
+		if(mtype != null) {
+			return "Monster";
+		}else if(type != null) {
+			return "Player";
+		}
+		
+		return "error";
+	}
 }
