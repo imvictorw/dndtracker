@@ -150,13 +150,13 @@ public class Player {
 		this.level = level;
 	}
 	
-	public String checkClass() {
+	public int checkClass() {
 		if(mtype != null) {
-			return "Monster";
+			return 1;
 		}else if(type != null) {
-			return "Player";
+			return 2;
 		}
 		
-		return "error";
+		return -1;
 	}
 }

@@ -30,10 +30,17 @@ import classes.*;
  * Add(type, name, health, level)
  * Remove(type, name)
  * Edit(type, name, stat to edit)
- * 		Console, 1.health,2.level
+ * 		- Console, 1.health,2.level
  * 
- * stats()
+ * stats() - Prints out the encounters
  * 
+ * save()
+ * load()
+ * 
+ *Save function+Reload - So can restart when program is turned off 
+ *Get the arrays from previous encounters
+ *Input stream on the file to get back the data ~~~JSON~~~
+ *Cannot run setup again unless next function has been called easy boolean
  */
 
 public class Game {
@@ -41,10 +48,15 @@ public class Game {
 	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // To save every encounter
 	private ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
 	Scanner sc = new Scanner(System.in);
+	private String command;
+
+
+	/** ADDING, EDIT & REMOVE PLAYERS & MONSTERS **/
 
 	public boolean addPlayer(String name, String type) {
 
 		boolean check = false;
+		type = type.toUpperCase();
 
 		// Checks the type giving to the types allowed
 		for (PlayerType typeTemp : PlayerType.values()) {
@@ -66,9 +78,11 @@ public class Game {
 			System.out.println("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
 					+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
 					+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
+			return false;
 		}
 
 		Player temp = new Player(name, PlayerType.valueOf(type));
+		System.out.println("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
 
 		return true;
@@ -78,10 +92,11 @@ public class Game {
 	public boolean addPlayer2(String name, String type, int health, int level) {
 
 		boolean check = false;
+		type = type.toUpperCase();
 
 		// Checks the type giving to the types allowed
 		for (PlayerType typeTemp : PlayerType.values()) {
-			if (type.equals(typeTemp.toString())) {
+			if (type.toUpperCase().equals(typeTemp.toString())) {
 				check = true;
 				break;
 			}
@@ -103,6 +118,7 @@ public class Game {
 		}
 
 		Player temp = new Player(name, PlayerType.valueOf(type), health, level);
+		System.out.println("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
 
 		return true;
@@ -111,10 +127,11 @@ public class Game {
 
 	public boolean addMonster(String name, String type, int health, int level) {
 		boolean check = false;
+		type = type.toUpperCase();
 
 		// Checks the type giving to the types allowed
 		for (MonsterType typeTemp : MonsterType.values()) {
-			if (type.equals(typeTemp.toString())) {
+			if (type.toUpperCase().equals(typeTemp.toString())) {
 				check = true;
 				break;
 			}
@@ -122,7 +139,8 @@ public class Game {
 
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				System.out.println("Cannot have the same name with somebody in the encounter. If same type of monster, add a 1. Eg. Zombie, Zombie1");
+				System.out.println(
+						"Cannot have the same name with somebody in the encounter. If same type of monster, add a 1. Eg. Zombie, Zombie1");
 				return false;
 			}
 		}
@@ -137,19 +155,10 @@ public class Game {
 		}
 
 		Player temp = new Player(name, MonsterType.valueOf(type), health, level);
+		System.out.println("Welcome " + type + " " + name);
 		currEncounterList.add(temp);
 
 		return true;
-	}
-
-	public void remove(Player del) {
-
-		if (currEncounterList != null && currEncounterList.contains(del)) {
-			currEncounterList.remove(del);
-		} else {
-			System.out.println("Error in removing player");
-		}
-
 	}
 
 	public void edit(String name) {
@@ -190,35 +199,162 @@ public class Game {
 		}
 	}
 
-	public boolean attack(Player attacked, int amount) {
-		for (Player checkName : currEncounterList) {
-			if (checkName == attacked) {
-				int currHealth = attacked.getHealth();
-				if (currHealth > 0) {
-					attacked.setHealth(currHealth - amount);
-					return true;
-				} else {
-					System.out.println("Player is already dead");
-				}
-
+	public Player find(String name) {
+		for (int i = 0; i < currEncounterList.size(); i++) {
+			if (currEncounterList.get(i).getName().equals(name)) {
+				return currEncounterList.get(i);
 			}
 		}
+		return null;
+	}
+
+	public void remove(String del) {
+
+		Player delPlayer = find(del);
+		if(delPlayer == null) {
+			System.out.println("Invalid name");
+			return;
+		}
+
+		if (currEncounterList != null && currEncounterList.contains(delPlayer)) {
+			currEncounterList.remove(delPlayer);
+			System.out.println("Successfully removed " + del);
+		} else {
+			System.out.println("Error in removing player");
+		}
+
+	}
+
+	/** MOVES INCLUDING ATTACK & HEAL CHARACTER **/
+
+	public boolean attack(String attack, int amount) {
+
+		Player attacked = find(attack);
+		if(attacked == null) {
+			System.out.println("Invalid name");
+			return false;
+		}
+
+		int currHealth = attacked.getHealth();
+
+		if (attacked.checkClass() == 1) {
+			if (currHealth > 0) {
+				attacked.setHealth(currHealth - amount);
+				return true;
+			} else {
+				System.out.println("Monster is already dead");
+			}
+		} else if (attacked.checkClass() == 2) {
+			if (currHealth > 10) {
+				attacked.setHealth(currHealth - amount);
+				return true;
+			} else {
+				System.out.println("Player is already dead");
+			}
+		}
+
 		return false;
 	}
 
 	// Heal can be done by potion?
-	public boolean heal(Player healed, int amount) {
-		if (healed.getHealth() < 0) {
-			System.out.println("Character is dead");
+	public boolean heal(String heal, int amount) {
+		// Check player exists
+
+		Player healed = find(heal);
+		
+		if(healed == null) {
+			System.out.println("Invalid name");
 			return false;
 		}
-		if (healed.getMaxHealth() < healed.getHealth() + amount) {
-			healed.setHealth(healed.getMaxHealth());
-		} else {
-			healed.setHealth(healed.getHealth() + amount);
+		
+		if (healed.checkClass() == 2) {
+			if (healed.getHealth() <= 10) {
+				System.out.println("Character is dead");
+				return false;
+			}
+			if (healed.getMaxHealth() < healed.getHealth() + amount) {
+				healed.setHealth(healed.getMaxHealth());
+			} else {
+				healed.setHealth(healed.getHealth() + amount);
+			}
+
+			return true;
+		} else if (healed.checkClass() == 1) {
+			if (healed.getHealth() < 0) {
+				System.out.println("Character is dead");
+				return false;
+			}
+			if (healed.getMaxHealth() < healed.getHealth() + amount) {
+				healed.setHealth(healed.getMaxHealth());
+			} else {
+				healed.setHealth(healed.getHealth() + amount);
+			}
+
+			return true;
 		}
 
-		return true;
+		System.out.println("Error - Heal");
+		return false;
+	}
+
+	public void help() {
+		System.out.println("HELP SHIST");
+	}
+
+	// Vertical - Rounds
+	// Horizontal - Players
+	// Separate each encounter
+
+	// Encounter 1
+	//
+	// Encounter 2
+
+	public void stats() {
+		System.out.println("x");
+	}
+
+	public void alive() {
+		
+		Player character;
+		System.out.println("Order	Name		Type		Health");
+		
+		for(int i = 0; i < currEncounterList.size(); i++) {
+			character = currEncounterList.get(i);
+			int j = i + 1;
+			if(character.checkClass() == 1) {
+				System.out.println(j+"	"+character.getName() +"		"+character.getMtype()+"		"+ character.getHealth());
+			}else {
+				System.out.println(j+"	"+character.getName() +"		"+character.getType()+"		"+ character.getHealth());
+			}
+			
+		}
+	}
+	/**
+	 * Monster Alive - 1 Player Alive - 2
+	 * 
+	 * Both Alive = 3 Both Dead = 0
+	 * 
+	 * @return
+	 */
+	public int encounterCheck() {
+
+		int result = 0;
+		// Checks if there are either only Monsters or only Players are left
+		for (int i = 0; i < currEncounterList.size(); i++) {
+			if (currEncounterList.get(i).checkClass() == 1 && currEncounterList.get(i).getHealth() > 0) { // Monster
+				result++;
+				break;
+			}
+		}
+
+		for (int j = 0; j < currEncounterList.size(); j++) {
+			if (currEncounterList.get(j).checkClass() == 2 && currEncounterList.get(j).getHealth() > -10) { // Player
+				result += 2;
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -227,40 +363,30 @@ public class Game {
 	 * encounterlist add new players + monsters
 	 */
 	public void next() {
-		boolean hCheck = false;
-		boolean mCheck = false;
-		
-		
-		// Checks if there are either only Monsters or only Players are left
-		for(int i = 0; i < currEncounterList.size(); i++) {
-			if(currEncounterList.get(i).checkClass() == "Monster") {
-				mCheck = true;
-				break;
-			}
-		}
-		
-		if(mCheck == true) {
-			for(int j = 0; j < currEncounterList.size(); j++) {
-				if(currEncounterList.get(j).checkClass() == "Player") {
-					hCheck = true;
-					break;
-				}
-			}
-		}
-		
-		//Removes all characters with less than 1 health
-		if(hCheck == false && mCheck == true || hCheck == true && mCheck == false) {
-			for(int k = 0; k < currEncounterList.size(); k++) {
-				Player character = currEncounterList.get(k);
-				if(character.getHealth() <= 0) {
-					remove(character);
-				}
-			}
-			
-			//Add it to encounterArray to print out
+
+		int ec = encounterCheck();
+
+		// Removes all characters with less than 1 health
+		if (ec == 1 || ec == 2) {
+			// Add it to encounterArray to print out
 			encounterArray.add(currEncounterList);
-		}else {
+
+			for (int k = 0; k < currEncounterList.size(); k++) {
+				Player character = currEncounterList.get(k);
+				if (character.checkClass() == 1) { // Monster
+					if (character.getHealth() <= 0) {
+						remove(character.getName());
+					}
+				} else if (character.checkClass() == 2) { // Player
+					if (character.getHealth() <= 10) {
+						remove(character.getName());
+					}
+				}
+			}
+
+		} else {
 			System.out.println("There are still monsters or players alive in the encounter");
+			return;
 		}
 
 	}
@@ -277,7 +403,12 @@ public class Game {
 		// the encounterlist
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			tempname = currEncounterList.get(i).getName();
-			System.out.println("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getType());
+			if(currEncounterList.get(i).checkClass() == 1) {
+				System.out.println("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getMtype());
+			}else {
+				System.out.println("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getType());
+			}
+			
 			tempint = sc.nextInt();
 			temp.put(tempname, tempint);
 		}
@@ -286,13 +417,9 @@ public class Game {
 
 	}
 
-	/*
-	 * TODO Sort the list from the initiatives
-	 * https://stackoverflow.com/questions/8119366/sorting-hashmap-by-values
-	 */
-	//
-
 	public ArrayList<Player> sortEncounter(HashMap<String, Integer> unsorted) {
+		
+		ArrayList<Player> sorted = new ArrayList<Player>();
 
 		Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>() {
 
@@ -300,7 +427,6 @@ public class Game {
 			public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
 				int v1 = (int) obj1.getValue();
 				int v2 = (int) obj2.getValue();
-
 				if (v1 > v2) {
 					return 1;
 				} else if (v1 < v2) {
@@ -309,26 +435,128 @@ public class Game {
 
 				return 0;
 			}
-		};
-
-		ArrayList<Player> sorted = new ArrayList<Player>();
+		}; // Formula to compare the two different set values for intiatives
 
 		ArrayList<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(unsorted.entrySet());
 		Collections.sort(listOfEntries, valueComparator); // sorted
 
-		for (int i = 0; i < currEncounterList.size(); i++) {
 			for (Entry<String, Integer> pair : listOfEntries) {
-				if (currEncounterList.get(i).getName().equals(pair.getKey())) {
-					sorted.add(currEncounterList.get(i));
+				for(int j = 0; j < currEncounterList.size();j++) {
+//					System.out.println(pair.getKey()+"			"+currEncounterList.get(j).getName());
+					if (currEncounterList.get(j).getName().equals(pair.getKey())) {
+						sorted.add(currEncounterList.get(j));
+					}
 				}
-			}
 		}
+		
+//		for(int i = 0; i < listOfEntries.size(); i++) {
+//			System.out.println(listOfEntries.get(i).getKey() + " " + listOfEntries.get(i).getValue());
+//			
+//		}
+		
 
+		currEncounterList = sorted;
+		for(int i = 0; i<currEncounterList.size();i++) {
+			System.out.println(currEncounterList.get(i).getName());
+		}
 		return sorted;
 
 	}
 
+	/* Req - One Monster and One Player */
 	public void startGame() {
+		System.out.println(
+				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
+		System.out.println(
+				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
+		System.out.println("******************************************************************************");
+		System.out.println("When you are complete with adding all the players and monsters, use the setup command to get started");
+
+		String temp;
+		String temp2;
+		int temp3;
+		int temp4;
+		addPlayer("DOn", "BARD");
+		addPlayer("Lez", "BARD");
+		addMonster("Len", "UNDEAD", 10, 20);
+
+		while (true) {
+			command = sc.nextLine();
+
+			switch (command.toLowerCase()) {
+
+			case "add player":
+				System.out.println("Enter name for player");
+				temp = sc.nextLine();
+				System.out.println("Enter player type");
+				temp2 = sc.nextLine();
+				addPlayer(temp, temp2);
+				break;
+
+			case "add player2":
+				System.out.println("Enter name for player");
+				temp = sc.nextLine();
+				System.out.println("Enter player type");
+				temp2 = sc.nextLine();
+				System.out.println("Enter player health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				System.out.println("Enter player level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addPlayer2(temp, temp2, temp3, temp4);
+				break;
+			case "add monster":
+				System.out.println("Enter name for monster");
+				temp = sc.nextLine();
+				System.out.println("Enter monster type");
+				temp2 = sc.nextLine();
+				System.out.println("Enter monster health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				System.out.println("Enter monster level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addMonster(temp, temp2, temp3, temp4);
+				break;
+			case "edit":
+				System.out.println("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				edit(temp);
+				break;
+			case "remove":
+				System.out.println("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				remove(temp);
+				break;
+			case "attack":
+				break;
+			case "heal":
+				break;
+			case "next":
+				break;
+			case "stats":
+				break;
+			case "help":
+				break;
+			case "save":
+				break;
+			case "load":
+				break;
+			case "alive":
+				alive();
+				break;
+			case "setup":
+				setup();
+				break;
+			default:
+				System.out.println("Please enter a valid command");
+				break;
+			}
+			
+
+		}
 	}
+
 
 }
