@@ -201,7 +201,7 @@ public class Game {
 
 	public Player find(String name) {
 		for (int i = 0; i < currEncounterList.size(); i++) {
-			if (currEncounterList.get(i).getName().equals(name)) {
+			if (currEncounterList.get(i).getName().toLowerCase().equals(name.toLowerCase())) {
 				return currEncounterList.get(i);
 			}
 		}
@@ -245,7 +245,7 @@ public class Game {
 				System.out.println("Monster is already dead");
 			}
 		} else if (attacked.checkClass() == 2) {
-			if (currHealth > 10) {
+			if (currHealth > -10) {
 				attacked.setHealth(currHealth - amount);
 				return true;
 			} else {
@@ -378,7 +378,7 @@ public class Game {
 						remove(character.getName());
 					}
 				} else if (character.checkClass() == 2) { // Player
-					if (character.getHealth() <= 10) {
+					if (character.getHealth() <= -10) {
 						remove(character.getName());
 					}
 				}
@@ -530,10 +530,21 @@ public class Game {
 				remove(temp);
 				break;
 			case "attack":
+				System.out.println("Enter name for player or monster to attack");
+				temp = sc.nextLine();
+				System.out.println("Enter the amount of damage done");
+				temp3 = sc.nextInt();
+				attack(temp,temp3);
 				break;
 			case "heal":
+				System.out.println("Enter name for player or monster to heal");
+				temp = sc.nextLine();
+				System.out.println("Enter the amount of healing done");
+				temp3 = sc.nextInt();
+				heal(temp,temp3);
 				break;
 			case "next":
+				next();
 				break;
 			case "stats":
 				break;
@@ -550,7 +561,7 @@ public class Game {
 				setup();
 				break;
 			default:
-				System.out.println("Please enter a valid command");
+//				System.out.println("Please enter a valid command");
 				break;
 			}
 			
