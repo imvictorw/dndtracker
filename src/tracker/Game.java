@@ -407,10 +407,10 @@ public class Game {
 		// Removes all characters with less than 1 health
 		if (ec == 1 || ec == 2) {
 			// Add it to encounterArray to print out
-			//When removing array, it removes both that one and the one saved in
 			
 			ArrayList<Player> tempArray = new ArrayList<Player>(); 
-			
+			//When removed on the currEncounterList, the remove() function removes the memory area of that space
+			//So you need to make a duplicate of the array so when it gets deleted the memory area isnt deleted
 			for(int i = 0;i < currEncounterList.size(); i++) {
 				tempArray.add(currEncounterList.get(i));
 			}
