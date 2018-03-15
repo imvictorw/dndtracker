@@ -227,6 +227,7 @@ public class Game {
 
 	/** MOVES INCLUDING ATTACK & HEAL CHARACTER **/
 
+	//Can customize wording depending on character / monster type
 	public boolean attack(String attack, int amount) {
 
 		Player attacked = find(attack);
@@ -240,6 +241,7 @@ public class Game {
 		if (attacked.checkClass() == 1) {
 			if (currHealth > 0) {
 				attacked.setHealth(currHealth - amount);
+				System.out.println(attack + " was hit with " + amount + " damage");
 				return true;
 			} else {
 				System.out.println("Monster is already dead");
@@ -247,6 +249,7 @@ public class Game {
 		} else if (attacked.checkClass() == 2) {
 			if (currHealth > -10) {
 				attacked.setHealth(currHealth - amount);
+				System.out.println(attack + " was hit with " + amount + " damage");
 				return true;
 			} else {
 				System.out.println("Player is already dead");
@@ -268,14 +271,16 @@ public class Game {
 		}
 		
 		if (healed.checkClass() == 2) {
-			if (healed.getHealth() <= 10) {
+			if (healed.getHealth() <= -10) {
 				System.out.println("Character is dead");
 				return false;
 			}
 			if (healed.getMaxHealth() < healed.getHealth() + amount) {
 				healed.setHealth(healed.getMaxHealth());
+				System.out.println(heal + " is now full health " + "(" +healed.getMaxHealth()+")");
 			} else {
 				healed.setHealth(healed.getHealth() + amount);
+				System.out.println(heal + " healed "+ amount);
 			}
 
 			return true;
@@ -286,8 +291,10 @@ public class Game {
 			}
 			if (healed.getMaxHealth() < healed.getHealth() + amount) {
 				healed.setHealth(healed.getMaxHealth());
+				System.out.println(heal + " is now full health " + "(" +healed.getMaxHealth()+")");
 			} else {
 				healed.setHealth(healed.getHealth() + amount);
+				System.out.println(heal + " healed "+ amount);
 			}
 
 			return true;
@@ -298,19 +305,44 @@ public class Game {
 	}
 
 	public void help() {
-		System.out.println("HELP SHIST");
+		System.out.println("SHIT");
 	}
 
-	// Vertical - Rounds
+	/** Vertical - Rounds
 	// Horizontal - Players
 	// Separate each encounter
 
 	// Encounter 1
 	//
 	// Encounter 2
+	 * 
+	 */
 
 	public void stats() {
-		System.out.println("x");
+		int counter = 1;
+		System.out.println(encounterArray.size());
+		for(ArrayList<Player> list : encounterArray) {
+			/**
+			 * The arrays are either not being inserted properly into this array or that 
+			 * the loop isnt looping properly through the encounter array
+			 * When removed it fucks up
+			**/
+			Player character;
+			System.out.println("Round "+counter);
+			System.out.println("Order	Name		Type		Health");
+			
+			for(int i = 0; i < list.size(); i++) {
+				character = list.get(i);
+				int j = i + 1;
+				if(character.checkClass() == 1) {
+					System.out.println(j+"	"+character.getName() +"		"+character.getMtype()+"		"+ character.getHealth());
+				}else {
+					System.out.println(j+"	"+character.getName() +"		"+character.getType()+"		"+ character.getHealth());
+				}
+				
+			}
+			counter++;
+		}
 	}
 
 	public void alive() {
@@ -362,6 +394,12 @@ public class Game {
 	 * more humans left Delete all of the players with < 0 health Recreate
 	 * encounterlist add new players + monsters
 	 */
+	public void save() {
+		
+	}
+	public void load() {
+		
+	}
 	public void next() {
 
 		int ec = encounterCheck();
@@ -369,8 +407,17 @@ public class Game {
 		// Removes all characters with less than 1 health
 		if (ec == 1 || ec == 2) {
 			// Add it to encounterArray to print out
-			encounterArray.add(currEncounterList);
+			//When removing array, it removes both that one and the one saved in
+			
+			ArrayList<Player> tempArray = new ArrayList<Player>(); 
+			
+			for(int i = 0;i < currEncounterList.size(); i++) {
+				tempArray.add(currEncounterList.get(i));
+			}
+			
+			encounterArray.add(tempArray);
 
+			
 			for (int k = 0; k < currEncounterList.size(); k++) {
 				Player character = currEncounterList.get(k);
 				if (character.checkClass() == 1) { // Monster
@@ -383,7 +430,6 @@ public class Game {
 					}
 				}
 			}
-
 		} else {
 			System.out.println("There are still monsters or players alive in the encounter");
 			return;
@@ -391,7 +437,7 @@ public class Game {
 
 	}
 
-	public ArrayList<Player> setup() {
+	public void setup() {
 		HashMap<String, Integer> temp = new HashMap<String, Integer>();
 		String tempname;
 		int tempint;
@@ -413,11 +459,10 @@ public class Game {
 			temp.put(tempname, tempint);
 		}
 
-		return sortEncounter(temp);
+		sortEncounter(temp);
 
 	}
-
-	public ArrayList<Player> sortEncounter(HashMap<String, Integer> unsorted) {
+	public void sortEncounter(HashMap<String, Integer> unsorted) {
 		
 		ArrayList<Player> sorted = new ArrayList<Player>();
 
@@ -449,17 +494,8 @@ public class Game {
 				}
 		}
 		
-//		for(int i = 0; i < listOfEntries.size(); i++) {
-//			System.out.println(listOfEntries.get(i).getKey() + " " + listOfEntries.get(i).getValue());
-//			
-//		}
-		
 
 		currEncounterList = sorted;
-		for(int i = 0; i<currEncounterList.size();i++) {
-			System.out.println(currEncounterList.get(i).getName());
-		}
-		return sorted;
 
 	}
 
@@ -547,12 +583,16 @@ public class Game {
 				next();
 				break;
 			case "stats":
+				stats();
 				break;
 			case "help":
+				help();
 				break;
 			case "save":
+				save();
 				break;
 			case "load":
+				load();
 				break;
 			case "alive":
 				alive();
