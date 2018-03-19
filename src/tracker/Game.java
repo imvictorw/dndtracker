@@ -163,7 +163,7 @@ public class Game {
 
 	public void edit(String name) {
 		for (Player checkName : currEncounterList) {
-			if (checkName.getName().equals(name)) {
+			if (checkName.getName().toLowerCase().equals(name.toLowerCase())) {
 				System.out.println("Please enter the number on what you want to edit with " + name + "\n"
 						+ "1. Name\n2. Level+MaxHealth\nPress 3 or enter to quit");
 
@@ -172,6 +172,7 @@ public class Game {
 					/** Need to add checks **/
 					if (choice == 1) { // Change health
 						System.out.println("Please enter the new name for the character to be");
+						sc.nextLine();
 						String changeName = sc.nextLine();
 						checkName.setName(changeName);
 
@@ -473,9 +474,9 @@ public class Game {
 				int v1 = (int) obj1.getValue();
 				int v2 = (int) obj2.getValue();
 				if (v1 > v2) {
-					return 1;
-				} else if (v1 < v2) {
 					return -1;
+				} else if (v1 < v2) {
+					return 1;
 				}
 
 				return 0;
