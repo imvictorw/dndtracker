@@ -41,6 +41,7 @@ import classes.*;
  *Get the arrays from previous encounters
  *Input stream on the file to get back the data ~~~JSON~~~
  *Cannot run setup again unless next function has been called easy boolean
+ *have to run setup before encounter starts ~~~
  */
 
 public class Game {
@@ -533,27 +534,27 @@ public class Game {
 			case "add player2":
 				System.out.println("Enter name for player");
 				temp = sc.nextLine();
-				System.out.println("Enter player type");
-				temp2 = sc.nextLine();
 				System.out.println("Enter player health");
 				temp3 = sc.nextInt();
 				sc.nextLine();
 				System.out.println("Enter player level");
 				temp4 = sc.nextInt();
 				sc.nextLine();
+				System.out.println("Enter player type");
+				temp2 = sc.nextLine();
 				addPlayer2(temp, temp2, temp3, temp4);
 				break;
 			case "add monster":
 				System.out.println("Enter name for monster");
 				temp = sc.nextLine();
-				System.out.println("Enter monster type");
-				temp2 = sc.nextLine();
 				System.out.println("Enter monster health");
 				temp3 = sc.nextInt();
 				sc.nextLine();
 				System.out.println("Enter monster level");
 				temp4 = sc.nextInt();
 				sc.nextLine();
+				System.out.println("Enter monster type");
+				temp2 = sc.nextLine();
 				addMonster(temp, temp2, temp3, temp4);
 				break;
 			case "edit":
