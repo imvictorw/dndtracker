@@ -2,12 +2,8 @@
  * 
  * @author Victor
  * 
- * TODO:
- * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
- * ###TODO - Monsters??? What to do - ####
- * ### WIll break if player name is called Zombie, and the monsters will be called zombie?##
- * ###Maybe add a multiple of the same monster add function??###
- *
+ *`	BUGS	
+ * 
  */
 
 package tracker;
@@ -16,8 +12,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
+
+
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import classes.*;
 
@@ -42,6 +49,8 @@ import classes.*;
  *Input stream on the file to get back the data ~~~JSON~~~
  *Cannot run setup again unless next function has been called easy boolean
  *have to run setup before encounter starts ~~~
+ *
+ *Check inputs ints etc
  */
 
 public class Game {
@@ -132,7 +141,7 @@ public class Game {
 
 		// Checks the type giving to the types allowed
 		for (MonsterType typeTemp : MonsterType.values()) {
-			if (type.toUpperCase().equals(typeTemp.toString())) {
+			if (type.equals(typeTemp.toString())) {
 				check = true;
 				break;
 			}
@@ -322,13 +331,8 @@ public class Game {
 
 	public void stats() {
 		int counter = 1;
-		System.out.println(encounterArray.size());
 		for(ArrayList<Player> list : encounterArray) {
-			/**
-			 * The arrays are either not being inserted properly into this array or that 
-			 * the loop isnt looping properly through the encounter array
-			 * When removed it fucks up
-			**/
+
 			Player character;
 			System.out.println("Round "+counter);
 			System.out.println("Order	Name		Type		Health");
@@ -395,9 +399,63 @@ public class Game {
 	 * Sort through encounter list to see if there are no more monsters left or no
 	 * more humans left Delete all of the players with < 0 health Recreate
 	 * encounterlist add new players + monsters
+	 * @throws JSONException 
+	 */
+	
+	
+	public LinkedHashMap encode() throws JSONException {
+		
+		LinkedHashMap<String, Object> mapOrdered = new LinkedHashMap<>();
+		
+		int counter = 1;
+		for(ArrayList<Player> list : encounterArray) {
+
+			Player character;
+			JSONObject round = new JSONObject();
+			
+			for(int i = 0; i < list.size(); i++) {
+				character = list.get(i);
+				if(character.checkClass() == 1) { //Monster
+					JSONObject attr = new JSONObject();
+					attr.put("Type", character.getMtype());
+					attr.put("Health", character.getHealth());
+					
+					round.put("Attributes", attr);
+					round.put("Name", character.getName());
+				}else { // Human
+					JSONObject attr = new JSONObject();
+					attr.put("Type", character.getType());
+					attr.put("Health", character.getHealth());
+					
+					round.put("Attributes", attr);
+					round.put("Name", character.getName());
+				}
+				
+			}
+			mapOrdered.put(Integer.toString(counter), round);
+			
+			counter++;
+		}
+		System.out.println(mapOrdered);
+		return mapOrdered;
+	}
+	/**
+	 * Order Determined by index of list
+	 * ROUND
+	 * 	Name
+	 * 	Attributes
+	 * 		Type
+	 * 		Health
+	 * HashMap Linked List ("ROUND", "Array")
 	 */
 	public void save() {
-		
+		try {
+			encode();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error in saving");
+			e.printStackTrace();
+		}
 	}
 	public void load() {
 		
@@ -408,6 +466,8 @@ public class Game {
 
 		// Removes all characters with less than 1 health
 		if (ec == 1 || ec == 2) {
+			
+			ArrayList<Integer> toDelete = new ArrayList<>();
 			// Add it to encounterArray to print out
 			
 			ArrayList<Player> tempArray = new ArrayList<Player>(); 
@@ -418,20 +478,30 @@ public class Game {
 			}
 			
 			encounterArray.add(tempArray);
-
-			
+			//Gets the index of what to delete
 			for (int k = 0; k < currEncounterList.size(); k++) {
 				Player character = currEncounterList.get(k);
 				if (character.checkClass() == 1) { // Monster
 					if (character.getHealth() <= 0) {
-						remove(character.getName());
+						//remove(character.getName());
+						toDelete.add(k);
 					}
 				} else if (character.checkClass() == 2) { // Player
 					if (character.getHealth() <= -10) {
-						remove(character.getName());
+						toDelete.add(k);
+						//remove(character.getName());
 					}
 				}
 			}
+			
+			int delsize = toDelete.size() - 1;
+			//Delete out of the encounterArray
+			for(int l = delsize; l >= 0; l--) {
+				Player temp = currEncounterList.get(toDelete.get(l));
+				remove(temp.getName());
+			}
+			
+			
 		} else {
 			System.out.println("There are still monsters or players alive in the encounter");
 			return;
@@ -516,7 +586,8 @@ public class Game {
 		int temp4;
 		addPlayer("DOn", "BARD");
 		addPlayer("Lez", "BARD");
-		addMonster("Len", "UNDEAD", 10, 20);
+		addMonster("a", "UNDEAD", -10, 20);
+		addMonster("b", "UNDEAD", -10, 20);
 
 		while (true) {
 			command = sc.nextLine();
