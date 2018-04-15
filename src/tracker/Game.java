@@ -2,12 +2,9 @@
  * 
  * @author Victor
  * 
- * TODO:
- * ###MAKE SURE NO DUPLICATE NAMES BEING MADE###
- * ###TODO - Monsters??? What to do - ####
- * ### WIll break if player name is called Zombie, and the monsters will be called zombie?##
- * ###Maybe add a multiple of the same monster add function??###
- *
+ *`	BUGS	
+ * save doesnt show properly. 
+ * 
  */
 
 package tracker;
@@ -16,8 +13,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Reader;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import classes.*;
 
@@ -42,6 +53,8 @@ import classes.*;
  *Input stream on the file to get back the data ~~~JSON~~~
  *Cannot run setup again unless next function has been called easy boolean
  *have to run setup before encounter starts ~~~
+ *
+ *Check inputs ints etc
  */
 
 public class Game {
@@ -132,7 +145,7 @@ public class Game {
 
 		// Checks the type giving to the types allowed
 		for (MonsterType typeTemp : MonsterType.values()) {
-			if (type.toUpperCase().equals(typeTemp.toString())) {
+			if (type.equals(typeTemp.toString())) {
 				check = true;
 				break;
 			}
@@ -322,13 +335,8 @@ public class Game {
 
 	public void stats() {
 		int counter = 1;
-		System.out.println(encounterArray.size());
 		for(ArrayList<Player> list : encounterArray) {
-			/**
-			 * The arrays are either not being inserted properly into this array or that 
-			 * the loop isnt looping properly through the encounter array
-			 * When removed it fucks up
-			**/
+
 			Player character;
 			System.out.println("Round "+counter);
 			System.out.println("Order	Name		Type		Health");
@@ -391,23 +399,169 @@ public class Game {
 		return result;
 	}
 
+	/**Gets the String file JSON encoded saved
+	 * Converts it back to the array form and adds them all back to the encounter array
+	 * Adds the current round to the currEncounterList
+	 * 
+	 * @param savefile
+	 */
+	
+	public void decode(String savefile) {
+		
+		boolean ptypeCheck = false;
+		
+		try {
+			JSONObject jsonObject = new JSONObject(savefile);
+			for(int i = 1; i < jsonObject.names().length()+1; i++) {
+				JSONObject newJSON = jsonObject.getJSONObject(Integer.toString(i));
+				ArrayList<Player> loadArray = new ArrayList<>();
+				for(int j = 0; j < newJSON.names().length(); j++) {
+					ptypeCheck = false;
+					JSONObject playerObject = newJSON.getJSONObject(Integer.toString(j));
+					String name = playerObject.getString("Name");
+					String type = playerObject.getJSONObject("Attributes").getString("Type");
+					int health = playerObject.getJSONObject("Attributes").getInt("Health");
+					int level = playerObject.getJSONObject("Attributes").getInt("Level");
+					
+					for (PlayerType typeTemp : PlayerType.values()) { //Checks if player or monster
+						if (type.equals(typeTemp.toString())) {
+							ptypeCheck = true;
+							break;
+						}
+					}
+					Player temp = null;
+					if(ptypeCheck == true) {
+						temp = new Player(name, PlayerType.valueOf(type), health, level);
+					}else {
+						temp = new Player(name, MonsterType.valueOf(type), health, level);
+					}
+					
+					loadArray.add(temp);
+					
+				}
+				encounterArray.add(loadArray);
+				
+				//Adding the current round to the current encounter list
+				if(i == jsonObject.names().length()) {
+					currEncounterList = loadArray;
+				}
+			}
+			
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public String encode() throws JSONException  {
+		
+		LinkedHashMap<String, Object> mapOrdered = new LinkedHashMap<>();
+		
+		int counter = 1;
+
+		for(ArrayList<Player> list : encounterArray) {
+
+			JSONObject round = new JSONObject();
+			JSONObject characterJSON = new JSONObject();
+			Player character;
+			
+			for(int i = 0; i < list.size(); i++) {
+				character = list.get(i);
+				if(character.checkClass() == 1) { //Monster
+					JSONObject attr = new JSONObject();
+					attr.put("Type", character.getMtype());
+					attr.put("Health", character.getHealth());
+					attr.put("Level", character.getLevel());
+					
+					round.put("Attributes", attr);
+					round.put("Name", character.getName());
+					characterJSON.put(Integer.toString(i), round);
+				}else { // Human
+					JSONObject attr = new JSONObject();
+					attr.put("Type", character.getType());
+					attr.put("Health", character.getHealth());
+					attr.put("Level", character.getLevel());
+					
+					round.put("Attributes", attr);
+					round.put("Name", character.getName());
+					characterJSON.put(Integer.toString(i), round);
+				}
+				round = new JSONObject();
+			}
+			mapOrdered.put(Integer.toString(counter), characterJSON);
+			counter++;
+		}
+		String result = mapOrdered.toString();
+		System.out.println(result);
+		return result;
+	}
+	/**
+	 * Order Determined by index of list
+	 * ROUND
+	 * 	Name
+	 * 	Attributes
+	 * 		Type
+	 * 		Health
+	 * HashMap Linked List ("ROUND", "Array")
+	 */
+	public void save() {
+		try {
+			String result = encode();
+			
+			//Write to file
+			FileWriter fout = new FileWriter("savefile.txt");
+			fout.write(result);
+			fout.close();
+			  System.out.println("Successfully saved current file to savefile.txt");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error in saving");
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("File failed to save");
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("I/O Error");
+			e.printStackTrace();
+		}
+	}
+	public void load() {
+		try {
+			//Read from file
+			File file = new File("savefile.txt");
+			Scanner input = new Scanner(file);
+			
+			while (input.hasNextLine()) {
+                String line = input.nextLine();
+                decode(line);
+                System.out.println("Successfully loaded previous save file");
+            }
+			
+			
+			input.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	/**
 	 * Sort through encounter list to see if there are no more monsters left or no
 	 * more humans left Delete all of the players with < 0 health Recreate
 	 * encounterlist add new players + monsters
+	 * @throws JSONException 
 	 */
-	public void save() {
-		
-	}
-	public void load() {
-		
-	}
 	public void next() {
 
 		int ec = encounterCheck();
 
 		// Removes all characters with less than 1 health
 		if (ec == 1 || ec == 2) {
+			
+			ArrayList<Integer> toDelete = new ArrayList<>();
 			// Add it to encounterArray to print out
 			
 			ArrayList<Player> tempArray = new ArrayList<Player>(); 
@@ -418,20 +572,30 @@ public class Game {
 			}
 			
 			encounterArray.add(tempArray);
-
-			
+			//Gets the index of what to delete
 			for (int k = 0; k < currEncounterList.size(); k++) {
 				Player character = currEncounterList.get(k);
 				if (character.checkClass() == 1) { // Monster
 					if (character.getHealth() <= 0) {
-						remove(character.getName());
+						//remove(character.getName());
+						toDelete.add(k);
 					}
 				} else if (character.checkClass() == 2) { // Player
 					if (character.getHealth() <= -10) {
-						remove(character.getName());
+						toDelete.add(k);
+						//remove(character.getName());
 					}
 				}
 			}
+			
+			int delsize = toDelete.size() - 1;
+			//Delete out of the encounterArray
+			for(int l = delsize; l >= 0; l--) {
+				Player temp = currEncounterList.get(toDelete.get(l));
+				remove(temp.getName());
+			}
+			
+			
 		} else {
 			System.out.println("There are still monsters or players alive in the encounter");
 			return;
@@ -514,9 +678,13 @@ public class Game {
 		String temp2;
 		int temp3;
 		int temp4;
-		addPlayer("DOn", "BARD");
-		addPlayer("Lez", "BARD");
-		addMonster("Len", "UNDEAD", 10, 20);
+//		addPlayer("DOn", "BARD");
+//		addPlayer("Lez", "BARD");
+//		addMonster("a", "UNDEAD", -10, 20);
+//		addMonster("b", "UNDEAD", -10, 20);
+//		next();
+//		addMonster("c", "UNDEAD", -10, 20);
+//		next();
 
 		while (true) {
 			command = sc.nextLine();
@@ -610,6 +778,5 @@ public class Game {
 
 		}
 	}
-
 
 }
