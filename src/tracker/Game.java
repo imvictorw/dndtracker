@@ -43,14 +43,17 @@ import classes.*;
  *Cannot run setup again unless next function has been called easy boolean
  */
 
-public class Game {
+public class Game  {
 
 	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // To save every encounter
 	private ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
 	Scanner sc = new Scanner(System.in);
+	public ArrayList<String> logString = new ArrayList<String>();
 	private String command;
+	public String curString;
 
-
+	
+	
 	/** ADDING, EDIT & REMOVE PLAYERS & MONSTERS **/
 
 	public boolean addPlayer(String name, String type) {
@@ -306,7 +309,7 @@ public class Game {
 	}
 
 	public void help() {
-		System.out.println("SHIT");
+		System.out.println("SHIT"); //lol
 	}
 
 	/** Vertical - Rounds
@@ -521,9 +524,9 @@ public class Game {
 			command = sc.nextLine();
 
 			switch (command.toLowerCase()) {
-
+			
 			case "add player":
-				System.out.println("Enter name for player");
+				setCurString("Enter name for player");
 				temp = sc.nextLine();
 				System.out.println("Enter player type");
 				temp2 = sc.nextLine();
@@ -609,6 +612,140 @@ public class Game {
 
 		}
 	}
+	
+	//copy and pasted from above, with changes to make it compatible with the GUI
+	//removed scanner and replaced with 
+	public void startGameGui() {
+		logString.add(
+				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
+		logString.add(
+				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
+		logString.add("******************************************************************************");
+		logString.add("When you are complete with adding all the players and monsters, use the setup command to get started");
+		
 
+		String temp;
+		String temp2;
+		int temp3;
+		int temp4;
+		//addPlayer("DOn", "BARD");
+		//addPlayer("Lez", "BARD");
+		//addMonster("Len", "UNDEAD", 10, 20);
+
+		while (true) {
+			command = curString;
+
+			switch (command.toLowerCase()) {
+
+			
+			case "add player":
+				logString.add("Enter name for player");
+				temp = sc.nextLine();
+				logString.add("Enter player type");
+				temp2 = sc.nextLine();
+				addPlayer(temp, temp2);
+				break;
+
+			case "add player2":
+				logString.add("Enter name for player");
+				temp = sc.nextLine();
+				logString.add("Enter player type");
+				temp2 = sc.nextLine();
+				logString.add("Enter player health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				logString.add("Enter player level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addPlayer2(temp, temp2, temp3, temp4);
+				break;
+			case "add monster":
+				logString.add("Enter name for monster");
+				temp = sc.nextLine();
+				logString.add("Enter monster type");
+				temp2 = sc.nextLine();
+				logString.add("Enter monster health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				logString.add("Enter monster level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addMonster(temp, temp2, temp3, temp4);
+				break;
+			case "edit":
+				logString.add("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				edit(temp);
+				break;
+			case "remove":
+				logString.add("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				remove(temp);
+				break;
+			case "attack":
+				logString.add("Enter name for player or monster to attack");
+				temp = sc.nextLine();
+				logString.add("Enter the amount of damage done");
+				temp3 = sc.nextInt();
+				attack(temp,temp3);
+				break;
+			case "heal":
+				logString.add("Enter name for player or monster to heal");
+				temp = sc.nextLine();
+				logString.add("Enter the amount of healing done");
+				temp3 = sc.nextInt();
+				heal(temp,temp3);
+				break;
+			case "next":
+				next();
+				break;
+			case "stats":
+				stats();
+				break;
+			case "help":
+				help();
+				break;
+			case "save":
+				save();
+				break;
+			case "load":
+				load();
+				break;
+			case "alive":
+				alive();
+				break;
+			case "setup":
+				setup();
+				break;
+			default:
+//				logString.add("Please enter a valid command");
+				break;
+			}
+			
+
+		}
+	}
+	
+	//This method sets curString as the given string to allow it to be passed to the GUI object
+	public void setCurString(String string) {
+		curString = string;
+	}
+	
+	//Returns curString
+	public String getCurString() {
+		return curString;
+	}
+	
+	public void setLogString(ArrayList<String> stringlist) {
+		logString = stringlist;
+	}
+	
+	public ArrayList<String> getLogString() {
+		return logString;
+	}
+	
+	public void update() {
+		
+	}
 
 }
