@@ -623,27 +623,61 @@ public class Game  {
 		logString.add("******************************************************************************");
 		logString.add("When you are complete with adding all the players and monsters, use the setup command to get started");
 		
-
+	}
+	
+	public void scanInput() {
+		
 		String temp;
 		String temp2;
+		String tempCommand;
 		int temp3;
 		int temp4;
+		boolean checking = true;
+		boolean masterLoop = true;
 		//addPlayer("DOn", "BARD");
 		//addPlayer("Lez", "BARD");
 		//addMonster("Len", "UNDEAD", 10, 20);
-
-		while (true) {
-			command = curString;
-
-			switch (command.toLowerCase()) {
+		
+		while (masterLoop) {
+			update("\n");
+			
+			String command1 = curString;
+			switch (command1.toLowerCase()) {
 
 			
 			case "add player":
-				logString.add("Enter name for player");
-				temp = sc.nextLine();
-				logString.add("Enter player type");
-				temp2 = sc.nextLine();
+				
+				update("Enter name for player");
+				checking = true;
+				while(checking) {
+					String check = curString;
+					if(check.equalsIgnoreCase("add player")) {
+						update("Input not accepted"); //if a player types "add player" as their character name it will not be accepted. This will
+						temp = "error";							 //also happen if curString is updated too early
+					}
+					else {
+						temp = check;
+						checking = false;
+					}
+				}
+				//temp = sc.nextLine();
+				
+				update("Enter player type");
+				checking = true;
+				while(checking) {
+					String check = curString;
+					if(check.equalsIgnoreCase("Enter player type")) {
+						update("input not received");
+					}
+					else {
+						temp2 = check;
+						checking = false;
+					}
+				}
+				//temp2 = sc.nextLine();
+				
 				addPlayer(temp, temp2);
+				update();
 				break;
 
 			case "add player2":
@@ -718,7 +752,7 @@ public class Game  {
 				setup();
 				break;
 			default:
-//				logString.add("Please enter a valid command");
+//				update("Please enter a valid command");
 				break;
 			}
 			
@@ -744,6 +778,13 @@ public class Game  {
 		return logString;
 	}
 	
+	//adds a string to the logString ArrayList and tells gui to update logtext with newest version of logString
+	public void update(String addString) {
+		logString.add(addString);
+		//update gui
+	}
+	
+	//tells gui to update logtext with the newest version of logString
 	public void update() {
 		
 	}
