@@ -46,16 +46,45 @@ import classes.*;
 public class Game  {
 
 	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // To save every encounter
-	private ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
+	public ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
 	Scanner sc = new Scanner(System.in);
 	public ArrayList<String> logString = new ArrayList<String>();
 	private String command;
 	public String curString;
+	
+	//used to determine what question to ask and to wait for a response in the scanInput() method
+	String lastCommand;
+	int count = 0;
+	boolean isCommand = true;
+	String inputTemp;
+	String inputTemp1;
+	String inputTemp2;
+	String inputTemp3;
 
 	
 	
 	/** ADDING, EDIT & REMOVE PLAYERS & MONSTERS **/
 
+	//input is sanitized in GUI processes, this method assumes both inputs are valid. They always should be.
+	public void addPlayerGUI(String name, String type) {
+		Player temp = new Player(name, PlayerType.valueOf(type));
+		update("Welcome " + name + " the " + type);
+		currEncounterList.add(temp);
+	}
+	
+	//gui sanitizes input
+	public void addPlayerGUI2(String name, String type, int health, int level) {
+		Player temp = new Player(name, PlayerType.valueOf(type), health, level);
+		update("Welcome " + name + " the " + type);
+		currEncounterList.add(temp);
+	}
+	
+	public void addMonsterGUI(String name, String type, int health, int level) {
+		Player temp = new Player(name, MonsterType.valueOf(type), health, level);
+		update("Welcome " + type + " " + name);
+		currEncounterList.add(temp);
+	}
+	
 	public boolean addPlayer(String name, String type) {
 
 		boolean check = false;
@@ -71,21 +100,21 @@ public class Game  {
 
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				System.out.println("Cannot have the same name with somebody in the encounter");
+				update("Cannot have the same name with somebody in the encounter");
 				return false;
 			}
 		}
 
 		// If type was not found, then user input's type is invalid
 		if (check == false) {
-			System.out.println("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+			update("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
 					+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
 					+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
 			return false;
 		}
 
 		Player temp = new Player(name, PlayerType.valueOf(type));
-		System.out.println("Welcome " + name + " the " + type);
+		update("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
 
 		return true;
@@ -107,21 +136,21 @@ public class Game  {
 
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				System.out.println("Cannot have the same name with somebody in the encounter");
+				update("Cannot have the same name with somebody in the encounter");
 				return false;
 			}
 		}
 
 		// If type was not found, then user input's type is invalid
 		if (check == false) {
-			System.out.println("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+			update("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
 					+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
 					+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
 			return false;
 		}
 
 		Player temp = new Player(name, PlayerType.valueOf(type), health, level);
-		System.out.println("Welcome " + name + " the " + type);
+		update("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
 
 		return true;
@@ -142,7 +171,7 @@ public class Game  {
 
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				System.out.println(
+				update(
 						"Cannot have the same name with somebody in the encounter. If same type of monster, add a 1. Eg. Zombie, Zombie1");
 				return false;
 			}
@@ -150,7 +179,7 @@ public class Game  {
 
 		// If type was not found, then user input's type is invalid
 		if (check == false) {
-			System.out.println("Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n" + "	CELESTIAL,\n"
+			update("Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n" + "	CELESTIAL,\n"
 					+ "	CONSTRUCT,\n" + "	DEMON,\n" + "	DRAGON,\n" + "	ELEMENTAL,\n" + "	FEY,\n" + "	FIEND,\n"
 					+ "	GIANT,\n" + "	HUMANOID,\n" + "	MONSTROSITY,\n" + "	OOZE,\n" + "	PLANT,\n"
 					+ "	UNDEAD");
@@ -158,7 +187,7 @@ public class Game  {
 		}
 
 		Player temp = new Player(name, MonsterType.valueOf(type), health, level);
-		System.out.println("Welcome " + type + " " + name);
+		update("Welcome " + type + " " + name);
 		currEncounterList.add(temp);
 
 		return true;
@@ -167,36 +196,36 @@ public class Game  {
 	public void edit(String name) {
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().toLowerCase().equals(name.toLowerCase())) {
-				System.out.println("Please enter the number on what you want to edit with " + name + "\n"
+				update("Please enter the number on what you want to edit with " + name + "\n"
 						+ "1. Name\n2. Level+MaxHealth\nPress 3 or enter to quit");
 
 				while (sc.hasNextInt()) {
 					int choice = sc.nextInt();
 					/** Need to add checks **/
 					if (choice == 1) { // Change health
-						System.out.println("Please enter the new name for the character to be");
+						update("Please enter the new name for the character to be");
 						sc.nextLine();
 						String changeName = sc.nextLine();
 						checkName.setName(changeName);
 
-						System.out.println("Change in name is successful");
+						update("Change in name is successful");
 
 					} else if (choice == 2) { // Change Level
-						System.out.println("Please enter the new level for the character to be");
+						update("Please enter the new level for the character to be");
 						int newLevel = sc.nextInt();
 
-						System.out.println("Please enter the new max health for the character to be");
+						update("Please enter the new max health for the character to be");
 						int newMaxHealth = sc.nextInt();
 
 						checkName.setMaxHealth(newMaxHealth);
 						checkName.setLevel(newLevel);
 
-						System.out.println("Change in level is successful");
+						update("Change in level is successful");
 
 					} else if (choice == 3) {
 						break;
 					} else {
-						System.out.println("Enter a correct number choice");
+						update("Enter a correct number choice");
 					}
 				}
 			}
@@ -216,15 +245,15 @@ public class Game  {
 
 		Player delPlayer = find(del);
 		if(delPlayer == null) {
-			System.out.println("Invalid name");
+			update("Invalid name");
 			return;
 		}
 
 		if (currEncounterList != null && currEncounterList.contains(delPlayer)) {
 			currEncounterList.remove(delPlayer);
-			System.out.println("Successfully removed " + del);
+			update("Successfully removed " + del);
 		} else {
-			System.out.println("Error in removing player");
+			update("Error in removing player");
 		}
 
 	}
@@ -236,7 +265,7 @@ public class Game  {
 
 		Player attacked = find(attack);
 		if(attacked == null) {
-			System.out.println("Invalid name");
+			update("Invalid name");
 			return false;
 		}
 
@@ -245,18 +274,18 @@ public class Game  {
 		if (attacked.checkClass() == 1) {
 			if (currHealth > 0) {
 				attacked.setHealth(currHealth - amount);
-				System.out.println(attack + " was hit with " + amount + " damage");
+				update(attack + " was hit with " + amount + " damage");
 				return true;
 			} else {
-				System.out.println("Monster is already dead");
+				update("Monster is already dead");
 			}
 		} else if (attacked.checkClass() == 2) {
 			if (currHealth > -10) {
 				attacked.setHealth(currHealth - amount);
-				System.out.println(attack + " was hit with " + amount + " damage");
+				update(attack + " was hit with " + amount + " damage");
 				return true;
 			} else {
-				System.out.println("Player is already dead");
+				update("Player is already dead");
 			}
 		}
 
@@ -270,46 +299,46 @@ public class Game  {
 		Player healed = find(heal);
 		
 		if(healed == null) {
-			System.out.println("Invalid name");
+			update("Invalid name");
 			return false;
 		}
 		
 		if (healed.checkClass() == 2) {
 			if (healed.getHealth() <= -10) {
-				System.out.println("Character is dead");
+				update("Character is dead");
 				return false;
 			}
 			if (healed.getMaxHealth() < healed.getHealth() + amount) {
 				healed.setHealth(healed.getMaxHealth());
-				System.out.println(heal + " is now full health " + "(" +healed.getMaxHealth()+")");
+				update(heal + " is now full health " + "(" +healed.getMaxHealth()+")");
 			} else {
 				healed.setHealth(healed.getHealth() + amount);
-				System.out.println(heal + " healed "+ amount);
+				update(heal + " healed "+ amount);
 			}
 
 			return true;
 		} else if (healed.checkClass() == 1) {
 			if (healed.getHealth() < 0) {
-				System.out.println("Character is dead");
+				update("Character is dead");
 				return false;
 			}
 			if (healed.getMaxHealth() < healed.getHealth() + amount) {
 				healed.setHealth(healed.getMaxHealth());
-				System.out.println(heal + " is now full health " + "(" +healed.getMaxHealth()+")");
+				update(heal + " is now full health " + "(" +healed.getMaxHealth()+")");
 			} else {
 				healed.setHealth(healed.getHealth() + amount);
-				System.out.println(heal + " healed "+ amount);
+				update(heal + " healed "+ amount);
 			}
 
 			return true;
 		}
 
-		System.out.println("Error - Heal");
+		update("Error - Heal");
 		return false;
 	}
 
 	public void help() {
-		System.out.println("SHIT"); //lol
+		update("SHIT"); //lol
 	}
 
 	/** Vertical - Rounds
@@ -324,7 +353,8 @@ public class Game  {
 
 	public void stats() {
 		int counter = 1;
-		System.out.println(encounterArray.size());
+		String arraySize = "" + encounterArray.size();
+		update(arraySize);
 		for(ArrayList<Player> list : encounterArray) {
 			/**
 			 * The arrays are either not being inserted properly into this array or that 
@@ -332,16 +362,16 @@ public class Game  {
 			 * When removed it fucks up
 			**/
 			Player character;
-			System.out.println("Round "+counter);
-			System.out.println("Order	Name		Type		Health");
+			update("Round "+counter);
+			update("Order	Name		Type		Health");
 			
 			for(int i = 0; i < list.size(); i++) {
 				character = list.get(i);
 				int j = i + 1;
 				if(character.checkClass() == 1) {
-					System.out.println(j+"	"+character.getName() +"		"+character.getMtype()+"		"+ character.getHealth());
+					update(j+"	"+character.getName() +"		"+character.getMtype()+"		"+ character.getHealth());
 				}else {
-					System.out.println(j+"	"+character.getName() +"		"+character.getType()+"		"+ character.getHealth());
+					update(j+"	"+character.getName() +"		"+character.getType()+"		"+ character.getHealth());
 				}
 				
 			}
@@ -352,15 +382,15 @@ public class Game  {
 	public void alive() {
 		
 		Player character;
-		System.out.println("Order	Name		Type		Health");
+		update("Order	Name		Type		Health");
 		
 		for(int i = 0; i < currEncounterList.size(); i++) {
 			character = currEncounterList.get(i);
 			int j = i + 1;
 			if(character.checkClass() == 1) {
-				System.out.println(j+"	"+character.getName() +"		"+character.getMtype()+"		"+ character.getHealth());
+				update(j+"	"+character.getName() +"		"+character.getMtype()+"		"+ character.getHealth());
 			}else {
-				System.out.println(j+"	"+character.getName() +"		"+character.getType()+"		"+ character.getHealth());
+				update(j+"	"+character.getName() +"		"+character.getType()+"		"+ character.getHealth());
 			}
 			
 		}
@@ -435,7 +465,7 @@ public class Game  {
 				}
 			}
 		} else {
-			System.out.println("There are still monsters or players alive in the encounter");
+			update("There are still monsters or players alive in the encounter");
 			return;
 		}
 
@@ -446,7 +476,7 @@ public class Game  {
 		String tempname;
 		int tempint;
 
-		System.out.println("Enter each number which was rolled for each of these characters."
+		update("Enter each number which was rolled for each of these characters."
 				+ " The order will be automatically redone.");
 
 		// For each index of the encounter list, add their initiative and then reorder
@@ -454,9 +484,9 @@ public class Game  {
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			tempname = currEncounterList.get(i).getName();
 			if(currEncounterList.get(i).checkClass() == 1) {
-				System.out.println("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getMtype());
+				update("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getMtype());
 			}else {
-				System.out.println("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getType());
+				update("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getType());
 			}
 			
 			tempint = sc.nextInt();
@@ -491,7 +521,7 @@ public class Game  {
 
 			for (Entry<String, Integer> pair : listOfEntries) {
 				for(int j = 0; j < currEncounterList.size();j++) {
-//					System.out.println(pair.getKey()+"			"+currEncounterList.get(j).getName());
+//					update(pair.getKey()+"			"+currEncounterList.get(j).getName());
 					if (currEncounterList.get(j).getName().equals(pair.getKey())) {
 						sorted.add(currEncounterList.get(j));
 					}
@@ -505,12 +535,12 @@ public class Game  {
 
 	/* Req - One Monster and One Player */
 	public void startGame() {
-		System.out.println(
+		update(
 				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
-		System.out.println(
+		update(
 				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
-		System.out.println("******************************************************************************");
-		System.out.println("When you are complete with adding all the players and monsters, use the setup command to get started");
+		update("******************************************************************************");
+		update("When you are complete with adding all the players and monsters, use the setup command to get started");
 
 		String temp;
 		String temp2;
@@ -528,205 +558,58 @@ public class Game  {
 			case "add player":
 				setCurString("Enter name for player");
 				temp = sc.nextLine();
-				System.out.println("Enter player type");
-				temp2 = sc.nextLine();
-				addPlayer(temp, temp2);
-				break;
-
-			case "add player2":
-				System.out.println("Enter name for player");
-				temp = sc.nextLine();
-				System.out.println("Enter player type");
-				temp2 = sc.nextLine();
-				System.out.println("Enter player health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				System.out.println("Enter player level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				addPlayer2(temp, temp2, temp3, temp4);
-				break;
-			case "add monster":
-				System.out.println("Enter name for monster");
-				temp = sc.nextLine();
-				System.out.println("Enter monster type");
-				temp2 = sc.nextLine();
-				System.out.println("Enter monster health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				System.out.println("Enter monster level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				addMonster(temp, temp2, temp3, temp4);
-				break;
-			case "edit":
-				System.out.println("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				edit(temp);
-				break;
-			case "remove":
-				System.out.println("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				remove(temp);
-				break;
-			case "attack":
-				System.out.println("Enter name for player or monster to attack");
-				temp = sc.nextLine();
-				System.out.println("Enter the amount of damage done");
-				temp3 = sc.nextInt();
-				attack(temp,temp3);
-				break;
-			case "heal":
-				System.out.println("Enter name for player or monster to heal");
-				temp = sc.nextLine();
-				System.out.println("Enter the amount of healing done");
-				temp3 = sc.nextInt();
-				heal(temp,temp3);
-				break;
-			case "next":
-				next();
-				break;
-			case "stats":
-				stats();
-				break;
-			case "help":
-				help();
-				break;
-			case "save":
-				save();
-				break;
-			case "load":
-				load();
-				break;
-			case "alive":
-				alive();
-				break;
-			case "setup":
-				setup();
-				break;
-			default:
-//				System.out.println("Please enter a valid command");
-				break;
-			}
-			
-
-		}
-	}
-	
-	//copy and pasted from above, with changes to make it compatible with the GUI
-	//removed scanner and replaced with 
-	public void startGameGui() {
-		logString.add(
-				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
-		logString.add(
-				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
-		logString.add("******************************************************************************");
-		logString.add("When you are complete with adding all the players and monsters, use the setup command to get started");
-		
-	}
-	
-	public void scanInput() {
-		
-		String temp;
-		String temp2;
-		String tempCommand;
-		int temp3;
-		int temp4;
-		boolean checking = true;
-		boolean masterLoop = true;
-		//addPlayer("DOn", "BARD");
-		//addPlayer("Lez", "BARD");
-		//addMonster("Len", "UNDEAD", 10, 20);
-		
-		while (masterLoop) {
-			update("\n");
-			
-			String command1 = curString;
-			switch (command1.toLowerCase()) {
-
-			
-			case "add player":
-				
-				update("Enter name for player");
-				checking = true;
-				while(checking) {
-					String check = curString;
-					if(check.equalsIgnoreCase("add player")) {
-						update("Input not accepted"); //if a player types "add player" as their character name it will not be accepted. This will
-						temp = "error";							 //also happen if curString is updated too early
-					}
-					else {
-						temp = check;
-						checking = false;
-					}
-				}
-				//temp = sc.nextLine();
-				
 				update("Enter player type");
-				checking = true;
-				while(checking) {
-					String check = curString;
-					if(check.equalsIgnoreCase("Enter player type")) {
-						update("input not received");
-					}
-					else {
-						temp2 = check;
-						checking = false;
-					}
-				}
-				//temp2 = sc.nextLine();
-				
+				temp2 = sc.nextLine();
 				addPlayer(temp, temp2);
-				update();
 				break;
 
 			case "add player2":
-				logString.add("Enter name for player");
+				update("Enter name for player");
 				temp = sc.nextLine();
-				logString.add("Enter player type");
+				update("Enter player type");
 				temp2 = sc.nextLine();
-				logString.add("Enter player health");
+				update("Enter player health");
 				temp3 = sc.nextInt();
 				sc.nextLine();
-				logString.add("Enter player level");
+				update("Enter player level");
 				temp4 = sc.nextInt();
 				sc.nextLine();
 				addPlayer2(temp, temp2, temp3, temp4);
 				break;
 			case "add monster":
-				logString.add("Enter name for monster");
+				update("Enter name for monster");
 				temp = sc.nextLine();
-				logString.add("Enter monster type");
+				update("Enter monster type");
 				temp2 = sc.nextLine();
-				logString.add("Enter monster health");
+				update("Enter monster health");
 				temp3 = sc.nextInt();
 				sc.nextLine();
-				logString.add("Enter monster level");
+				update("Enter monster level");
 				temp4 = sc.nextInt();
 				sc.nextLine();
 				addMonster(temp, temp2, temp3, temp4);
 				break;
 			case "edit":
-				logString.add("Enter name for player or monster to edit");
+				update("Enter name for player or monster to edit");
 				temp = sc.nextLine();
 				edit(temp);
 				break;
 			case "remove":
-				logString.add("Enter name for player or monster to edit");
+				update("Enter name for player or monster to edit");
 				temp = sc.nextLine();
 				remove(temp);
 				break;
 			case "attack":
-				logString.add("Enter name for player or monster to attack");
+				update("Enter name for player or monster to attack");
 				temp = sc.nextLine();
-				logString.add("Enter the amount of damage done");
+				update("Enter the amount of damage done");
 				temp3 = sc.nextInt();
 				attack(temp,temp3);
 				break;
 			case "heal":
-				logString.add("Enter name for player or monster to heal");
+				update("Enter name for player or monster to heal");
 				temp = sc.nextLine();
-				logString.add("Enter the amount of healing done");
+				update("Enter the amount of healing done");
 				temp3 = sc.nextInt();
 				heal(temp,temp3);
 				break;
@@ -760,6 +643,240 @@ public class Game  {
 		}
 	}
 	
+	//copy and pasted from above, with changes to make it compatible with the GUI
+	//removed scanner and replaced with different input acceptance
+	public void startGameGui() {
+		update(
+				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
+		update(
+				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
+		update("******************************************************************************");
+		update("When you are complete with adding all the players and monsters, use the setup command to get started");
+		logString.add("Testing");
+		
+	}
+	
+	public void scanInput(String inputString) {
+		
+		String temp;
+		String temp2;
+		String tempCommand;
+		int temp3;
+		int temp4;
+		boolean checking = true;
+		boolean masterLoop = true;
+		
+		//added players for testing
+		//addPlayer("DOn", "BARD");
+		//addPlayer("Lez", "BARD");
+		//addMonster("Len", "UNDEAD", 10, 20);
+		
+		if(isCommand) {
+			update("\n");
+			
+			String command1 = inputString;
+			lastCommand = command1;
+			switch (command1.toLowerCase()) {
+
+			
+			case "add player":
+				
+				update("Enter name for player");
+				checking = true;
+				while(checking) {
+					String check = curString;
+					if(check.equalsIgnoreCase("add player")) {
+						update("Input not accepted"); //if a player types "add player" as their character name it will not be accepted. This will
+						inputTemp = "error";							 //also happen if curString is updated too early
+					}
+					else {
+						inputTemp = check;
+						isCommand = false;
+						checking = false;
+					}
+				}
+				update("Enter player type");
+				break;
+
+			case "add player2":
+				update("Enter name for player");
+				temp = sc.nextLine();
+				update("Enter player type");
+				temp2 = sc.nextLine();
+				update("Enter player health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				update("Enter player level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addPlayer2(temp, temp2, temp3, temp4);
+				break;
+			case "add monster":
+				update("Enter name for monster");
+				temp = sc.nextLine();
+				update("Enter monster type");
+				temp2 = sc.nextLine();
+				update("Enter monster health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				update("Enter monster level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addMonster(temp, temp2, temp3, temp4);
+				break;
+			case "edit":
+				update("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				edit(temp);
+				break;
+			case "remove":
+				update("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				remove(temp);
+				break;
+			case "attack":
+				update("Enter name for player or monster to attack");
+				temp = sc.nextLine();
+				update("Enter the amount of damage done");
+				temp3 = sc.nextInt();
+				attack(temp,temp3);
+				break;
+			case "heal":
+				update("Enter name for player or monster to heal");
+				temp = sc.nextLine();
+				update("Enter the amount of healing done");
+				temp3 = sc.nextInt();
+				heal(temp,temp3);
+				break;
+			case "next":
+				next();
+				break;
+			case "stats":
+				stats();
+				break;
+			case "help":
+				help();
+				break;
+			case "save":
+				save();
+				break;
+			case "load":
+				load();
+				break;
+			case "alive":
+				alive();
+				break;
+			case "setup":
+				setup();
+				break;
+			default:
+				update("Please enter a valid command");
+				break;
+			}
+			
+
+		}
+		else {
+			switch(lastCommand.toLowerCase()) {
+			
+			case "add player":
+				checking = true;
+				while(checking) {
+					String check = curString;
+					if(check.equalsIgnoreCase("Enter player type")) {
+						update("input not received");
+					}
+					else {
+						inputTemp2 = check;
+						checking = false;
+					}
+				}
+					addPlayer(inputTemp, inputTemp2);
+					update("Player " + inputTemp + " has been added.");
+				break;
+
+			case "add player2":
+				update("Enter name for player");
+				temp = sc.nextLine();
+				update("Enter player type");
+				temp2 = sc.nextLine();
+				update("Enter player health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				update("Enter player level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addPlayer2(temp, temp2, temp3, temp4);
+				break;
+			case "add monster":
+				update("Enter name for monster");
+				temp = sc.nextLine();
+				update("Enter monster type");
+				temp2 = sc.nextLine();
+				update("Enter monster health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				update("Enter monster level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				addMonster(temp, temp2, temp3, temp4);
+				break;
+			case "edit":
+				update("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				edit(temp);
+				break;
+			case "remove":
+				update("Enter name for player or monster to edit");
+				temp = sc.nextLine();
+				remove(temp);
+				break;
+			case "attack":
+				update("Enter name for player or monster to attack");
+				temp = sc.nextLine();
+				update("Enter the amount of damage done");
+				temp3 = sc.nextInt();
+				attack(temp,temp3);
+				break;
+			case "heal":
+				update("Enter name for player or monster to heal");
+				temp = sc.nextLine();
+				update("Enter the amount of healing done");
+				temp3 = sc.nextInt();
+				heal(temp,temp3);
+				break;
+			case "next":
+				next();
+				break;
+			case "stats":
+				stats();
+				break;
+			case "help":
+				help();
+				break;
+			case "save":
+				save();
+				break;
+			case "load":
+				load();
+				break;
+			case "alive":
+				alive();
+				break;
+			case "setup":
+				setup();
+				break;
+			default:
+//				update("Please enter a valid command");
+				break;
+			}
+		}
+	}
+	
+	public ArrayList<Player> getCurrEncounterList() {
+		return currEncounterList;
+	}
+	
 	//This method sets curString as the given string to allow it to be passed to the GUI object
 	public void setCurString(String string) {
 		curString = string;
@@ -785,8 +902,8 @@ public class Game  {
 	}
 	
 	//tells gui to update logtext with the newest version of logString
-	public void update() {
-		
-	}
+	//public void update() {
+	//	
+	//}
 
 }

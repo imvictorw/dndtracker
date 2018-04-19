@@ -22,14 +22,20 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+
+import classes.Player;
+import classes.PlayerType;
+
 import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.custom.StyledText;
 
 public class gui {
 
 	protected Shell shell;
-	private Text logtext;
 	private Text txtbox;
-	public Game gameObj;
+	public StyledText logText;
+	public Game gameObj = new Game();
 
 	/**
 	 * Launch the application.
@@ -48,6 +54,10 @@ public class gui {
 		gameObj = inputGame;
 	}
 	
+	public Game getGameObj() {
+		return gameObj;
+	}
+	
 	public void addLogText(String inputText) {
 		String endtext = null;
 		ArrayList<String> tempList = new ArrayList<String>();
@@ -56,11 +66,17 @@ public class gui {
 			endtext += "\n" + thing;
 		}
 		endtext += "\n" + inputText;
-		logtext.setText(endtext);
+		logText.setText(endtext);
 	}
 	
-	public Game getGameObj() {
-		return gameObj;
+	public void updateLogText() {
+		String endtext = "testing";
+		ArrayList<String> tempList = new ArrayList<String>();
+		tempList = gameObj.getLogString();
+		for (String thing : tempList) {
+			endtext += "\n" + thing;
+		}
+		logText.setText(endtext);
 	}
 	
 	//Sends string to text box, adds new line
@@ -93,10 +109,6 @@ public class gui {
 		shell.setSize(700, 606);
 		shell.setText("SWT Application");
 		
-		logtext = new Text(shell, SWT.BORDER);
-		logtext.setEditable(false);
-		logtext.setBounds(31, 126, 376, 328);
-		
 		txtbox = new Text(shell, SWT.BORDER);
 		txtbox.setBounds(31, 503, 280, 30);
 		
@@ -106,9 +118,8 @@ public class gui {
 			public void widgetSelected(SelectionEvent e) {
 				String txtInput = txtbox.getText();
 				//Add check for acceptable strings
-				gameObj.setCurString(txtInput);
-				gameObj.update();
-				txtbox.setText("");
+				gameObj.scanInput(txtInput);
+				updateLogText();
 			}
 		});
 		btnEnter.setBounds(317, 503, 90, 30);
@@ -185,10 +196,10 @@ public class gui {
 		btnAddCharacter.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String inputName;
-				String inputType;
-				int inputHealth;
-				int inputLvl;
+				String inputName = null;
+				String inputType = null;
+				int inputHealth = 0;
+				int inputLvl = 0;
 				
 				JFrame frame = new JFrame();
 				Object[] options = {"Starter Character",
@@ -206,47 +217,316 @@ public class gui {
 				switch (n) {
 					case 0: boolean looping = true;
 							while(looping) {
-							inputName = JOptionPane.showInputDialog("Enter the player's name:");
-							inputType = JOptionPane.showInputDialog("Enter the player's class:");
-							boolean check = gameObj.addPlayer(inputName, inputType);
-							if (check == true) {
-								looping = false;
+								
+								//this loop checks name for character limit
+							boolean checklimit = true;
+							while(checklimit) {
+								boolean exists = false;
+								boolean isEmpty = false;
+								ArrayList<Player> playerlist = new ArrayList<Player>();
+								inputName = JOptionPane.showInputDialog("Enter the player's name:").toString();
+								try {
+								playerlist = gameObj.getCurrEncounterList();
+								}
+								catch(NullPointerException p) {
+									isEmpty = true;
+								}
+								if(!isEmpty) {
+								for (Player checkName : playerlist) {
+									if (checkName.getName().equals(inputName)) {
+										exists = true;
+										break;
+									}
+								}
+								}
+								//set character limit on name to be 100 characters
+								if(inputName.length() <= 100) {
+									checklimit = false;
+								}
+								else {
+									JOptionPane.showMessageDialog(frame, "Your character's name cannot be more than 100 characters!");
+								}
+								
+								//ends loop only if player name does not exist in currEncounterList
+								if(exists) {
+									JOptionPane.showMessageDialog(frame, "Cannot have the same name with somebody in the encounter");
+								}
+								else {
+									checklimit = false;
+								}
 							}
-							else {
-								//add dialog that explains error
+							
+							
+							boolean checkclass = true;
+							while(checkclass) {
+								inputType = JOptionPane.showInputDialog("Enter the player's class:").toString().toUpperCase();
+								// Checks the type giving to the types allowed
+								boolean found = false;
+								for (PlayerType type : PlayerType.values()) {
+									if (inputType.equals(type.toString())) {
+										found = true;
+										break;
+									}
+								}
+								if(found) {
+									checkclass = false;
+									looping = false;
+								}
+								else {
+									JOptionPane.showMessageDialog(frame, "Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+											+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
+											+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
+								}
 							}
 				}
+							gameObj.addPlayerGUI(inputName, inputType);
 							break;
 							
 					case 1: boolean looping1 = true;
 							while(looping1) {
-							inputName = JOptionPane.showInputDialog("Enter the player's name:");
-							inputType = JOptionPane.showInputDialog("Enter the player's class:");
-							inputHealth = Integer.parseInt(JOptionPane.showInputDialog("Enter the player's health:"));
-							inputLvl = Integer.parseInt(JOptionPane.showInputDialog("Enter the player's level (1-20):"));
-							boolean check1 =gameObj.addPlayer2(inputName, inputType, inputHealth, inputLvl);
-							if (check1 == true) {
-								looping1 = false;
+								boolean checklimit = true;
+								while(checklimit) {
+									boolean exists = false;
+									inputName = JOptionPane.showInputDialog("Enter the player's name:").toString();
+									for (Player checkName : gameObj.getCurrEncounterList()) {
+										if (checkName.getName().equals(inputName)) {
+											exists = true;
+											break;
+										}
+									}
+									//set character limit on name to be 100 characters
+									if(inputName.length() <= 100) {
+										checklimit = false;
+									}
+									else {
+										JOptionPane.showMessageDialog(frame, "Your character's name cannot be more than 100 characters!");
+									}
+									if(exists) {
+										JOptionPane.showMessageDialog(frame, "Cannot have the same name with somebody in the encounter");
+									}
+									else {
+										checklimit = false;
+									}
+								}
+								boolean checkclass = true;
+								int counter1 = 0;
+								while(checkclass) {
+									inputType = JOptionPane.showInputDialog("Enter the player's class:").toString().toUpperCase();
+									// Checks the type giving to the types allowed
+									boolean found = false;
+									for (PlayerType type : PlayerType.values()) {
+										if (inputType.equals(type.toString())) {
+											found = true;
+											break;
+										}
+									}
+									
+									if(found) {
+										checkclass = false;
+										looping1 = false;
+									}
+									else if(counter1 > 0){
+										JOptionPane.showMessageDialog(frame, "Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+												+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
+												+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
+									}
+									else {
+										//the MessageDialog showing all player types would appear before the InputDialog, this ensures that
+										//the MessageDialog isn't shown on the first loop through.
+										counter1++;
+									}
+								}
+								
+								boolean checkhealth = true;
+								while(checkhealth) {
+									boolean failed = false;
+									boolean checkforint = true;
+									while(checkforint) {
+									
+										//catch exception allows only numerical input
+										try {
+											inputHealth = Integer.parseInt(JOptionPane.showInputDialog("Enter the player's health:"));
+										} 
+										catch(NumberFormatException q) {
+											failed = true;
+											JOptionPane.showMessageDialog(frame, "You must enter a number!");
+										}
+										finally {
+											if (!failed) {
+												//stops loop
+												checkforint = false;
+											}
+											else {
+												//restarts loop with initial value of 'failed'
+												failed = false;
+											}
+										}
+										
+										}
+										if(inputHealth > 2000000000) {
+											JOptionPane.showMessageDialog(frame, "You're not that tough -_-");
+										}
+										else
+											if(inputHealth <= 0) {
+												JOptionPane.showMessageDialog(frame, "You cannot start with 0hp.");
+											}
+											else {
+												checkhealth = false;
+											}
+									}
+							
+							boolean checklvl = true;
+							while(checklvl) {
+								boolean fail = false;
+								try {
+								inputLvl = Integer.parseInt(JOptionPane.showInputDialog("Enter the player's level (1-20):")); 
+								}
+								catch(NumberFormatException q) {
+									fail = true;
+									JOptionPane.showMessageDialog(frame, "You must enter a number!");
+								}
+								
+								if(!fail) {
+									if(inputLvl <= 20 && inputLvl > 0) {
+										checklvl = false;
+									}
+									else {
+										JOptionPane.showMessageDialog(frame, "Character level must be between 1 and 20.");
+									}
+								}
 							}
-							else {
-								//add dialog that explains error
+							
 							}
-							}
+							gameObj.addPlayerGUI2(inputName, inputType, inputHealth, inputLvl);
 							break;
 							
+							
+							//do this still 
 					case 2: boolean looping2 = true;
 							while (looping2) {
-								inputName = JOptionPane.showInputDialog("Enter the monster's name:");
-								inputType = JOptionPane.showInputDialog("Enter the monster's class:");
-								inputHealth = Integer.parseInt(JOptionPane.showInputDialog("Enter the monster's health:"));
-								inputLvl = Integer.parseInt(JOptionPane.showInputDialog("Enter the monster's level (1-20):"));
-								boolean check2 = gameObj.addMonster(inputName, inputType, inputHealth, inputLvl);
-								if (check2 == true) {
-									looping2 = false;
+								boolean checklimit = true;
+								while(checklimit) {
+									boolean exists = false;
+									boolean isEmpty = false;
+									ArrayList<Player> playerlist = new ArrayList<Player>();
+									inputName = JOptionPane.showInputDialog("Enter the monster's name:").toString();
+									try {
+									playerlist = gameObj.getCurrEncounterList();
+									}
+									catch(NullPointerException p) {
+										isEmpty = true;
+									}
+									if(!isEmpty) {
+									for (Player checkName : playerlist) {
+										if (checkName.getName().equals(inputName)) {
+											exists = true;
+											break;
+										}
+									}
+									}
+									//set character limit on name to be 100 characters
+									if(inputName.length() <= 100) {
+										checklimit = false;
+									}
+									else {
+										JOptionPane.showMessageDialog(frame, "The monster's name cannot be more than 100 characters!");
+									}
+									
+									//ends loop only if monster name does not exist in currEncounterList
+									if(exists) {
+										JOptionPane.showMessageDialog(frame, "Cannot have the same name with somebody in the encounter!");
+									}
+									else {
+										checklimit = false;
+									}
 								}
-								else {
-									//maybe add dialog that explains error
+								boolean checkclass = true;
+								int counter2 = 0;
+								while(checkclass) {
+									inputType = JOptionPane.showInputDialog("Enter the monster's class:").toString().toUpperCase();
+									// Checks the type giving to the types allowed
+									boolean found = false;
+									for (PlayerType type : PlayerType.values()) {
+										if (inputType.equals(type.toString())) {
+											found = true;
+											break;
+										}
+									}
+									
+									if(found) {
+										checkclass = false;
+									}
+									else if(counter2 > 0){
+										JOptionPane.showMessageDialog(frame, "Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n" + "	CELESTIAL,\n"
+												+ "	CONSTRUCT,\n" + "	DEMON,\n" + "	DRAGON,\n" + "	ELEMENTAL,\n" + "	FEY,\n" + "	FIEND,\n"
+												+ "	GIANT,\n" + "	HUMANOID,\n" + "	MONSTROSITY,\n" + "	OOZE,\n" + "	PLANT,\n"
+												+ "	UNDEAD");
+									}
+									else {
+										//the MessageDialog showing all player types would appear before the InputDialog, this ensures that
+										//the MessageDialog isn't shown on the first loop through.
+										counter2++;
+									}
 								}
+								boolean checkhealth = true;
+								while(checkhealth) {
+									boolean failed = false;
+									boolean checkforint = true;
+									while(checkforint) {
+									
+										//catch exception allows only numerical input
+										try {
+											inputHealth = Integer.parseInt(JOptionPane.showInputDialog("Enter the monster's health:"));
+										} 
+										catch(NumberFormatException q) {
+											failed = true;
+											JOptionPane.showMessageDialog(frame, "You must enter a number!");
+										}
+										finally {
+											if (!failed) {
+												//stops loop
+												checkforint = false;
+											}
+											else {
+												//restarts loop with initial value of 'failed'
+												failed = false;
+											}
+										}
+										
+										}
+										if(inputHealth > 2000000000) {
+											JOptionPane.showMessageDialog(frame, "No monster is that tough!");
+										}
+										else
+											if(inputHealth <= 0) {
+												JOptionPane.showMessageDialog(frame, "Monsters cannot start with 0hp.");
+											}
+											else {
+												checkhealth = false;
+											}
+									}
+								boolean checklvl = true;
+								while(checklvl) {
+									boolean fail = false;
+									try {
+									inputLvl = Integer.parseInt(JOptionPane.showInputDialog("Enter the monster's level (1-20):")); 
+									}
+									catch(NumberFormatException q) {
+										fail = true;
+										JOptionPane.showMessageDialog(frame, "You must enter a number!");
+									}
+									
+									if(!fail) {
+										if(inputLvl <= 20 && inputLvl > 0) {
+											checklvl = false;
+											looping2 = false;
+										}
+										else {
+											JOptionPane.showMessageDialog(frame, "Character level must be between 1 and 20.");
+										}
+									}
+								}
+								gameObj.addMonsterGUI(inputName, inputType, inputHealth, inputLvl);
 							}
 							break;
 				}
@@ -279,11 +559,17 @@ public class gui {
 		btnQuit.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				System.exit(0);
 			}
 		});
 		btnQuit.setText("Quit");
 		btnQuit.setBounds(566, 519, 112, 30);
-		shell.setTabList(new Control[]{txtbox, btnEnter, lblNewLabel, logtext});
+		
+		logText = new StyledText(shell, SWT.V_SCROLL| SWT.BORDER);
+		logText.setDoubleClickEnabled(false);
+		logText.setEditable(false);
+		logText.setBounds(31, 126, 376, 343);
+		shell.setTabList(new Control[]{txtbox, btnEnter, lblNewLabel});
 
 	}
 }
