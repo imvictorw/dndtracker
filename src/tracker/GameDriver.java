@@ -9,7 +9,5 @@ public class GameDriver {
 		gui window = new gui();
 		window.open();
 		window.getGameObj().startGameGui();
-		
 	}
-	
 }
