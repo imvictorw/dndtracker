@@ -51,6 +51,7 @@ public class Game  {
 	public ArrayList<String> logString = new ArrayList<String>();
 	private String command;
 	public String curString;
+	public igui guiObj;
 	
 	//used to determine what question to ask and to wait for a response in the scanInput() method
 	String lastCommand;
@@ -870,6 +871,9 @@ public class Game  {
 //				update("Please enter a valid command");
 				break;
 			}
+		}
+		if(guiObj != null) {
+			guiObj.updateLogText();
 		}
 	}
 	

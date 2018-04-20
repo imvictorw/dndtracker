@@ -2,6 +2,8 @@ package tracker;
 
 import org.eclipse.swt.SWT;
 
+
+
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -31,7 +33,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.custom.StyledText;
 
-public class gui {
+public class gui implements igui {
 
 	protected Shell shell;
 	private Text txtbox;
@@ -189,6 +191,7 @@ public class gui {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				gameObj.next();
+				updateLogText();
 			}
 		});
 		btnNewEncounter.setText("New Encounter");
@@ -542,6 +545,7 @@ public class gui {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				gameObj.save();
+				updateLogText();
 			}
 		});
 		btnSave.setText("Save");
@@ -552,6 +556,7 @@ public class gui {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				gameObj.load();
+				updateLogText();
 			}
 		});
 		btnLoad.setText("Load");
@@ -561,6 +566,7 @@ public class gui {
 		btnQuit.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				//add dialog asking if they want to save before they quit
 				System.exit(0);
 			}
 		});

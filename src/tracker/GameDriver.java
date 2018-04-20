@@ -8,6 +8,7 @@ public class GameDriver {
 	public static void main(String[] args) {
 		gui window = new gui();
 		window.open();
+		window.getGameObj().guiObj = window;
 		window.getGameObj().startGameGui();
 	}
 }
