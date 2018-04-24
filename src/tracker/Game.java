@@ -653,7 +653,6 @@ public class Game  {
 				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
 		update("******************************************************************************");
 		update("When you are complete with adding all the players and monsters, use the setup command to get started");
-		logString.add("Testing");
 		
 	}
 	

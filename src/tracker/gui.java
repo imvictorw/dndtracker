@@ -2,17 +2,22 @@ package tracker;
 
 import org.eclipse.swt.SWT;
 
-
-
+import java.awt.Dimension;
+import java.awt.Event;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Label;
@@ -31,9 +36,17 @@ import classes.PlayerType;
 
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.StyledText;
 
-public class gui implements igui {
+/*
+ * NOTES:
+ * Need to add keybinding to txtbox so that accepts the enter
+ * key being pressed when txtbox is focused. Still researching
+ * 
+ */
+
+public class gui implements igui{
 
 	protected Shell shell;
 	private Text txtbox;
@@ -44,6 +57,10 @@ public class gui implements igui {
 	 * Launch the application.
 	 * @param args
 	 */
+	public gui() {
+		
+	}
+	
 	public static void main(String[] args) {
 		try {
 			gui window = new gui();
@@ -107,23 +124,41 @@ public class gui implements igui {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
+		
+		
 		shell = new Shell();
 		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
 		shell.setSize(700, 606);
 		shell.setText("SWT Application");
 		
 		txtbox = new Text(shell, SWT.BORDER);
+		
+		//**** DONT TOUCH THIS ITS STUPID
+		txtbox.addListener(SWT.Traverse, new Listener() {
+			/*public void handleEvent(Event e) {
+				if(e.id == SWT.TRAVERSE_RETURN)
+					System.out.println("GOod job");
+			}*/
+			
+			//@Override
+			//Removing the override made this work for some reason.
+			public void handleEvent(org.eclipse.swt.widgets.Event e) {
+				if(e.detail == SWT.TRAVERSE_RETURN) {
+					JFrame frame = new JFrame();
+					JOptionPane.showMessageDialog(frame, "Test successful");
+				}
+				
+			}
+		});
+		//DONT TOUCH THIS ITS STUPID ****
+		
 		txtbox.setBounds(31, 503, 280, 30);
 		
 		Button btnEnter = new Button(shell, SWT.NONE);
 		btnEnter.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String txtInput = txtbox.getText();
-				//Add check for acceptable strings
-				gameObj.scanInput(txtInput);
-				updateLogText();
-				txtbox.setText("");
+				sendToGame();
 			}
 		});
 		btnEnter.setBounds(317, 503, 90, 30);
@@ -574,10 +609,27 @@ public class gui implements igui {
 		btnQuit.setBounds(566, 519, 112, 30);
 		
 		logText = new StyledText(shell, SWT.V_SCROLL| SWT.BORDER);
+		logText.addModifyListener(new ModifyListener() {
+	        @Override
+	        //Auto scrolls to bottom whenever modified.
+	        public void modifyText(ModifyEvent e) {
+	            logText.setTopIndex(logText.getLineCount() - 1);
+	        }
+	    });
 		logText.setDoubleClickEnabled(false);
 		logText.setEditable(false);
 		logText.setBounds(31, 126, 376, 343);
 		shell.setTabList(new Control[]{txtbox, btnEnter, lblNewLabel});
 
+	}
+	
+	public void sendToGame() {
+		String txtInput = txtbox.getText();
+		if(txtInput != null) {
+		//Add check for acceptable strings
+		gameObj.scanInput(txtInput);
+		updateLogText();
+		txtbox.setText("");
+		}
 	}
 }
