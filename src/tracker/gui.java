@@ -4,6 +4,8 @@ import org.eclipse.swt.SWT;
 
 import java.awt.Dimension;
 import java.awt.Event;
+import java.awt.Image;
+import java.awt.EventQueue;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -90,7 +92,7 @@ public class gui implements igui{
 	}
 	
 	public void updateLogText() {
-		String endtext = "testing";
+		String endtext = "";
 		ArrayList<String> tempList = new ArrayList<String>();
 		tempList = gameObj.getLogString();
 		for (String thing : tempList) {
@@ -102,7 +104,7 @@ public class gui implements igui{
 	//Sends string to text box, adds new line
 	public void writeToBox(String string) {
 		String curBox = txtbox.getText();
-		txtbox.setText(curBox + "\n" + string);
+		txtbox.setText(curBox + string);
 	}
 
 	/**
@@ -144,8 +146,7 @@ public class gui implements igui{
 			//Removing the override made this work for some reason.
 			public void handleEvent(org.eclipse.swt.widgets.Event e) {
 				if(e.detail == SWT.TRAVERSE_RETURN) {
-					JFrame frame = new JFrame();
-					JOptionPane.showMessageDialog(frame, "Test successful");
+					sendToGame();
 				}
 				
 			}
@@ -171,11 +172,6 @@ public class gui implements igui{
 		lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
 		lblNewLabel.setBounds(34, 471, 76, 26);
 		lblNewLabel.setText("Type here:");
-		
-		Label lblName = new Label(shell, SWT.NONE);
-		lblName.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-		lblName.setBounds(150, 100, 126, 20);
-		lblName.setText("RPG Battle Tracker");
 		
 		Label label_1 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_1.setBounds(438, 50, 255, 2);
@@ -215,11 +211,14 @@ public class gui implements igui{
 		btnLog.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Shell logshell = new Shell();
+				JFrame newFrame = new JFrame();
+				JOptionPane.showMessageDialog(newFrame, 
+						"Help Text"
+						);
 			}
 		});
 		btnLog.setBounds(448, 424, 112, 30);
-		btnLog.setText("Log");
+		btnLog.setText("Help");
 		
 		Button btnNewEncounter = new Button(shell, SWT.NONE);
 		btnNewEncounter.addSelectionListener(new SelectionAdapter() {
@@ -539,7 +538,7 @@ public class gui implements igui{
 										}
 										else
 											if(inputHealth <= 0) {
-												JOptionPane.showMessageDialog(frame, "Monsters cannot start with 0hp.");
+												JOptionPane.showMessageDialog(frame, "Monsters cannot start with less than 1hp.");
 											}
 											else {
 												checkhealth2 = false;
@@ -619,6 +618,11 @@ public class gui implements igui{
 		logText.setDoubleClickEnabled(false);
 		logText.setEditable(false);
 		logText.setBounds(31, 126, 376, 343);
+		
+		CLabel lblTest = new CLabel(shell, SWT.NONE);
+		lblTest.setImage(SWTResourceManager.getImage(gui.class, "/tracker/RPGBTlogo_sm.png"));
+		lblTest.setBounds(31, 10, 376, 110);
+		lblTest.setText("");
 		shell.setTabList(new Control[]{txtbox, btnEnter, lblNewLabel});
 
 	}

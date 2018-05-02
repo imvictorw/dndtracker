@@ -653,6 +653,9 @@ public class Game  {
 				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
 		update("******************************************************************************");
 		update("When you are complete with adding all the players and monsters, use the setup command to get started");
+		if(guiObj != null) {
+			guiObj.updateLogText();
+		}
 		
 	}
 	
@@ -671,8 +674,9 @@ public class Game  {
 		//addPlayer("Lez", "BARD");
 		//addMonster("Len", "UNDEAD", 10, 20);
 		
+		if(inputString != null) {
+		
 		if(isCommand) {
-			update("\n");
 			
 			String command1 = inputString;
 			lastCommand = command1;
@@ -682,20 +686,11 @@ public class Game  {
 			case "add player":
 				
 				update("Enter name for player");
-				checking = true;
-				while(checking) {
-					String check = curString;
-					if(check.equalsIgnoreCase("add player")) {
-						update("Input not accepted"); //if a player types "add player" as their character name it will not be accepted. This will
-						inputTemp = "error";							 //also happen if curString is updated too early
-					}
-					else {
-						inputTemp = check;
-						isCommand = false;
-						checking = false;
-					}
+				if(guiObj != null) {
+					guiObj.updateLogText();
 				}
-				update("Enter player type");
+						isCommand = false;
+				
 				break;
 
 			case "add player2":
@@ -780,19 +775,36 @@ public class Game  {
 			switch(lastCommand.toLowerCase()) {
 			
 			case "add player":
-				checking = true;
-				while(checking) {
-					String check = curString;
-					if(check.equalsIgnoreCase("Enter player type")) {
-						update("input not received");
-					}
-					else {
-						inputTemp2 = check;
-						checking = false;
-					}
+				
+				if(count < 1) {
+					
+				inputTemp = inputString;
+				update("Enter player type");
+				if(guiObj != null) {
+					guiObj.updateLogText();
 				}
-					addPlayer(inputTemp, inputTemp2);
-					update("Player " + inputTemp + " has been added.");
+				count++;
+				}
+				
+				else {
+				
+					//check input for correct type
+				if(addPlayer(inputTemp, inputString)) {
+					
+				addPlayer(inputTemp, inputString);
+				update("Player " + inputTemp + " has been added.");
+				if(guiObj != null) {
+					guiObj.updateLogText();
+				}
+				isCommand = true;
+				count = 0;
+				}
+				else {
+				count = 1;
+				isCommand = false;
+			}
+					
+				}
 				break;
 
 			case "add player2":
@@ -873,6 +885,10 @@ public class Game  {
 		}
 		if(guiObj != null) {
 			guiObj.updateLogText();
+		}
+	}
+		else {
+			//Do nothing if no input
 		}
 	}
 	
