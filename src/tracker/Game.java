@@ -825,7 +825,7 @@ public class Game  {
 					
 					boolean flag = false;
 					for (PlayerType typeTemp : PlayerType.values()) {
-						if (inputString.equals(typeTemp.toString())) {
+						if (inputString.toUpperCase().equals(typeTemp.toString())) {
 							flag = true;
 							//taking the last command and looping
 						}
