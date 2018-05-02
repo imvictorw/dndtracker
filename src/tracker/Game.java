@@ -61,6 +61,9 @@ public class Game  {
 	String inputTemp1;
 	String inputTemp2;
 	String inputTemp3;
+	
+	int intTemp;
+	int intTemp1;
 
 	
 	
@@ -173,7 +176,7 @@ public class Game  {
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
 				update(
-						"Cannot have the same name with somebody in the encounter. If same type of monster, add a 1. Eg. Zombie, Zombie1");
+						"Cannot have the same name with somebody in the encounter.\nIf same type of monster, add a 1. Eg. Zombie, Zombie1");
 				return false;
 			}
 		}
@@ -689,46 +692,39 @@ public class Game  {
 				if(guiObj != null) {
 					guiObj.updateLogText();
 				}
-						isCommand = false;
+				isCommand = false;
 				
 				break;
 
 			case "add player2":
 				update("Enter name for player");
-				temp = sc.nextLine();
-				update("Enter player type");
-				temp2 = sc.nextLine();
-				update("Enter player health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				update("Enter player level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				addPlayer2(temp, temp2, temp3, temp4);
+				if(guiObj != null) {
+					guiObj.updateLogText();
+				}
+				isCommand = false;
+				
 				break;
+				
 			case "add monster":
 				update("Enter name for monster");
-				temp = sc.nextLine();
-				update("Enter monster type");
-				temp2 = sc.nextLine();
-				update("Enter monster health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				update("Enter monster level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				addMonster(temp, temp2, temp3, temp4);
+				if(guiObj != null) {
+					guiObj.updateLogText();
+				}
+				isCommand = false;
 				break;
+				
 			case "edit":
 				update("Enter name for player or monster to edit");
 				temp = sc.nextLine();
 				edit(temp);
 				break;
+				
 			case "remove":
 				update("Enter name for player or monster to edit");
 				temp = sc.nextLine();
 				remove(temp);
 				break;
+				
 			case "attack":
 				update("Enter name for player or monster to attack");
 				temp = sc.nextLine();
@@ -736,6 +732,7 @@ public class Game  {
 				temp3 = sc.nextInt();
 				attack(temp,temp3);
 				break;
+				
 			case "heal":
 				update("Enter name for player or monster to heal");
 				temp = sc.nextLine();
@@ -743,27 +740,35 @@ public class Game  {
 				temp3 = sc.nextInt();
 				heal(temp,temp3);
 				break;
+				
 			case "next":
 				next();
 				break;
+				
 			case "stats":
 				stats();
 				break;
+				
 			case "help":
 				help();
 				break;
+				
 			case "save":
 				save();
 				break;
+				
 			case "load":
 				load();
 				break;
+				
 			case "alive":
 				alive();
 				break;
+				
 			case "setup":
 				setup();
 				break;
+				
 			default:
 				update("Please enter a valid command");
 				break;
@@ -796,53 +801,155 @@ public class Game  {
 				if(guiObj != null) {
 					guiObj.updateLogText();
 				}
-				isCommand = true;
-				count = 0;
+				resetVariables();
 				}
 				else {
 				count = 1;
 				isCommand = false;
 			}
-					
 				}
 				break;
 
 			case "add player2":
-				update("Enter name for player");
-				temp = sc.nextLine();
-				update("Enter player type");
-				temp2 = sc.nextLine();
-				update("Enter player health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				update("Enter player level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				addPlayer2(temp, temp2, temp3, temp4);
+				
+				switch(count) {
+				
+				case 0: 
+					
+					inputTemp = inputString.toString(); //name
+					update("Enter player type");
+					count++;
+					break;
+				
+				case 1: 
+					
+					boolean flag = false;
+					for (PlayerType typeTemp : PlayerType.values()) {
+						if (inputString.equals(typeTemp.toString())) {
+							flag = true;
+							//taking the last command and looping
+						}
+					}
+				
+					if(flag) {
+						inputTemp1 = inputString.toString(); //type	
+						update("Enter player health");
+						count++;
+					}
+					else {
+						update("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
+								+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n" + "	ROGUE,\n"
+								+ "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
+						count = 1;
+					}
+					break;
+				
+				case 2: 
+					try {
+					intTemp = Integer.parseInt(inputString); //health
+					}
+					catch(NumberFormatException p) {
+						update("Please enter a number");
+					}
+					
+					if(intTemp != 6969) {
+						update("Enter player level");
+						count++;
+					}
 				break;
+				
+				case 3:
+					try {
+				intTemp1 = Integer.parseInt(inputString); //level
+					}
+					catch(NumberFormatException p) {
+						update("Please enter a number");
+					}
+					
+				if(addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
+					addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
+					resetVariables();
+				}
+				
+				break;
+			}
+				break;
+				
+				
 			case "add monster":
-				update("Enter name for monster");
-				temp = sc.nextLine();
+				
+				switch(count) {
+				
+				case 0: inputTemp = inputString.toString(); //name
 				update("Enter monster type");
-				temp2 = sc.nextLine();
-				update("Enter monster health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				update("Enter monster level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				addMonster(temp, temp2, temp3, temp4);
+				count++;
 				break;
+				
+				case 1: 
+					
+					boolean check2 = false;
+					for (MonsterType typeTemp : MonsterType.values()) {
+						if (inputString.toUpperCase().equals(typeTemp.toString())) {
+							check2 = true;
+						}
+					}
+					if(check2) {
+						inputTemp1 = inputString.toString(); //type
+						update("Enter monster health");
+						count++;
+					}
+					else {
+						update("Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n" + "	CELESTIAL,\n"
+								+ "	CONSTRUCT,\n" + "	DEMON,\n" + "	DRAGON,\n" + "	ELEMENTAL,\n" + "	FEY,\n" + "	FIEND,\n"
+								+ "	GIANT,\n" + "	HUMANOID,\n" + "	MONSTROSITY,\n" + "	OOZE,\n" + "	PLANT,\n"
+								+ "	UNDEAD");
+					}
+				break;
+				
+				case 2: 
+					try {
+					intTemp = Integer.parseInt(inputString); //health
+					}
+					catch(NumberFormatException p) {
+						update("Please enter a number");
+					}
+					
+					if(intTemp != 6969) {
+						update("Enter monster level");
+						count++;
+					}
+				break;
+				
+				case 3:
+					try {
+				intTemp1 = Integer.parseInt(inputString); //level
+					}
+					catch(NumberFormatException p) {
+						update("Please enter a number");
+					}
+					
+				if(addMonster(inputTemp, inputTemp1, intTemp, intTemp1)) {
+					addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
+					resetVariables();
+				}
+				
+				break;
+			}
+				
+				break;
+				
 			case "edit":
 				update("Enter name for player or monster to edit");
 				temp = sc.nextLine();
 				edit(temp);
 				break;
+				
 			case "remove":
 				update("Enter name for player or monster to edit");
 				temp = sc.nextLine();
 				remove(temp);
 				break;
+				
 			case "attack":
 				update("Enter name for player or monster to attack");
 				temp = sc.nextLine();
@@ -850,6 +957,7 @@ public class Game  {
 				temp3 = sc.nextInt();
 				attack(temp,temp3);
 				break;
+				
 			case "heal":
 				update("Enter name for player or monster to heal");
 				temp = sc.nextLine();
@@ -857,27 +965,20 @@ public class Game  {
 				temp3 = sc.nextInt();
 				heal(temp,temp3);
 				break;
+				
 			case "next":
 				next();
 				break;
+				
 			case "stats":
 				stats();
 				break;
+				
 			case "help":
 				help();
+				//should bring up help window
 				break;
-			case "save":
-				save();
-				break;
-			case "load":
-				load();
-				break;
-			case "alive":
-				alive();
-				break;
-			case "setup":
-				setup();
-				break;
+
 			default:
 //				update("Please enter a valid command");
 				break;
@@ -904,6 +1005,17 @@ public class Game  {
 	//Returns curString
 	public String getCurString() {
 		return curString;
+	}
+	
+	public void resetVariables() {
+		inputTemp = "";
+		inputTemp1 = "";
+		inputTemp2 = "";
+		inputTemp3 = "";
+		intTemp = 6969;
+		intTemp = 6969; //6969 is considered null for this project.
+		isCommand = true;
+		count = 0;
 	}
 	
 	public void setLogString(ArrayList<String> stringlist) {

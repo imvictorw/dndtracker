@@ -177,9 +177,10 @@ public class gui implements igui{
 		label_1.setBounds(438, 50, 255, 2);
 		
 		Label lblMain = new Label(shell, SWT.NONE);
+		lblMain.setAlignment(SWT.CENTER);
 		lblMain.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-		lblMain.setBounds(445, 58, 227, 277);
-		lblMain.setText("Commands Include:\r\n   Setup\r\n   Alive\r\n   Attack [Target] [HP]\r\n   Heal [Target]\r\n   Next \r\n   Add [Class Type] [Name]\r\n   Remove [Character Name]\r\n   Edit [Character Name]");
+		lblMain.setBounds(445, 58, 227, 297);
+		lblMain.setText("setup\r\nnext\r\nsave\r\nload\r\nadd player\r\nadd player2\r\nadd monster\r\nremove\r\nedit\r\nheal\r\nattack\r\nalive");
 		
 		Label label_2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_2.setBounds(438, 414, 255, 2);
@@ -190,8 +191,8 @@ public class gui implements igui{
 		Label lblNewLabel_2 = new Label(shell, SWT.CENTER);
 		lblNewLabel_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		lblNewLabel_2.setFont(SWTResourceManager.getFont("Segoe UI", 15, SWT.NORMAL));
-		lblNewLabel_2.setBounds(524, 7, 76, 37);
-		lblNewLabel_2.setText("Help");
+		lblNewLabel_2.setBounds(492, 7, 136, 37);
+		lblNewLabel_2.setText("Commands");
 		
 		Canvas canvas = new Canvas(shell, SWT.NONE);
 		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
