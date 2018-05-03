@@ -772,14 +772,12 @@ public class Game  {
 				
 			case "edit":
 				update("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				edit(temp);
+				isCommand = false;
 				break;
 				
 			case "remove":
-				update("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				remove(temp);
+				update("Enter name for player or monster to remove");
+				isCommand = false;
 				break;
 				
 			case "attack":
@@ -909,7 +907,7 @@ public class Game  {
 						update("Please enter a number");
 					}
 					
-					if(intTemp != 6969) {
+					if(intTemp != -1) {
 						update("Enter player level");
 						count++;
 					}
@@ -971,7 +969,7 @@ public class Game  {
 						update("Please enter a number");
 					}
 					
-					if(intTemp != 6969) {
+					if(intTemp != -1) {
 						update("Enter monster level");
 						count++;
 					}
@@ -996,31 +994,48 @@ public class Game  {
 				break;
 				
 			case "edit":
-				update("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				edit(temp);
+				//check that currentInput is in encounterlist
+				
+				boolean found = false;
+				if(currEncounterList.size() > 0) {
+					for(Player p : currEncounterList) {
+						if(p.getName().equalsIgnoreCase(inputString)) {
+							found = true;
+							break;
+						}
+					}
+					if(found) {
+						edit(inputString);
+					}
+				}
 				break;
 				
 			case "remove":
-				update("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				remove(temp);
+				
+				boolean found1 = false;
+				if(currEncounterList.size() > 0) {
+					for(Player p : currEncounterList) {
+						if(p.getName().equalsIgnoreCase(inputString)) {
+							found1 = true;
+							break;
+						}
+					}
+					if(found1) {
+						remove(inputString);
+					}
+				}
 				break;
 				
 			case "attack":
-				update("Enter name for player or monster to attack");
-				temp = sc.nextLine();
 				update("Enter the amount of damage done");
 				temp3 = sc.nextInt();
-				attack(temp,temp3);
+				//attack(temp,temp3);
 				break;
 				
 			case "heal":
-				update("Enter name for player or monster to heal");
-				temp = sc.nextLine();
 				update("Enter the amount of healing done");
 				temp3 = sc.nextInt();
-				heal(temp,temp3);
+				//heal(temp,temp3);
 				break;
 				
 			case "next":
@@ -1068,8 +1083,8 @@ public class Game  {
 		inputTemp1 = "";
 		inputTemp2 = "";
 		inputTemp3 = "";
-		intTemp = 6969;
-		intTemp = 6969; //6969 is considered null for this project.
+		intTemp = -1;
+		intTemp = -1; //-1 is considered null for this project.
 		isCommand = true;
 		count = 0;
 	}
