@@ -370,13 +370,10 @@ public class Game  {
 
 	public void stats() {
 		int counter = 1;
-<<<<<<< HEAD
 		
 		String arraySize = "" + encounterArray.size();
 		update(arraySize);
 		
-=======
->>>>>>> master
 		for(ArrayList<Player> list : encounterArray) {
 
 			Player character;
@@ -707,132 +704,6 @@ public class Game  {
 
 	}
 
-	/* Req - One Monster and One Player */
-	public void startGame() {
-		update(
-				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
-		update(
-				"Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
-		update("******************************************************************************");
-		update("When you are complete with adding all the players and monsters, use the setup command to get started");
-
-		String temp;
-		String temp2;
-		int temp3;
-		int temp4;
-//		addPlayer("DOn", "BARD");
-//		addPlayer("Lez", "BARD");
-//		addMonster("a", "UNDEAD", -10, 20);
-//		addMonster("b", "UNDEAD", -10, 20);
-//		next();
-//		addMonster("c", "UNDEAD", -10, 20);
-//		next();
-
-		while (true) {
-			command = sc.nextLine();
-
-			switch (command.toLowerCase()) {
-			
-			case "add player":
-				setCurString("Enter name for player");
-				temp = sc.nextLine();
-				update("Enter player type");
-				temp2 = sc.nextLine();
-				addPlayer(temp, temp2);
-				break;
-
-			case "add player2":
-				update("Enter name for player");
-				temp = sc.nextLine();
-<<<<<<< HEAD
-				update("Enter player type");
-				temp2 = sc.nextLine();
-				update("Enter player health");
-=======
-				System.out.println("Enter player health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				System.out.println("Enter player level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				System.out.println("Enter player type");
-				temp2 = sc.nextLine();
->>>>>>> master
-				addPlayer2(temp, temp2, temp3, temp4);
-				break;
-			case "add monster":
-				update("Enter name for monster");
-				temp = sc.nextLine();
-<<<<<<< HEAD
-				update("Enter monster type");
-				temp2 = sc.nextLine();
-				update("Enter monster health");
-=======
-				System.out.println("Enter monster health");
-				temp3 = sc.nextInt();
-				sc.nextLine();
-				System.out.println("Enter monster level");
-				temp4 = sc.nextInt();
-				sc.nextLine();
-				System.out.println("Enter monster type");
-				temp2 = sc.nextLine();
->>>>>>> master
-				addMonster(temp, temp2, temp3, temp4);
-				break;
-			case "edit":
-				update("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				edit(temp);
-				break;
-			case "remove":
-				update("Enter name for player or monster to edit");
-				temp = sc.nextLine();
-				remove(temp);
-				break;
-			case "attack":
-				update("Enter name for player or monster to attack");
-				temp = sc.nextLine();
-				update("Enter the amount of damage done");
-				temp3 = sc.nextInt();
-				attack(temp,temp3);
-				break;
-			case "heal":
-				update("Enter name for player or monster to heal");
-				temp = sc.nextLine();
-				update("Enter the amount of healing done");
-				temp3 = sc.nextInt();
-				heal(temp,temp3);
-				break;
-			case "next":
-				next();
-				break;
-			case "stats":
-				stats();
-				break;
-			case "help":
-				help();
-				break;
-			case "save":
-				save();
-				break;
-			case "load":
-				load();
-				break;
-			case "alive":
-				alive();
-				break;
-			case "setup":
-				setup();
-				break;
-			default:
-//				update("Please enter a valid command");
-				break;
-			}
-			
-
-		}
-	}
-	
 	//copy and pasted from above, with changes to make it compatible with the GUI
 	//removed scanner and replaced with different input acceptance
 	public void startGameGui() {
@@ -871,8 +742,6 @@ public class Game  {
 			lastCommand = command1;
 			switch (command1.toLowerCase()) {
 
-<<<<<<< HEAD
-			
 			case "add player":
 				
 				update("Enter name for player");
@@ -1218,11 +1087,6 @@ public class Game  {
 		//update gui
 	}
 	
-	//tells gui to update logtext with the newest version of logString
-	//public void update() {
-	//	
-	//}
 
-=======
->>>>>>> master
+
 }
