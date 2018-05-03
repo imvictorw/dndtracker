@@ -370,10 +370,13 @@ public class Game  {
 
 	public void stats() {
 		int counter = 1;
+<<<<<<< HEAD
 		
 		String arraySize = "" + encounterArray.size();
 		update(arraySize);
 		
+=======
+>>>>>>> master
 		for(ArrayList<Player> list : encounterArray) {
 
 			Player character;
@@ -741,17 +744,39 @@ public class Game  {
 			case "add player2":
 				update("Enter name for player");
 				temp = sc.nextLine();
+<<<<<<< HEAD
 				update("Enter player type");
 				temp2 = sc.nextLine();
 				update("Enter player health");
+=======
+				System.out.println("Enter player health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				System.out.println("Enter player level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				System.out.println("Enter player type");
+				temp2 = sc.nextLine();
+>>>>>>> master
 				addPlayer2(temp, temp2, temp3, temp4);
 				break;
 			case "add monster":
 				update("Enter name for monster");
 				temp = sc.nextLine();
+<<<<<<< HEAD
 				update("Enter monster type");
 				temp2 = sc.nextLine();
 				update("Enter monster health");
+=======
+				System.out.println("Enter monster health");
+				temp3 = sc.nextInt();
+				sc.nextLine();
+				System.out.println("Enter monster level");
+				temp4 = sc.nextInt();
+				sc.nextLine();
+				System.out.println("Enter monster type");
+				temp2 = sc.nextLine();
+>>>>>>> master
 				addMonster(temp, temp2, temp3, temp4);
 				break;
 			case "edit":
@@ -846,6 +871,7 @@ public class Game  {
 			lastCommand = command1;
 			switch (command1.toLowerCase()) {
 
+<<<<<<< HEAD
 			
 			case "add player":
 				
@@ -1197,4 +1223,6 @@ public class Game  {
 	//	
 	//}
 
+=======
+>>>>>>> master
 }
