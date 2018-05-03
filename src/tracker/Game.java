@@ -31,7 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import classes.*;
-
+import java.util.Scanner;
 /* Commands
  * Attack(name,health)
  * Heal(name, health)
@@ -65,6 +65,7 @@ public class Game  {
 	private String command;
 	public String curString;
 	public igui guiObj;
+	public Scanner sc;
 	
 	//used to determine what question to ask and to wait for a response in the scanInput() method
 	String lastCommand;
