@@ -43,8 +43,6 @@ import org.eclipse.swt.custom.StyledText;
 
 /*
  * NOTES:
- * Need to add keybinding to txtbox so that accepts the enter
- * key being pressed when txtbox is focused. Still researching
  * 
  */
 
