@@ -2,17 +2,17 @@ package tracker;
 
 import org.eclipse.swt.SWT;
 
-import java.awt.Dimension;
+/*import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Image;
 import java.awt.EventQueue;
-import java.awt.event.*;
+import java.awt.event.*;*/
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.*;
+/*import javax.swing.KeyStroke;
+import javax.swing.*;*/
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -25,11 +25,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.custom.SashForm;
+/*import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MenuItem;*/
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import classes.MonsterType;
@@ -37,7 +37,7 @@ import classes.Player;
 import classes.PlayerType;
 
 import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.List;
+//import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.custom.StyledText;
 
@@ -60,7 +60,8 @@ public class gui implements igui {
 	 * @param args
 	 */
 	public gui() {
-
+		//added players for testing
+		gameObj.startGameGui();
 	}
 
 	public static void main(String[] args) {
@@ -345,7 +346,7 @@ public class gui implements igui {
 							}
 						}
 						boolean checkclass1 = true;
-						int counter1 = 0;
+						//int counter1 = 0;
 						while (checkclass1) {
 							inputType = JOptionPane.showInputDialog("Enter the player's class:").toString()
 									.toUpperCase();
@@ -472,7 +473,7 @@ public class gui implements igui {
 							}
 						}
 						boolean checkclass2 = true;
-						int counter2 = 0;
+						//int counter2 = 0;
 						while (checkclass2) {
 							inputType = JOptionPane.showInputDialog("Enter the monster's class:").toString()
 									.toUpperCase();

@@ -16,22 +16,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
-import java.io.BufferedReader;
+//import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+//import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+//import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+/*import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Reader;
+import java.io.Reader;*/
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import classes.*;
-import java.util.Scanner;
+//import java.util.Scanner;
 /* Commands
  * Attack(name,health)
  * Heal(name, health)
@@ -62,7 +62,6 @@ public class Game {
 	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // To save every encounter
 	public ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
 	public ArrayList<String> logString = new ArrayList<String>();
-	private String command;
 	public String curString;
 	public igui guiObj;
 	public Scanner sc;
@@ -748,6 +747,11 @@ public class Game {
 		update("Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
 		update("******************************************************************************");
 		update("When you are complete with adding all the players and monsters, use the setup command to get started");
+		//added players for testing
+		 addPlayer("DOn", "BARD");
+		 addPlayer("Lez", "BARD");
+		 addMonster("Len", "UNDEAD", 10, 20);
+		 addMonster("Evil", "FEY", 10, 1);
 		if (guiObj != null) {
 			guiObj.updateLogText();
 		}
@@ -755,20 +759,7 @@ public class Game {
 	}
 
 	public void scanInput(String inputString) {
-
-		String temp;
-		String temp2;
-		String tempCommand;
-		int temp3;
-		int temp4;
-		boolean checking = true;
-		boolean masterLoop = true;
-
-		// added players for testing
-		// addPlayer("DOn", "BARD");
-		// addPlayer("Lez", "BARD");
-		// addMonster("Len", "UNDEAD", 10, 20);
-
+		
 		if (inputString != null) {
 
 			if (isCommand) {
@@ -851,6 +842,7 @@ public class Game {
 				case "setup":
 					update("Roll die for each character in the encounter.");
 					if (currEncounterList.size() > 1) {
+
 						if (currEncounterList.get(0).checkClass() == 1) {
 							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
 									+ currEncounterList.get(0).getMtype());
@@ -858,7 +850,8 @@ public class Game {
 							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
 									+ currEncounterList.get(0).getType());
 						}
-						count = 1;
+
+						count++;
 						isCommand = false;
 					} else {
 						update("Add at least two characters before setup.");
@@ -890,7 +883,7 @@ public class Game {
 						// check input for correct type
 						if (addPlayer(inputTemp, inputString)) {
 
-							//addPlayer(inputTemp, inputString);
+							// addPlayer(inputTemp, inputString);
 							update("Player " + inputTemp + " has been added.");
 							if (guiObj != null) {
 								guiObj.updateLogText();
@@ -957,7 +950,7 @@ public class Game {
 						}
 
 						if (addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
-							//addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
+							// addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
 							resetVariables();
 						}
 
@@ -1016,7 +1009,7 @@ public class Game {
 						}
 
 						if (addMonster(inputTemp, inputTemp1, intTemp, intTemp1)) {
-							//addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
+							// addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
 							resetVariables();
 						}
 
@@ -1192,38 +1185,54 @@ public class Game {
 					break;
 
 				case "setup":
+					
+					boolean finalLoop = false;
+					
+					try {
+						intTemp = Integer.parseInt(inputString);
+					} catch (NumberFormatException e) {
+						update("Enter a number.");
+						resetVariables();
+						break;
+					}
 
-					while (count <= currEncounterList.size() - 1) {
-						try {
-							intTemp = Integer.parseInt(inputString);
-						} catch (NumberFormatException e) {
-							update("Enter a number.");
-							resetVariables();
+					if (intTemp > 0 ) {
+
+						if (count < currEncounterList.size()) {
+							
+							hashmap.put(currEncounterList.get(count - 1).getName(), intTemp);
+							
+							if (currEncounterList.get(count).checkClass() == 1) {
+								update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
+										+ currEncounterList.get(count).getMtype());
+								count++;
+							} else {
+								update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
+										+ currEncounterList.get(count).getType());
+								count++;
+							}
+							
+						} else if(count == currEncounterList.size()){
+							hashmap.put(currEncounterList.get(count - 1).getName(), intTemp);
+							finalLoop = true;
+						}
+						
+						else {
 							break;
 						}
 
-						if (intTemp != -1) {
-
-							hashmap.put(currEncounterList.get(count - 1).getName(), intTemp);
-
-							if (count <= currEncounterList.size() - 2) {
-								if (currEncounterList.get(count).checkClass() == 1) {
-									update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
-											+ currEncounterList.get(count).getMtype());
-									count++;
-								} else {
-									update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
-											+ currEncounterList.get(count).getType());
-									count++;
-								}
-							} else {
-								break;
-							}
-						}
-
 					}
-					sortEncounter(hashmap);
-					resetVariables();
+					else {
+						//do nothing
+					}
+					
+					if (finalLoop) {
+						sortEncounter(hashmap);
+						update("Characters successfully sorted by initiative!");
+						hashmap = new HashMap<String, Integer>();
+						resetVariables();
+						break;
+					}
 					break;
 
 				default:
