@@ -66,6 +66,7 @@ public class Game {
 	public String curString;
 	public igui guiObj;
 	public Scanner sc;
+	HashMap<String, Integer> hashmap = new HashMap<String, Integer>();
 
 	// used to determine what question to ask and to wait for a response in the
 	// scanInput() method
@@ -117,7 +118,7 @@ public class Game {
 		}
 
 		for (Player checkName : currEncounterList) {
-			if (checkName.getName().equals(name)) {
+			if (checkName.getName().equalsIgnoreCase(name)) {
 				update("Cannot have the same name with somebody in the encounter");
 				return false;
 			}
@@ -154,7 +155,7 @@ public class Game {
 
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				update("Cannot have the same name with somebody in the encounter");
+				// update("Cannot have the same name with somebody in the encounter");
 				return false;
 			}
 		}
@@ -430,17 +431,17 @@ public class Game {
 	public void alive() {
 
 		Player character;
-		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health");
+		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health(Max)");
 
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			character = currEncounterList.get(i);
 			int j = i + 1;
 			if (character.checkClass() == 1) {
-				update(j + "\t\t\t\t" + character.getName() + "\t\t\t" + character.getMtype() + "\t\t"
-						+ character.getHealth());
+				update(j + "\t\t\t" + character.getName() + "\t\t\t" + character.getMtype() + "\t\t"
+						+ character.getHealth() + "(" + character.getMaxHealth() + ")");
 			} else {
-				update(j + "\t\t\t\t" + character.getName() + "\t\t\t" + character.getType() + "\t\t"
-						+ character.getHealth());
+				update(j + "\t\t\t" + character.getName() + "\t\t\t" + character.getType() + "\t\t"
+						+ character.getHealth() + "(" + character.getMaxHealth() + ")");
 			}
 
 		}
@@ -682,8 +683,8 @@ public class Game {
 		String tempname;
 		int tempint;
 
-		update("Enter each number which was rolled for each of these characters."
-				+ " The order will be automatically redone.");
+		// update("Enter each number which was rolled for each of these characters."
+		// + " The order will be automatically redone.");
 
 		// For each index of the encounter list, add their initiative and then reorder
 		// the encounterlist
@@ -847,7 +848,20 @@ public class Game {
 					break;
 
 				case "setup":
-					setup();
+					update("Roll die for each character in the encounter.");
+					if (currEncounterList.size() > 1) {
+						if (currEncounterList.get(0).checkClass() == 1) {
+							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
+									+ currEncounterList.get(0).getMtype());
+						} else {
+							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
+									+ currEncounterList.get(0).getType());
+						}
+						count = 1;
+						isCommand = false;
+					} else {
+						update("Add at least two characters before setup.");
+					}
 					break;
 
 				default:
@@ -1156,7 +1170,7 @@ public class Game {
 					break;
 
 				case "heal":
-					
+
 					if (count < 1) {
 						inputTemp = inputString;
 						update("Enter the amount of healing done.");
@@ -1178,6 +1192,41 @@ public class Game {
 
 				case "next":
 					next();
+					break;
+
+				case "setup":
+					HashMap<String, Integer> tempMap = new HashMap<String, Integer>();
+
+					while (count <= currEncounterList.size() - 1) {
+						try {
+							intTemp = Integer.parseInt(inputString);
+						} catch (NumberFormatException e) {
+							update("Enter a number.");
+							resetVariables();
+							break;
+						}
+
+						if (intTemp != -1) {
+
+							tempMap.put(currEncounterList.get(count - 1).getName(), intTemp);
+							
+							if (count < currEncounterList.size() - 1) {
+								if (currEncounterList.get(count).checkClass() == 1) {
+									update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
+											+ currEncounterList.get(count).getMtype());
+								} else {
+									update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
+											+ currEncounterList.get(count).getType());
+								}
+							}
+							else {
+								break;
+							}
+						}
+
+					}
+					sortEncounter(tempMap);
+					resetVariables();
 					break;
 
 				case "stats":

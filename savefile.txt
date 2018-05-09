@@ -1,1 +1,1 @@
-{1={"0":{"Attributes":{"Type":"BARD","Health":8,"Level":0},"Name":"DOn"},"1":{"Attributes":{"Type":"BARD","Health":8,"Level":0},"Name":"Lez"},"2":{"Attributes":{"Type":"UNDEAD","Health":-10,"Level":20},"Name":"a"},"3":{"Attributes":{"Type":"UNDEAD","Health":-10,"Level":20},"Name":"b"}}, 2={"0":{"Attributes":{"Type":"BARD","Health":8,"Level":0},"Name":"DOn"},"1":{"Attributes":{"Type":"BARD","Health":8,"Level":0},"Name":"Lez"},"2":{"Attributes":{"Type":"UNDEAD","Health":-10,"Level":20},"Name":"c"}}}
+{}
