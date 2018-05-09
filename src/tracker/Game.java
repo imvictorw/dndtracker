@@ -326,7 +326,7 @@ public class Game {
 		if (attacked.checkClass() == 1) {
 			if (currHealth > 0) {
 				attacked.setHealth(currHealth - amount);
-				update(attack + " was hit with " + amount + " damage");
+				update(attack + " was hit with " + amount + " damage!");
 				return true;
 			} else {
 				update("Monster is already dead");
@@ -334,10 +334,10 @@ public class Game {
 		} else if (attacked.checkClass() == 2) {
 			if (currHealth > -10) {
 				attacked.setHealth(currHealth - amount);
-				update(attack + " was hit with " + amount + " damage");
+				update(attack + " was hit with " + amount + " damage!");
 				return true;
 			} else {
-				update("Player is already dead");
+				update("Player is already dead.");
 			}
 		}
 
@@ -431,6 +431,7 @@ public class Game {
 	public void alive() {
 
 		Player character;
+		update("\n");
 		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health(Max)");
 
 		for (int i = 0; i < currEncounterList.size(); i++) {
@@ -1190,10 +1191,6 @@ public class Game {
 
 					break;
 
-				case "next":
-					next();
-					break;
-
 				case "setup":
 					HashMap<String, Integer> tempMap = new HashMap<String, Integer>();
 
@@ -1229,14 +1226,6 @@ public class Game {
 					resetVariables();
 					break;
 
-				case "stats":
-					stats();
-					break;
-
-				case "help":
-					help();
-					// should bring up help window
-					break;
 				default:
 					update("Please enter a valid command");
 					break;
