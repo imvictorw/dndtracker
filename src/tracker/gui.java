@@ -60,8 +60,7 @@ public class gui implements igui {
 	 * @param args
 	 */
 	public gui() {
-		//added players for testing
-		gameObj.startGameGui();
+		startGame();
 	}
 
 	public static void main(String[] args) {
@@ -73,10 +72,12 @@ public class gui implements igui {
 		}
 	}
 
+	// sets class level variable
 	public void setGameObj(Game inputGame) {
 		gameObj = inputGame;
 	}
 
+	// returns class level variable
 	public Game getGameObj() {
 		return gameObj;
 	}
@@ -149,7 +150,7 @@ public class gui implements igui {
 					sendToGame();
 				} else if (e.detail == SWT.ARROW_UP) {
 					txtbox.setText(lastCommand);
-					//doesn't work.
+					// doesn't work.
 				}
 
 			}
@@ -234,6 +235,7 @@ public class gui implements igui {
 		btnNewEncounter.setText("New Encounter");
 		btnNewEncounter.setBounds(448, 471, 112, 30);
 
+		// Allows users to add characters with button prompts instead of typing
 		Button btnAddCharacter = new Button(shell, SWT.NONE);
 		btnAddCharacter.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -346,7 +348,7 @@ public class gui implements igui {
 							}
 						}
 						boolean checkclass1 = true;
-						//int counter1 = 0;
+						// int counter1 = 0;
 						while (checkclass1) {
 							inputType = JOptionPane.showInputDialog("Enter the player's class:").toString()
 									.toUpperCase();
@@ -473,7 +475,7 @@ public class gui implements igui {
 							}
 						}
 						boolean checkclass2 = true;
-						//int counter2 = 0;
+						// int counter2 = 0;
 						while (checkclass2) {
 							inputType = JOptionPane.showInputDialog("Enter the monster's class:").toString()
 									.toUpperCase();
@@ -606,6 +608,11 @@ public class gui implements igui {
 		});
 		logText.setDoubleClickEnabled(false);
 		logText.setEditable(false);
+		logText.setText(
+				"Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter\n"
+						+ "Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!\n"
+						+ "******************************************************************************\n"
+						+ "When you are complete with adding all the players and monsters, use the setup command to get started.");
 		logText.setBounds(31, 126, 376, 343);
 
 		CLabel lblTest = new CLabel(shell, SWT.NONE);
@@ -614,6 +621,10 @@ public class gui implements igui {
 		lblTest.setText("");
 		shell.setTabList(new Control[] { txtbox, btnEnter, lblNewLabel });
 
+	}
+
+	public void startGame() {
+		gameObj.startGameGui();
 	}
 
 	public void sendToGame() {

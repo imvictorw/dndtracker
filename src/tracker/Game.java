@@ -189,7 +189,7 @@ public class Game {
 
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				update("Cannot have the same name with somebody in the encounter.\nIf same type of monster, add a 1. Eg. Zombie, Zombie1");
+				update("Cannot have the same name with somebody in the encounter.\nIf same type of monster, add a \nnumber. Eg. Zombie, Zombie1");
 				return false;
 			}
 		}
@@ -364,7 +364,7 @@ public class Game {
 				update(heal + " is now full health " + "(" + healed.getMaxHealth() + ")");
 			} else {
 				healed.setHealth(healed.getHealth() + amount);
-				update(heal + " healed " + amount);
+				update(heal + " was healed for " + amount + " hp.");
 			}
 
 			return true;
@@ -378,7 +378,7 @@ public class Game {
 				update(heal + " is now full health " + "(" + healed.getMaxHealth() + ")");
 			} else {
 				healed.setHealth(healed.getHealth() + amount);
-				update(heal + " healed " + amount);
+				update(heal + " was healed for " + amount + " hp.");
 			}
 
 			return true;
@@ -747,33 +747,41 @@ public class Game {
 		update("Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
 		update("******************************************************************************");
 		update("When you are complete with adding all the players and monsters, use the setup command to get started");
-		//added players for testing
-		 addPlayer("DOn", "BARD");
-		 addPlayer("Lez", "BARD");
-		 addMonster("Len", "UNDEAD", 10, 20);
-		 addMonster("Evil", "FEY", 10, 1);
+		// added players for testing
+		// addPlayer("DOn", "BARD");
+		// addPlayer("Lez", "BARD");
+		// addMonster("Len", "UNDEAD", 10, 20);
+		// addMonster("Evil", "FEY", 10, 1);
 		if (guiObj != null) {
 			guiObj.updateLogText();
 		}
-
 	}
 
+	// Directs user input to correct cases
 	public void scanInput(String inputString) {
-		
+
+		// Checks that user input is not null
 		if (inputString != null) {
 
+			// checks if the input is pre or post command.
 			if (isCommand) {
 
+				// sets the current input command to command1 to save previous commands
 				String command1 = inputString;
 				lastCommand = command1;
+
+				// checks input from list of commands, displays initial prompts then sets
+				// isCommand to false if more input is needed
 				switch (command1.toLowerCase()) {
 
 				case "add player":
 
 					update("Enter name for player");
+					// ensures guiObj is not null
 					if (guiObj != null) {
 						guiObj.updateLogText();
 					}
+					// sets isCommand as false to send next scanInput
 					isCommand = false;
 
 					break;
@@ -840,59 +848,119 @@ public class Game {
 					break;
 
 				case "setup":
+
+					// Tells user to roll for initiatives.
 					update("Roll die for each character in the encounter.");
+
+					// If there are 2 or more players, move on
 					if (currEncounterList.size() > 1) {
 
+						// Checks if character is a monster or not. Format: [message] [name] "the"
+						// [type]
 						if (currEncounterList.get(0).checkClass() == 1) {
 							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
-									+ currEncounterList.get(0).getMtype());
+									+ currEncounterList.get(0).getMtype() + ".");
 						} else {
 							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
-									+ currEncounterList.get(0).getType());
+									+ currEncounterList.get(0).getType() + ".");
 						}
 
+						// increments count for lower loop
 						count++;
 						isCommand = false;
+
+						// Explain error
 					} else {
 						update("Add at least two characters before setup.");
 					}
 					break;
 
 				default:
+					// This message indicates that the input was not one of the accepted commands
 					update("Please enter a valid command");
 					break;
 				}
 
 			} else {
+				// Checks what the last command entered was
 				switch (lastCommand.toLowerCase()) {
 
 				case "add player":
 
 					if (count < 1) {
 
-						inputTemp = inputString;
-						update("Enter player type");
-						if (guiObj != null) {
-							guiObj.updateLogText();
-						}
-						count++;
-					}
+						boolean isInt = false;
+						int newInt = -1;
 
-					else {
+						try {
+							newInt = Integer.parseInt(inputString);
+							// if no exception is thrown, inputString is an integer
+							isInt = true;
+						} catch (NumberFormatException e) {
+							// If it throws this exception, inputString is not a number
 
-						// check input for correct type
-						if (addPlayer(inputTemp, inputString)) {
+							// sets latest requested input (name), as temporary value
+							inputTemp = inputString.toString();
 
-							// addPlayer(inputTemp, inputString);
-							update("Player " + inputTemp + " has been added.");
+							// asks for next input (type)
+							update("Enter player type");
 							if (guiObj != null) {
 								guiObj.updateLogText();
+
 							}
-							resetVariables();
+						}
+						if (isInt) {
+							// prompts for retry if inputString is an int
+							update("Character names can only be made from letters.");
+							update("Enter player name.");
+							count = 0;
 						} else {
+							count++;
+						}
+					}
+
+					// if count is greater than 0, name was input
+					else {
+
+						// checks if method was successful, uses temporary variable from first half of
+						// if statement and current input to add character.
+
+						int newInt = -1;
+						boolean isInt = false;
+						try {
+							// tries to set newInt as input
+							newInt = Integer.parseInt(inputString);
+
+							// isInt is only true if the above line works
+							isInt = true;
+
+						} catch (NumberFormatException e) {
+							// if this exception is thrown, input is not a number
+							if (addPlayer(inputTemp, inputString)) {
+
+								// display message indicating who was added
+								update("Player " + inputTemp + " has been added.");
+								if (guiObj != null) {
+									guiObj.updateLogText();
+								}
+								// Successful end of logic, reset variables
+								resetVariables();
+							} else {
+								// if player couldn't be added, the loop is set back one step to allow user to
+								// try again
+								count = 1;
+								isCommand = false;
+							}
+						}
+
+						// if exception wasn't thrown, retry for type
+						if (isInt) {
+							update("Invalid input, please enter only letters.");
 							count = 1;
 							isCommand = false;
+							update("Enter player type.");
 						}
+
 					}
 					break;
 
@@ -902,56 +970,105 @@ public class Game {
 
 					case 0:
 
-						inputTemp = inputString.toString(); // name
-						update("Enter player type");
-						count++;
+						boolean isInt = false;
+
+						try {
+							int newint = Integer.parseInt(inputString);
+							isInt = true;
+						} catch (NumberFormatException e) {
+							// if exception is thrown, inputString is not a number
+							// sets current input (name) to temp variable
+							inputTemp = inputString.toString();
+							update("Enter player type.");
+						}
+
+						if (isInt) {
+							update("Character names can only be made from letters.");
+							update("Enter player name.");
+							count = 0;
+						} else {
+							count++;
+						}
+
 						break;
 
 					case 1:
 
-						boolean flag = false;
-						for (PlayerType typeTemp : PlayerType.values()) {
-							if (inputString.toUpperCase().equals(typeTemp.toString())) {
-								flag = true;
-								// taking the last command and looping
+						boolean isInt1 = false;
+
+						try {
+							int newint = Integer.parseInt(inputString);
+							isInt1 = true;
+						} catch (NumberFormatException e) {
+							// inputString is not a number
+							boolean flag = false;
+							for (PlayerType typeTemp : PlayerType.values()) {
+								if (inputString.toUpperCase().equals(typeTemp.toString())) {
+									flag = true;
+									// taking the last command and looping
+								}
+							}
+
+							if (flag) {
+								inputTemp1 = inputString.toString(); // type
+								update("Enter player health");
+								count++;
+							} else {
+								update("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n"
+										+ "	CLERIC,\n" + "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n"
+										+ "	RANGER,\n" + "	ROGUE,\n" + "	SORCERER,\n" + "	WARLOCK,\n"
+										+ "	WIZARD");
+								count = 1;
 							}
 						}
-
-						if (flag) {
-							inputTemp1 = inputString.toString(); // type
-							update("Enter player health");
-							count++;
-						} else {
-							update("Please enter a correct type\n" + "	BARBARIAN,\n" + "	BARD,\n" + "	CLERIC,\n"
-									+ "	DRUID,\n" + "	FIGHTER,\n" + "	MONK,\n" + "	PALADIN,\n" + "	RANGER,\n"
-									+ "	ROGUE,\n" + "	SORCERER,\n" + "	WARLOCK,\n" + "	WIZARD");
+						if (isInt1) {
 							count = 1;
+							update("Types can only include letters.");
+							update("Enter player type.");
 						}
 						break;
 
 					case 2:
+
+						boolean isInt2 = false;
+
 						try {
 							intTemp = Integer.parseInt(inputString); // health
+							isInt2 = true;
 						} catch (NumberFormatException p) {
-							update("Please enter a number");
+							update("Please enter only positive numbers.");
+							count = 2;
 						}
 
-						if (intTemp != -1) {
-							update("Enter player level");
-							count++;
+						if (isInt2) {
+							if (intTemp > 0) {
+								// successful end of case
+								update("Enter player level");
+								count++;
+							} else {
+								update("Please enter only positive numbers.");
+								count = 2;
+							}
 						}
 						break;
 
 					case 3:
+						boolean isInt3 = false;
 						try {
 							intTemp1 = Integer.parseInt(inputString); // level
+							isInt3 = true;
 						} catch (NumberFormatException p) {
-							update("Please enter a number");
+							update("Please enter only positive numbers.");
+							count = 3;
 						}
 
-						if (addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
-							// addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
-							resetVariables();
+						if (isInt3) {
+							if (addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
+								// addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
+								resetVariables();
+							}
+						} else {
+							count = 3;
 						}
 
 						break;
@@ -963,54 +1080,98 @@ public class Game {
 					switch (count) {
 
 					case 0:
-						inputTemp = inputString.toString(); // name
-						update("Enter monster type");
-						count++;
+
+						boolean isInt = false;
+						try {
+							int newint = Integer.parseInt(inputString);
+							isInt = true;
+						} catch (NumberFormatException e) {
+
+							inputTemp = inputString.toString(); // name
+							update("Enter monster type");
+							count++;
+						}
+
+						if (isInt) {
+							update("Monster names can only be letters.");
+							count = 0;
+						}
+
 						break;
 
 					case 1:
 
-						boolean check2 = false;
-						for (MonsterType typeTemp : MonsterType.values()) {
-							if (inputString.toUpperCase().equals(typeTemp.toString())) {
-								check2 = true;
+						boolean isInt1 = false;
+						try {
+							int newint = Integer.parseInt(inputString);
+							isInt1 = true;
+						} catch (NumberFormatException e) {
+							boolean check2 = false;
+							for (MonsterType typeTemp : MonsterType.values()) {
+								if (inputString.toUpperCase().equals(typeTemp.toString())) {
+									check2 = true;
+								}
+							}
+							if (check2) {
+								inputTemp1 = inputString.toString(); // type
+								update("Enter monster health");
+								count++;
+							} else {
+								update("Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n"
+										+ "	CELESTIAL,\n" + "	CONSTRUCT,\n" + "	DEMON,\n" + "	DRAGON,\n"
+										+ "	ELEMENTAL,\n" + "	FEY,\n" + "	FIEND,\n" + "	GIANT,\n" + "	HUMANOID,\n"
+										+ "	MONSTROSITY,\n" + "	OOZE,\n" + "	PLANT,\n" + "	UNDEAD");
 							}
 						}
-						if (check2) {
-							inputTemp1 = inputString.toString(); // type
-							update("Enter monster health");
-							count++;
-						} else {
-							update("Please enter a correct type\n 	ABERRATION,\n" + "	BEAST,\n" + "	CELESTIAL,\n"
-									+ "	CONSTRUCT,\n" + "	DEMON,\n" + "	DRAGON,\n" + "	ELEMENTAL,\n" + "	FEY,\n"
-									+ "	FIEND,\n" + "	GIANT,\n" + "	HUMANOID,\n" + "	MONSTROSITY,\n" + "	OOZE,\n"
-									+ "	PLANT,\n" + "	UNDEAD");
+						if (isInt1) {
+							update("Monster types can only be letters.");
+							count = 1;
 						}
 						break;
 
 					case 2:
+
+						boolean isInt2 = false;
 						try {
 							intTemp = Integer.parseInt(inputString); // health
+							isInt2 = true;
 						} catch (NumberFormatException p) {
-							update("Please enter a number");
+							update("Please enter only positive numbers.");
+							count = 2;
 						}
 
-						if (intTemp != -1) {
-							update("Enter monster level");
-							count++;
+						if (isInt2 && intTemp > 0) {
+							if (intTemp > 0) {
+								// successful entry
+								update("Enter monster level");
+								count++;
+							}
+						} else if (intTemp <= 0) {
+							update("Please enter only positive numbers.");
+							count = 2;
 						}
 						break;
 
 					case 3:
+
+						boolean isInt3 = false;
+
 						try {
 							intTemp1 = Integer.parseInt(inputString); // level
+							isInt3 = true;
 						} catch (NumberFormatException p) {
-							update("Please enter a number");
+							update("Please enter only positive numbers 1-20.");
 						}
 
-						if (addMonster(inputTemp, inputTemp1, intTemp, intTemp1)) {
-							// addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
-							resetVariables();
+						if (isInt3 && intTemp1 > 0 && intTemp1 < 21) {
+							// successful entry
+							if (addMonster(inputTemp, inputTemp1, intTemp, intTemp1)) {
+								// addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
+								resetVariables();
+							}
+						} else if (intTemp <= 0 || intTemp >= 21) {
+							count = 3;
+							update("Please enter only positive numbers 1-20.");
 						}
 
 						break;
@@ -1146,9 +1307,30 @@ public class Game {
 				case "attack":
 
 					if (count < 1) {
-						inputTemp = inputString;
-						update("Enter the amount of damage done");
-						count++;
+
+						boolean isInt = false;
+						try {
+							int newint = Integer.parseInt(inputString);
+							isInt = true;
+						} catch (NumberFormatException e) {
+							// if exception is thrown, inputString is not a number
+
+							// checks if player is in encounter
+							for (Player p : currEncounterList) {
+								if (p.getName().equalsIgnoreCase(inputString)) {
+									inputTemp = inputString;
+									update("Enter the amount of damage done");
+									count++;
+								} else {
+									update("Character must be in the encounter.");
+								}
+							}
+						}
+						if (isInt) {
+							count = 0;
+							update("Enter a valid name.");
+						}
+
 					} else {
 						try {
 							intTemp = Integer.parseInt(inputString);
@@ -1156,9 +1338,13 @@ public class Game {
 							update("Please enter a valid number.");
 						}
 
-						if (intTemp != -1) {
+						if (intTemp > 0) {
+							// successful end of logic
 							attack(inputTemp, intTemp);
 							resetVariables();
+						} else {
+							update("Please enter only positive numbers.");
+							count = 1;
 						}
 					}
 					break;
@@ -1166,28 +1352,55 @@ public class Game {
 				case "heal":
 
 					if (count < 1) {
-						inputTemp = inputString;
-						update("Enter the amount of healing done.");
-						count++;
+
+						boolean isInt = false;
+						try {
+							int newint = Integer.parseInt(inputString);
+							isInt = true;
+						} catch (NumberFormatException e) {
+							// if exception is thrown, input is not an integer
+
+							for (Player p : currEncounterList) {
+								if (p.getName().equalsIgnoreCase(inputString)) {
+									inputTemp = inputString;
+									update("Enter the amount of healing done.");
+									count++;
+								} else {
+									update("Player must be in the encounter.");
+									count = 0;
+								}
+							}
+						}
+						if (isInt) {
+							update("Enter a valid name.");
+							count = 0;
+						}
+
 					} else {
+
 						try {
 							intTemp = Integer.parseInt(inputString);
 						} catch (NumberFormatException e) {
-							update("Please enter a valid number.");
+							update("Please a valid number.");
+							count = 1;
 						}
 
-						if (intTemp != -1) {
+						if (intTemp > 0) {
+							// successful end of logic
 							heal(inputTemp, intTemp);
 							resetVariables();
+						}
+						else {
+							update("Please enter only positive numbers.");
 						}
 					}
 
 					break;
 
 				case "setup":
-					
+
 					boolean finalLoop = false;
-					
+
 					try {
 						intTemp = Integer.parseInt(inputString);
 					} catch (NumberFormatException e) {
@@ -1196,12 +1409,12 @@ public class Game {
 						break;
 					}
 
-					if (intTemp > 0 ) {
+					if (intTemp > 0) {
 
 						if (count < currEncounterList.size()) {
-							
+
 							hashmap.put(currEncounterList.get(count - 1).getName(), intTemp);
-							
+
 							if (currEncounterList.get(count).checkClass() == 1) {
 								update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
 										+ currEncounterList.get(count).getMtype());
@@ -1211,21 +1424,20 @@ public class Game {
 										+ currEncounterList.get(count).getType());
 								count++;
 							}
-							
-						} else if(count == currEncounterList.size()){
+
+						} else if (count == currEncounterList.size()) {
 							hashmap.put(currEncounterList.get(count - 1).getName(), intTemp);
 							finalLoop = true;
 						}
-						
+
 						else {
 							break;
 						}
 
+					} else {
+						// do nothing
 					}
-					else {
-						//do nothing
-					}
-					
+
 					if (finalLoop) {
 						sortEncounter(hashmap);
 						update("Characters successfully sorted by initiative!");
@@ -1263,21 +1475,24 @@ public class Game {
 		return curString;
 	}
 
+	// sets all class level variables used in scanInput() to their default values
 	public void resetVariables() {
 		inputTemp = "";
 		inputTemp1 = "";
 		inputTemp2 = "";
 		inputTemp3 = "";
 		intTemp = -1;
-		intTemp = -1; // -1 is considered null for this project.
+		intTemp1 = -1; // -1 is considered null for this project.
 		isCommand = true;
 		count = 0;
 	}
 
+	// sets logString
 	public void setLogString(ArrayList<String> stringlist) {
 		logString = stringlist;
 	}
 
+	// returns logString
 	public ArrayList<String> getLogString() {
 		return logString;
 	}
