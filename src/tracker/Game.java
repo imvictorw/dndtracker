@@ -1192,7 +1192,6 @@ public class Game {
 					break;
 
 				case "setup":
-					HashMap<String, Integer> tempMap = new HashMap<String, Integer>();
 
 					while (count <= currEncounterList.size() - 1) {
 						try {
@@ -1205,7 +1204,7 @@ public class Game {
 
 						if (intTemp != -1) {
 
-							tempMap.put(currEncounterList.get(count - 1).getName(), intTemp);
+							hashmap.put(currEncounterList.get(count - 1).getName(), intTemp);
 
 							if (count <= currEncounterList.size() - 2) {
 								if (currEncounterList.get(count).checkClass() == 1) {
@@ -1223,7 +1222,7 @@ public class Game {
 						}
 
 					}
-					sortEncounter(tempMap);
+					sortEncounter(hashmap);
 					resetVariables();
 					break;
 
