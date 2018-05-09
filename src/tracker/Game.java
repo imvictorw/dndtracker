@@ -723,7 +723,7 @@ public class Game {
 
 				return 0;
 			}
-		}; // Formula to compare the two different set values for intiatives
+		}; // Formula to compare the two different set values for initiatives
 
 		ArrayList<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(unsorted.entrySet());
 		Collections.sort(listOfEntries, valueComparator); // sorted
@@ -731,7 +731,7 @@ public class Game {
 		for (Entry<String, Integer> pair : listOfEntries) {
 			for (int j = 0; j < currEncounterList.size(); j++) {
 				// update(pair.getKey()+" "+currEncounterList.get(j).getName());
-				if (currEncounterList.get(j).getName().equals(pair.getKey())) {
+				if (currEncounterList.get(j).getName().equalsIgnoreCase(pair.getKey())) {
 					sorted.add(currEncounterList.get(j));
 				}
 			}
@@ -890,7 +890,7 @@ public class Game {
 						// check input for correct type
 						if (addPlayer(inputTemp, inputString)) {
 
-							addPlayer(inputTemp, inputString);
+							//addPlayer(inputTemp, inputString);
 							update("Player " + inputTemp + " has been added.");
 							if (guiObj != null) {
 								guiObj.updateLogText();
@@ -957,7 +957,7 @@ public class Game {
 						}
 
 						if (addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
-							addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
+							//addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
 							resetVariables();
 						}
 
@@ -1016,7 +1016,7 @@ public class Game {
 						}
 
 						if (addMonster(inputTemp, inputTemp1, intTemp, intTemp1)) {
-							addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
+							//addMonster(inputTemp, inputTemp1, intTemp, intTemp1);
 							resetVariables();
 						}
 
@@ -1206,17 +1206,18 @@ public class Game {
 						if (intTemp != -1) {
 
 							tempMap.put(currEncounterList.get(count - 1).getName(), intTemp);
-							
-							if (count < currEncounterList.size() - 1) {
+
+							if (count <= currEncounterList.size() - 2) {
 								if (currEncounterList.get(count).checkClass() == 1) {
 									update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
 											+ currEncounterList.get(count).getMtype());
+									count++;
 								} else {
 									update("Dice Number? for " + currEncounterList.get(count).getName() + " the "
 											+ currEncounterList.get(count).getType());
+									count++;
 								}
-							}
-							else {
+							} else {
 								break;
 							}
 						}

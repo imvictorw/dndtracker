@@ -148,6 +148,7 @@ public class gui implements igui {
 					sendToGame();
 				} else if (e.detail == SWT.ARROW_UP) {
 					txtbox.setText(lastCommand);
+					//doesn't work.
 				}
 
 			}
