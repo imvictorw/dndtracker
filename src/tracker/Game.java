@@ -15,6 +15,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import java.util.Scanner;
 //import java.io.BufferedReader;
 import java.io.File;
@@ -389,7 +393,21 @@ public class Game {
 	}
 
 	public void help() {
-		update("SHIT"); // lol
+		JFrame newFrame = new JFrame();
+		JOptionPane.showMessageDialog(newFrame, "Prerequesite: Must add a minimum of two characters, run setup.\r\n" + 
+				"\r\n" + 
+				"setup: Used to enter in inititives for each active character and monster.\r\n" + 
+				"next: Used when all characters have taken turn and party is ready for next round.\r\n" + 
+				"save: Save the game in its current state including character initiatives and health. Will only work if 'next' was called at least 1 time.\r\n" + 
+				"load: Loads prior saved encounter data.\r\n" + 
+				"add player: Used when introducing new player characters into encounter.\r\n" + 
+				"add player2: When introducing a character that has a higher level than 1.\r\n" + 
+				"add monster: Used to add new nonplayer enemy into encounter.\r\n" + 
+				"remove: Used to remove Player or Monster character from encounter.\r\n" + 
+				"edit: Used to edit Player or Monster characters current level.\r\n" + 
+				"heal: Used to heal Player and Monster characters current health.\r\n" + 
+				"attack: Used to inflict select number of damage on any charcater in encounter.\r\n" + 
+				"alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n");
 	}
 
 	/**
@@ -743,10 +761,12 @@ public class Game {
 	// copy and pasted from above, with changes to make it compatible with the GUI
 	// removed scanner and replaced with different input acceptance
 	public void startGameGui() {
-		update("Welcome to Dungeons And Dragons 5th Edition Battle Tracker\nCurrently it tracks health throughout every encounter");
-		update("Begin adding monsters and players to the encounter to start the journey!\nLook at the help box on the right to get started!");
-		update("******************************************************************************");
-		update("When you are complete with adding all the players and monsters, use the setup command to get started");
+		update("*****************************************\n"
+				+ "Welcome to Dungeons And Dragons 5th Edition\nBattle Tracker!\nCurrently it tracks health throughout every encounter.\n"
+				+ "Begin adding monsters and players to the\nencounter to start the journey!\nLook at the help box on the right, or type\n"
+				+ "help in the textbox below to get started!\n"
+				+ "*****************************************\n"
+				+ "When you are complete with adding all the players\nand monsters, use the setup command to get started.");
 		// added players for testing
 		// addPlayer("DOn", "BARD");
 		// addPlayer("Lez", "BARD");
