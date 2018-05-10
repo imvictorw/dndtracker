@@ -631,7 +631,7 @@ public class gui implements igui {
 		logText.setBounds(31, 126, 376, 343);
 
 		CLabel lblTest = new CLabel(shell, SWT.NONE);
-		lblTest.setImage(SWTResourceManager.getImage(gui.class, "/tracker/RPGBTlogo_sm.png"));
+		lblTest.setImage(SWTResourceManager.getImage(tracker.gui.class, "/tracker/RPGBTlogo3.png"));
 		lblTest.setBounds(31, 10, 376, 110);
 		lblTest.setText("");
 		shell.setTabList(new Control[] { txtbox, btnEnter, lblNewLabel });
