@@ -394,20 +394,19 @@ public class Game {
 
 	public void help() {
 		JFrame newFrame = new JFrame();
-		JOptionPane.showMessageDialog(newFrame, "Prerequesite: Must add a minimum of two characters, run setup.\r\n" + 
-				"\r\n" + 
-				"setup: Used to enter in inititives for each active character and monster.\r\n" + 
-				"next: Used when all characters have taken turn and party is ready for next round.\r\n" + 
-				"save: Save the game in its current state including character initiatives and health. Will only work if 'next' was called at least 1 time.\r\n" + 
-				"load: Loads prior saved encounter data.\r\n" + 
-				"add player: Used when introducing new player characters into encounter.\r\n" + 
-				"add player2: When introducing a character that has a higher level than 1.\r\n" + 
-				"add monster: Used to add new nonplayer enemy into encounter.\r\n" + 
-				"remove: Used to remove Player or Monster character from encounter.\r\n" + 
-				"edit: Used to edit Player or Monster characters current level.\r\n" + 
-				"heal: Used to heal Player and Monster characters current health.\r\n" + 
-				"attack: Used to inflict select number of damage on any charcater in encounter.\r\n" + 
-				"alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n");
+		JOptionPane.showMessageDialog(newFrame, "Prerequesite: Must add a minimum of two characters, run setup.\r\n"
+				+ "\r\n" + "setup: Used to enter in inititives for each active character and monster.\r\n"
+				+ "next: Used when all characters have taken turn and party is ready for next round.\r\n"
+				+ "save: Save the game in its current state including character initiatives and health. Will only work if 'next' was called at least 1 time.\r\n"
+				+ "load: Loads prior saved encounter data.\r\n"
+				+ "add player: Used when introducing new player characters into encounter.\r\n"
+				+ "add player2: When introducing a character that has a higher level than 1.\r\n"
+				+ "add monster: Used to add new nonplayer enemy into encounter.\r\n"
+				+ "remove: Used to remove Player or Monster character from encounter.\r\n"
+				+ "edit: Used to edit Player or Monster characters current level.\r\n"
+				+ "heal: Used to heal Player and Monster characters current health.\r\n"
+				+ "attack: Used to inflict select number of damage on any charcater in encounter.\r\n"
+				+ "alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n");
 	}
 
 	/**
@@ -764,8 +763,7 @@ public class Game {
 		update("*****************************************\n"
 				+ "Welcome to Dungeons And Dragons 5th Edition\nBattle Tracker!\nCurrently it tracks health throughout every encounter.\n"
 				+ "Begin adding monsters and players to the\nencounter to start the journey!\nLook at the help box on the right, or type\n"
-				+ "help in the textbox below to get started!\n"
-				+ "*****************************************\n"
+				+ "help in the textbox below to get started!\n" + "*****************************************\n"
 				+ "When you are complete with adding all the players\nand monsters, use the setup command to get started.");
 		// added players for testing
 		// addPlayer("DOn", "BARD");
@@ -911,6 +909,7 @@ public class Game {
 
 						boolean isInt = false;
 						int newInt = -1;
+						boolean nameCheck = false;
 
 						try {
 							newInt = Integer.parseInt(inputString);
@@ -920,13 +919,25 @@ public class Game {
 							// If it throws this exception, inputString is not a number
 
 							// sets latest requested input (name), as temporary value
-							inputTemp = inputString.toString();
 
-							// asks for next input (type)
-							update("Enter player type");
-							if (guiObj != null) {
-								guiObj.updateLogText();
+							for (Player p : currEncounterList) {
+								if (p.getName().equalsIgnoreCase(inputString)) {
+									count = 0;
+									update("Cannot have same name as someone else in the encounter.");
+									isInt = false;
+									nameCheck = true;
+									break;
+								}
+							}
 
+							if (!nameCheck) {
+								inputTemp = inputString;
+								// asks for next input (type)
+								update("Enter player type");
+								count++;
+								if (guiObj != null) {
+									guiObj.updateLogText();
+								}
 							}
 						}
 						if (isInt) {
@@ -934,8 +945,6 @@ public class Game {
 							update("Character names can only be made from letters.");
 							update("Enter player name.");
 							count = 0;
-						} else {
-							count++;
 						}
 					}
 
@@ -991,6 +1000,7 @@ public class Game {
 					case 0:
 
 						boolean isInt = false;
+						boolean nameCheck = false;
 
 						try {
 							int newint = Integer.parseInt(inputString);
@@ -998,16 +1008,27 @@ public class Game {
 						} catch (NumberFormatException e) {
 							// if exception is thrown, inputString is not a number
 							// sets current input (name) to temp variable
-							inputTemp = inputString.toString();
-							update("Enter player type.");
+							for (Player p : currEncounterList) {
+								if (p.getName().equalsIgnoreCase(inputString)) {
+									nameCheck = true;
+									update("Cannot have same name as someone else in the encounter.");
+									count = 0;
+									isInt = false;
+									break;
+								}
+
+							}
+							if (!nameCheck) {
+								inputTemp = inputString.toString();
+								update("Enter player type.");
+								count++;
+							}
 						}
 
 						if (isInt) {
 							update("Character names can only be made from letters.");
 							update("Enter player name.");
 							count = 0;
-						} else {
-							count++;
 						}
 
 						break;
@@ -1102,11 +1123,24 @@ public class Game {
 					case 0:
 
 						boolean isInt = false;
+						boolean nameCheck = false;
+
 						try {
 							int newint = Integer.parseInt(inputString);
 							isInt = true;
 						} catch (NumberFormatException e) {
+							for (Player p : currEncounterList) {
+								if (p.getName().equalsIgnoreCase(inputString)) {
+									nameCheck = true;
+									count = 0;
+									update("Cannot have same name as someone else in the encounter.");
+									isInt = false;
+									break;
+								}
+							}
+						}
 
+						if (!nameCheck) {
 							inputTemp = inputString.toString(); // name
 							update("Enter monster type");
 							count++;
@@ -1409,8 +1443,7 @@ public class Game {
 							// successful end of logic
 							heal(inputTemp, intTemp);
 							resetVariables();
-						}
-						else {
+						} else {
 							update("Please enter only positive numbers.");
 						}
 					}
