@@ -645,7 +645,7 @@ public class Game {
 	 * 
 	 * @throws JSONException
 	 */
-	public void next() {
+/*	public void next() {
 
 		int ec = encounterCheck();
 
@@ -660,9 +660,9 @@ public class Game {
 			// memory area of that space
 			// So you need to make a duplicate of the array so when it gets deleted the
 			// memory area isnt deleted
-			for (int i = 0; i < currEncounterList.size(); i++) {
-				tempArray.add(currEncounterList.get(i));
-			}
+				for(Player p : currEncounterList) {
+					tempArray.add(new Player(p));
+				}
 
 			encounterArray.add(tempArray);
 			// Gets the index of what to delete
@@ -694,7 +694,16 @@ public class Game {
 		}
 
 	}
+*/
+	public void next() {
+		ArrayList<Player> tempArray = new ArrayList<Player>();
+		for(Player p : currEncounterList) {
+			tempArray.add(new Player(p));
+		}
 
+		
+		encounterArray.add(tempArray);
+	}
 	public void setup() {
 		HashMap<String, Integer> temp = new HashMap<String, Integer>();
 		String tempname;

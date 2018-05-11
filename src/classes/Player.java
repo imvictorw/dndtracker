@@ -102,6 +102,16 @@ public class Player {
 		this.mtype = mtype;
 	}
 	
+	//Used to copy player
+	public Player(Player p) {
+		this.name = p.getName();
+		this.level = p.getLevel();
+		this.health = p.getHealth();
+		this.maxHealth = p.getMaxHealth();
+		this.type = p.getType();
+		this.mtype = p.getMtype();
+		
+	}
 	public MonsterType getMtype() {
 		return mtype;
 	}
