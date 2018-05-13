@@ -420,27 +420,31 @@ public class Game {
 		int counter = 1;
 
 		String arraySize = "" + encounterArray.size();
-		update(arraySize);
 
-		for (ArrayList<Player> list : encounterArray) {
+		if (encounterArray.size() > 0) {
+			// update(arraySize);
+			for (ArrayList<Player> list : encounterArray) {
 
-			Player character;
-			update("Round " + counter);
-			update("Order" + "\t" + "Name" + "\t" + "Type" + "\t" + "Health");
+				Player character;
+				update("Round " + counter);
+				update("Order" + "\t" + "Name" + "\t" + "Type" + "\t" + "Health");
 
-			for (int i = 0; i < list.size(); i++) {
-				character = list.get(i);
-				int j = i + 1;
-				if (character.checkClass() == 1) {
-					update(j + "	" + character.getName() + "		" + character.getMtype() + "		"
-							+ character.getHealth());
-				} else {
-					update(j + "	" + character.getName() + "		" + character.getType() + "		"
-							+ character.getHealth());
+				for (int i = 0; i < list.size(); i++) {
+					character = list.get(i);
+					int j = i + 1;
+					if (character.checkClass() == 1) {
+						update(j + "	" + character.getName() + "		" + character.getMtype() + "		"
+								+ character.getHealth());
+					} else {
+						update(j + "	" + character.getName() + "		" + character.getType() + "		"
+								+ character.getHealth());
+					}
+
 				}
-
+				counter++;
 			}
-			counter++;
+		} else {
+			update("The encounter is still on the first round!");
 		}
 	}
 
@@ -1353,16 +1357,25 @@ public class Game {
 
 				case "remove":
 
-					boolean found1 = false;
-					if (currEncounterList.size() > 0) {
-						for (Player p : currEncounterList) {
-							if (p.getName().equalsIgnoreCase(inputString)) {
-								found1 = true;
-								break;
+					if (inputString.equalsIgnoreCase("exit")) {
+						// player no longer wants to remove character
+						resetVariables();
+					} else {
+						boolean found1 = false;
+						if (currEncounterList.size() > 0) {
+							for (Player p : currEncounterList) {
+								if (p.getName().equalsIgnoreCase(inputString)) {
+									found1 = true;
+									break;
+								}
 							}
-						}
-						if (found1) {
-							remove(inputString);
+							if (found1) {
+								// successful end of logic
+								remove(inputString);
+								resetVariables();
+							} else {
+								update("Player not found. Type 'exit' to leave the remove dialog.");
+							}
 						}
 					}
 					break;
@@ -1379,14 +1392,20 @@ public class Game {
 							// if exception is thrown, inputString is not a number
 
 							// checks if player is in encounter
+							boolean inEnc = false;
 							for (Player p : currEncounterList) {
 								if (p.getName().equalsIgnoreCase(inputString)) {
+									// if player is found, go to next step
 									inputTemp = inputString;
-									update("Enter the amount of damage done");
+									update("Enter the amount of damage done.");
 									count++;
-								} else {
-									update("Character must be in the encounter.");
+									inEnc = true;
 								}
+
+							}
+							if (!inEnc) {
+								update("Character must be in the encounter.");
+								count = 0;
 							}
 						}
 						if (isInt) {
@@ -1398,7 +1417,8 @@ public class Game {
 						try {
 							intTemp = Integer.parseInt(inputString);
 						} catch (NumberFormatException e) {
-							update("Please enter a valid number.");
+							// update("Please enter a valid number.");
+							count = 1;
 						}
 
 						if (intTemp > 0) {
