@@ -3,3 +3,11 @@
 .classpath
 
 bin/tracker/Game.class
+
+*.html
+
+doc/package-list
+
+*.css
+
+*.js

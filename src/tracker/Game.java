@@ -572,7 +572,6 @@ public class Game {
 			counter++;
 		}
 		String result = mapOrdered.toString();
-		update(result);
 		return result;
 	}
 
