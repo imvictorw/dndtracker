@@ -1,9 +1,7 @@
 /**
  * 
  * @author Victor
- * 
- *`	BUGS	
- * save doesnt show properly. 
+
  * 
  */
 
@@ -20,51 +18,20 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import java.util.Scanner;
-//import java.io.BufferedReader;
 import java.io.File;
-//import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-/*import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Reader;*/
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import classes.*;
-//import java.util.Scanner;
-/* Commands
- * Attack(name,health)
- * Heal(name, health)
- * help()
- * next() //next encounter
- * 
- * Add(type, name, health, level)
- * Remove(type, name)
- * Edit(type, name, stat to edit)
- * 		- Console, 1.health,2.level
- * 
- * stats() - Prints out the encounters
- * 
- * save()
- * load()
- * 
- *Save function+Reload - So can restart when program is turned off 
- *Get the arrays from previous encounters
- *Input stream on the file to get back the data ~~~JSON~~~
- *Cannot run setup again unless next function has been called easy boolean
- *have to run setup before encounter starts ~~~
- *
- *Check inputs ints etc
- */
 
 public class Game {
 
-	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // To save every encounter
-	public ArrayList<Player> currEncounterList = new ArrayList<Player>(); // For every current encounter
+	private ArrayList<ArrayList<Player>> encounterArray = new ArrayList<>(); // Store the current round
+	public ArrayList<Player> currEncounterList = new ArrayList<Player>(); // Array for storing every round
 	public ArrayList<String> logString = new ArrayList<String>();
 	public String curString;
 	public igui guiObj;
@@ -106,7 +73,16 @@ public class Game {
 		update("Welcome " + type + " " + name);
 		currEncounterList.add(temp);
 	}
-
+	
+	/**
+	 * Creates a default character with the default stats given by DnD.
+	 * They are level 1
+	 * 
+	 * 
+	 * @param name		Name of the Player
+	 * @param type		Type of the Player
+	 * @return Player	Object
+	 */
 	public boolean addPlayer(String name, String type) {
 
 		boolean check = false;
@@ -120,6 +96,7 @@ public class Game {
 			}
 		}
 
+		//Checks if there is the name is already in the encounter
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equalsIgnoreCase(name)) {
 				update("Cannot have the same name with somebody in the encounter");
@@ -135,6 +112,7 @@ public class Game {
 			return false;
 		}
 
+		//Adds player to the encounter array
 		Player temp = new Player(name, PlayerType.valueOf(type));
 		update("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
@@ -143,6 +121,16 @@ public class Game {
 
 	}
 
+	/**
+	 * Advanced version of adding a player. This can be used when a player is introduced to an encounter with a higher level than 1
+	 * 
+	 * @param name		Name of Player
+	 * @param type		Type of Player
+	 * @param health	Amount of Health for Player
+	 * @param level		Level of Player
+	 * @return			Player Object
+	 */
+	
 	public boolean addPlayer2(String name, String type, int health, int level) {
 
 		boolean check = false;
@@ -156,9 +144,9 @@ public class Game {
 			}
 		}
 
+		//Checks if there is the name is already in the encounter
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
-				// update("Cannot have the same name with somebody in the encounter");
 				return false;
 			}
 		}
@@ -171,6 +159,7 @@ public class Game {
 			return false;
 		}
 
+		//Adds player to the encounter array
 		Player temp = new Player(name, PlayerType.valueOf(type), health, level);
 		update("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
@@ -179,6 +168,15 @@ public class Game {
 
 	}
 
+	/**
+	 * Method which allows adding monsters to the encounter list
+	 * 
+	 * @param name		Name of Monster
+	 * @param type		Type of Monster
+	 * @param health	Health Monster has
+	 * @param level		Level Monster is
+	 * @return			Player object
+	 */
 	public boolean addMonster(String name, String type, int health, int level) {
 		boolean check = false;
 		type = type.toUpperCase();
@@ -191,6 +189,7 @@ public class Game {
 			}
 		}
 
+		//Checks if there is the name is already in the encounter
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
 				update("Cannot have the same name with somebody in the encounter.\nIf same type of monster, add a \nnumber. Eg. Zombie, Zombie1");
@@ -207,6 +206,7 @@ public class Game {
 			return false;
 		}
 
+		//Adds monster to the encounter array
 		Player temp = new Player(name, MonsterType.valueOf(type), health, level);
 		update("Welcome " + type + " " + name);
 		currEncounterList.add(temp);
@@ -214,79 +214,12 @@ public class Game {
 		return true;
 	}
 
-	public void edit(String name) {
-		for (Player checkName : currEncounterList) {
-			if (checkName.getName().toLowerCase().equals(name.toLowerCase())) {
-				update("Please enter the number on what you want to edit with " + name + "\n"
-						+ "1. Name\n2. Level+MaxHealth\nPress 3 or enter to quit");
-
-				while (sc.hasNextInt()) {
-					int choice = sc.nextInt();
-					/** Need to add checks **/
-					if (choice == 1) { // Change health
-						update("Please enter the new name for the character to be");
-						sc.nextLine();
-						String changeName = sc.nextLine();
-						checkName.setName(changeName);
-
-						update("Change in name is successful");
-
-					} else if (choice == 2) { // Change Level
-						update("Please enter the new level for the character to be");
-						int newLevel = sc.nextInt();
-
-						update("Please enter the new max health for the character to be");
-						int newMaxHealth = sc.nextInt();
-
-						checkName.setMaxHealth(newMaxHealth);
-						checkName.setLevel(newLevel);
-
-						update("Change in level is successful");
-
-					} else if (choice == 3) {
-						break;
-					} else {
-						update("Enter a correct number choice");
-					}
-				}
-			}
-		}
-	}
-
-	public void edit(String name, int num) {
-
-		for (Player checkName : currEncounterList) {
-			if (checkName.getName().toLowerCase().equals(name.toLowerCase())) {
-
-				if (num == 1) { // Change health
-					update("Please enter the new name for the character to be");
-					sc.nextLine();
-					String changeName = sc.nextLine();
-					checkName.setName(changeName);
-
-					update("Change in name is successful");
-
-				} else if (num == 2) { // Change Level
-					update("Please enter the new level for the character to be");
-					int newLevel = sc.nextInt();
-
-					update("Please enter the new max health for the character to be");
-					int newMaxHealth = sc.nextInt();
-
-					checkName.setMaxHealth(newMaxHealth);
-					checkName.setLevel(newLevel);
-
-					update("Change in level is successful");
-
-				} else if (num == 3) {
-					break;
-				} else {
-					update("Enter a correct number choice");
-				}
-			}
-		}
-	}
-
+	/**
+	 * Finder method to find a player in the encounter through the name provided
+	 * 
+	 * @param name		Name of the Player
+	 * @return			Player object
+	 */
 	public Player find(String name) {
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			if (currEncounterList.get(i).getName().toLowerCase().equals(name.toLowerCase())) {
@@ -296,14 +229,20 @@ public class Game {
 		return null;
 	}
 
+	/**
+	 * Remove player from the round
+	 * 
+	 * @param del		Name of player being deleted
+	 */
 	public void remove(String del) {
 
-		Player delPlayer = find(del);
+		Player delPlayer = find(del); //Gets the player object name
 		if (delPlayer == null) {
 			update("Invalid name");
 			return;
 		}
 
+		//Remove the player
 		if (currEncounterList != null && currEncounterList.contains(delPlayer)) {
 			currEncounterList.remove(delPlayer);
 			update("Successfully removed " + del);
@@ -315,19 +254,25 @@ public class Game {
 
 	/** MOVES INCLUDING ATTACK & HEAL CHARACTER **/
 
-	// Can customize wording depending on character / monster type
+	/**
+	 * Attacks the player object 
+	 * 
+	 * @param attack	Name of the player being attacked
+	 * @param amount	Amount of damage taken by player
+	 * @return			If successful attack
+	 */
 	public boolean attack(String attack, int amount) {
 
-		Player attacked = find(attack);
+		Player attacked = find(attack); //finds player object
 		if (attacked == null) {
 			update("Invalid name");
 			return false;
 		}
 
-		int currHealth = attacked.getHealth();
+		int currHealth = attacked.getHealth(); //Gets the current health
 
-		if (attacked.checkClass() == 1) {
-			if (currHealth > 0) {
+		if (attacked.checkClass() == 1) { //Checks type of monster
+			if (currHealth > 0) { //For monsters once they are less than 0 health they are dead
 				attacked.setHealth(currHealth - amount);
 				update(attack + " was hit with " + amount + " damage!");
 				return true;
@@ -335,7 +280,7 @@ public class Game {
 				update("Monster is already dead");
 			}
 		} else if (attacked.checkClass() == 2) {
-			if (currHealth > -10) {
+			if (currHealth > -10) { //For humans if they are below 0 but above 10 they are still alive but cannot move
 				attacked.setHealth(currHealth - amount);
 				update(attack + " was hit with " + amount + " damage!");
 				return true;
@@ -347,11 +292,16 @@ public class Game {
 		return false;
 	}
 
-	// Heal can be done by potion?
+	/**
+	 * Heals the player by an amount
+	 * 
+	 * @param heal		The player name which is being healed
+	 * @param amount	Amount of health being healed
+	 * @return			If successfully healed
+	 */
 	public boolean heal(String heal, int amount) {
-		// Check player exists
 
-		Player healed = find(heal);
+		Player healed = find(heal); //Finds player object
 
 		if (healed == null) {
 			update("Invalid name");
@@ -359,11 +309,11 @@ public class Game {
 		}
 
 		if (healed.checkClass() == 2) {
-			if (healed.getHealth() <= -10) {
+			if (healed.getHealth() <= -10) { //For humans if they are below 0 but above 10 they are still alive but cannot move
 				update("Character is dead");
 				return false;
 			}
-			if (healed.getMaxHealth() < healed.getHealth() + amount) {
+			if (healed.getMaxHealth() < healed.getHealth() + amount) { //Checks to make sure healing doesnt go past max health
 				healed.setHealth(healed.getMaxHealth());
 				update(heal + " is now full health " + "(" + healed.getMaxHealth() + ")");
 			} else {
@@ -392,6 +342,9 @@ public class Game {
 		return false;
 	}
 
+	/**
+	 * Help method to show commands
+	 */
 	public void help() {
 		JFrame newFrame = new JFrame();
 		JOptionPane.showMessageDialog(newFrame, "Prerequesite: Must add a minimum of two characters, run setup.\r\n"
@@ -409,26 +362,26 @@ public class Game {
 				+ "alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n");
 	}
 
+
 	/**
-	 * Vertical - Rounds // Horizontal - Players // Separate each encounter
-	 * 
-	 * // Encounter 1 // // Encounter 2
+	 * Shows the each set of rounds
+	 * Format is
+	 * Round #
+	 * Order (Initiative)		Name of Player		Type of Player		Health of Player
 	 * 
 	 */
-
 	public void stats() {
 		int counter = 1;
 
-		String arraySize = "" + encounterArray.size();
+		if (encounterArray.size() > 0) { //Checks if there are players in the encounter
 
-		if (encounterArray.size() > 0) {
-			// update(arraySize);
-			for (ArrayList<Player> list : encounterArray) {
+			for (ArrayList<Player> list : encounterArray) { //Goes through every round
 
 				Player character;
 				update("Round " + counter);
 				update("Order" + "\t" + "Name" + "\t" + "Type" + "\t" + "Health");
 
+				//Prints out of the data
 				for (int i = 0; i < list.size(); i++) {
 					character = list.get(i);
 					int j = i + 1;
@@ -448,12 +401,21 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Checks the stats of the players in the round
+	 * Format is
+	 * Round #
+	 * Order (Initiative)		Name of Player		Type of Player		Health of Player
+	 * 
+	 * 
+	 */
 	public void alive() {
 
 		Player character;
 		update("\n");
 		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health(Max)");
 
+		//Goes through the current encounter to spit out data
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			character = currEncounterList.get(i);
 			int j = i + 1;
@@ -469,11 +431,12 @@ public class Game {
 	}
 
 	/**
-	 * Monster Alive - 1 Player Alive - 2
+	 * Checks the player type there are still human or monsters alive in the encounter (Used for checking for next encounter but unused right now)
 	 * 
+	 * Monster Alive - 1 Player Alive - 2
 	 * Both Alive = 3 Both Dead = 0
 	 * 
-	 * @return
+	 * @return	The result of the Player type object
 	 */
 	public int encounterCheck() {
 
@@ -501,7 +464,7 @@ public class Game {
 	 * and adds them all back to the encounter array Adds the current round to the
 	 * currEncounterList
 	 * 
-	 * @param savefile
+	 * @param savefile	Output file 
 	 */
 
 	public void decode(String savefile) {
@@ -509,10 +472,15 @@ public class Game {
 		boolean ptypeCheck = false;
 
 		try {
-			JSONObject jsonObject = new JSONObject(savefile);
+			JSONObject jsonObject = new JSONObject(savefile); //Creates a JSONObject
+			
+			//Sorts through all of the savefile data
 			for (int i = 1; i < jsonObject.names().length() + 1; i++) {
+				
 				JSONObject newJSON = jsonObject.getJSONObject(Integer.toString(i));
 				ArrayList<Player> loadArray = new ArrayList<>();
+				
+				//Gets all the data and puts it in variables
 				for (int j = 0; j < newJSON.names().length(); j++) {
 					ptypeCheck = false;
 					JSONObject playerObject = newJSON.getJSONObject(Integer.toString(j));
@@ -521,13 +489,17 @@ public class Game {
 					int health = playerObject.getJSONObject("Attributes").getInt("Health");
 					int level = playerObject.getJSONObject("Attributes").getInt("Level");
 
+					
 					for (PlayerType typeTemp : PlayerType.values()) { // Checks if player or monster
 						if (type.equals(typeTemp.toString())) {
 							ptypeCheck = true;
 							break;
 						}
 					}
+					
+					//Adds players back in with the variables being stored
 					Player temp = null;
+					
 					if (ptypeCheck == true) {
 						temp = new Player(name, PlayerType.valueOf(type), health, level);
 					} else {
@@ -551,29 +523,39 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Stores the current data of all the rounds to a save file
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
 	public String encode() throws JSONException {
 
 		LinkedHashMap<String, Object> mapOrdered = new LinkedHashMap<>();
 
-		int counter = 1;
+		int counter = 1; //Round #
 
+		//Goes through every round array
 		for (ArrayList<Player> list : encounterArray) {
 
 			JSONObject round = new JSONObject();
 			JSONObject characterJSON = new JSONObject();
 			Player character;
 
+			//Stores all the information into a JSON array
 			for (int i = 0; i < list.size(); i++) {
 				character = list.get(i);
+				
+				//Checks if the player is a monster or a human
 				if (character.checkClass() == 1) { // Monster
 					JSONObject attr = new JSONObject();
 					attr.put("Type", character.getMtype());
 					attr.put("Health", character.getHealth());
 					attr.put("Level", character.getLevel());
 
-					round.put("Attributes", attr);
+					round.put("Attributes", attr); //Attribute is nested with other attributes with player
 					round.put("Name", character.getName());
-					characterJSON.put(Integer.toString(i), round);
+					characterJSON.put(Integer.toString(i), round); //Stores the information into a JSON Object
 				} else { // Human
 					JSONObject attr = new JSONObject();
 					attr.put("Type", character.getType());
@@ -586,7 +568,7 @@ public class Game {
 				}
 				round = new JSONObject();
 			}
-			mapOrdered.put(Integer.toString(counter), characterJSON);
+			mapOrdered.put(Integer.toString(counter), characterJSON); //Each round is stored
 			counter++;
 		}
 		String result = mapOrdered.toString();
@@ -595,11 +577,14 @@ public class Game {
 	}
 
 	/**
+	 * Save function to store the current data of the arrays to a text file
+	 * 
 	 * Order Determined by index of list ROUND Name Attributes Type Health HashMap
 	 * Linked List ("ROUND", "Array")
 	 */
 	public void save() {
 		try {
+			//Encodes the string which was encoded in a JSON format
 			String result = encode();
 
 			// Write to file
@@ -622,6 +607,9 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Read from the file saved from save function
+	 */
 	public void load() {
 		try {
 			// Read from file
@@ -643,103 +631,29 @@ public class Game {
 	}
 
 	/**
-	 * Sort through encounter list to see if there are no more monsters left or no
-	 * more humans left Delete all of the players with < 0 health Recreate
-	 * encounterlist add new players + monsters
-	 * 
-	 * @throws JSONException
+	 * Saves the current round into the new array
 	 */
-/*	public void next() {
-
-		int ec = encounterCheck();
-
-		// Removes all characters with less than 1 health
-		if (ec == 1 || ec == 2) {
-
-			ArrayList<Integer> toDelete = new ArrayList<>();
-			// Add it to encounterArray to print out
-
-			ArrayList<Player> tempArray = new ArrayList<Player>();
-			// When removed on the currEncounterList, the remove() function removes the
-			// memory area of that space
-			// So you need to make a duplicate of the array so when it gets deleted the
-			// memory area isnt deleted
-				for(Player p : currEncounterList) {
-					tempArray.add(new Player(p));
-				}
-
-			encounterArray.add(tempArray);
-			// Gets the index of what to delete
-			for (int k = 0; k < currEncounterList.size(); k++) {
-				Player character = currEncounterList.get(k);
-				if (character.checkClass() == 1) { // Monster
-					if (character.getHealth() <= 0) {
-						// remove(character.getName());
-						toDelete.add(k);
-					}
-				} else if (character.checkClass() == 2) { // Player
-					if (character.getHealth() <= -10) {
-						toDelete.add(k);
-						// remove(character.getName());
-					}
-				}
-			}
-
-			int delsize = toDelete.size() - 1;
-			// Delete out of the encounterArray
-			for (int l = delsize; l >= 0; l--) {
-				Player temp = currEncounterList.get(toDelete.get(l));
-				remove(temp.getName());
-			}
-
-		} else {
-			update("There are still monsters or players alive in the encounter");
-			return;
-		}
-
-	}
-*/
 	public void next() {
 		ArrayList<Player> tempArray = new ArrayList<Player>();
-		for(Player p : currEncounterList) {
-			tempArray.add(new Player(p));
+		for (Player p : currEncounterList) {
+			tempArray.add(new Player(p)); //Creates a new memory point by creating a new player so it doesnt reference the current player
 		}
 
-		
 		encounterArray.add(tempArray);
 	}
-	public void setup() {
-		HashMap<String, Integer> temp = new HashMap<String, Integer>();
-		String tempname;
-		int tempint;
 
-		// update("Enter each number which was rolled for each of these characters."
-		// + " The order will be automatically redone.");
-
-		// For each index of the encounter list, add their initiative and then reorder
-		// the encounterlist
-		for (int i = 0; i < currEncounterList.size(); i++) {
-			tempname = currEncounterList.get(i).getName();
-			if (currEncounterList.get(i).checkClass() == 1) {
-				update("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getMtype());
-			} else {
-				update("Dice Number? for " + tempname + " the " + currEncounterList.get(i).getType());
-			}
-
-			tempint = sc.nextInt();
-			temp.put(tempname, tempint);
-		}
-
-		sortEncounter(temp);
-
-	}
-
+	/**
+	 * Method to sort the initiatives of each players
+	 *    
+	 * @param unsorted The current map which contains the name of the player and the initiative which was rolled
+	 */
 	public void sortEncounter(HashMap<String, Integer> unsorted) {
 
 		ArrayList<Player> sorted = new ArrayList<Player>();
 
 		Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>() {
-
+			
+			//Compare function to see what number is learger
 			@Override
 			public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
 				int v1 = (int) obj1.getValue();
@@ -757,9 +671,9 @@ public class Game {
 		ArrayList<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(unsorted.entrySet());
 		Collections.sort(listOfEntries, valueComparator); // sorted
 
+		//Sorts the current encounter array and replaces it with the sorted array
 		for (Entry<String, Integer> pair : listOfEntries) {
 			for (int j = 0; j < currEncounterList.size(); j++) {
-				// update(pair.getKey()+" "+currEncounterList.get(j).getName());
 				if (currEncounterList.get(j).getName().equalsIgnoreCase(pair.getKey())) {
 					sorted.add(currEncounterList.get(j));
 				}
@@ -770,25 +684,27 @@ public class Game {
 
 	}
 
-	// copy and pasted from above, with changes to make it compatible with the GUI
-	// removed scanner and replaced with different input acceptance
+	/**
+	 * Starting method for the game
+	 */
 	public void startGameGui() {
 		update("*****************************************\n"
 				+ "Welcome to Dungeons And Dragons 5th Edition\nBattle Tracker!\nCurrently it tracks health throughout every encounter.\n"
 				+ "Begin adding monsters and players to the\nencounter to start the journey!\nLook at the help box on the right, or type\n"
 				+ "help in the textbox below to get started!\n" + "*****************************************\n"
 				+ "When you are complete with adding all the players\nand monsters, use the setup command to get started.");
-		// added players for testing
-		// addPlayer("DOn", "BARD");
-		// addPlayer("Lez", "BARD");
-		// addMonster("Len", "UNDEAD", 10, 20);
-		// addMonster("Evil", "FEY", 10, 1);
+
 		if (guiObj != null) {
 			guiObj.updateLogText();
 		}
 	}
 
-	// Directs user input to correct cases
+	// 
+	/**
+	 * Reads the input given by the user and provides action depending on the command given
+	 * 
+	 * @param inputString	Input given by the user
+	 */
 	public void scanInput(String inputString) {
 
 		// Checks that user input is not null
@@ -1118,7 +1034,7 @@ public class Game {
 
 						if (isInt3) {
 							if (addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
-								// addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1);
+								
 								resetVariables();
 							}
 						} else {
@@ -1557,7 +1473,9 @@ public class Game {
 		return curString;
 	}
 
-	// sets all class level variables used in scanInput() to their default values
+	/**
+	 * Sets all class level variables used in scanInput() to their default values
+	 */
 	public void resetVariables() {
 		inputTemp = "";
 		inputTemp1 = "";
@@ -1569,21 +1487,78 @@ public class Game {
 		count = 0;
 	}
 
-	// sets logString
+	/**
+	 * Setter Method for LogString
+	 * 
+	 * @param stringlist
+	 */
 	public void setLogString(ArrayList<String> stringlist) {
 		logString = stringlist;
 	}
 
-	// returns logString
+
+	/**
+	 * Getter Method for LogString
+	 * 
+	 * @return logString
+	 */
 	public ArrayList<String> getLogString() {
 		return logString;
 	}
 
-	// adds a string to the logString ArrayList and tells gui to update logtext with
-	// newest version of logString
+	/**
+	 * Adds a string to the logString ArrayList and tells GUI to update logtext with
+	 * the newest version of logString
+	 * 
+	 * @param addString
+	 */
 	public void update(String addString) {
 		logString.add(addString);
-		// update gui
 	}
 
 }
+
+/** UNUSED METHODS FOR LATER USE **/
+
+/** NEW ENCOUNTER CREATOR**/
+/**
+ * Sort through encounter list to see if there are no more monsters left or no
+ * more humans left Delete all of the players with < 0 health Recreate
+ * encounterlist add new players + monsters
+ * 
+ * @throws JSONException
+ */
+/*
+ * public void next() {
+ * 
+ * int ec = encounterCheck();
+ * 
+ * // Removes all characters with less than 1 health if (ec == 1 || ec == 2) {
+ * 
+ * ArrayList<Integer> toDelete = new ArrayList<>(); // Add it to encounterArray
+ * to print out
+ * 
+ * ArrayList<Player> tempArray = new ArrayList<Player>(); // When removed on the
+ * currEncounterList, the remove() function removes the // memory area of that
+ * space // So you need to make a duplicate of the array so when it gets deleted
+ * the // memory area isnt deleted for(Player p : currEncounterList) {
+ * tempArray.add(new Player(p)); }
+ * 
+ * encounterArray.add(tempArray); // Gets the index of what to delete for (int k
+ * = 0; k < currEncounterList.size(); k++) { Player character =
+ * currEncounterList.get(k); if (character.checkClass() == 1) { // Monster if
+ * (character.getHealth() <= 0) { // remove(character.getName());
+ * toDelete.add(k); } } else if (character.checkClass() == 2) { // Player if
+ * (character.getHealth() <= -10) { toDelete.add(k); //
+ * remove(character.getName()); } } }
+ * 
+ * int delsize = toDelete.size() - 1; // Delete out of the encounterArray for
+ * (int l = delsize; l >= 0; l--) { Player temp =
+ * currEncounterList.get(toDelete.get(l)); remove(temp.getName()); }
+ * 
+ * } else {
+ * update("There are still monsters or players alive in the encounter"); return;
+ * }
+ * 
+ * }
+ */
