@@ -631,60 +631,18 @@ public class Game {
 
 	}
 
+
 	/**
 	 * Saves the current round into the new array
 	 */
-<<<<<<< HEAD
 	public void next() {
 		ArrayList<Player> tempArray = new ArrayList<Player>();
 		for (Player p : currEncounterList) {
 			tempArray.add(new Player(p)); //Creates a new memory point by creating a new player so it doesnt reference the current player
-=======
-	/*
-	 * public void next() {
-	 * 
-	 * int ec = encounterCheck();
-	 * 
-	 * // Removes all characters with less than 1 health if (ec == 1 || ec == 2) {
-	 * 
-	 * ArrayList<Integer> toDelete = new ArrayList<>(); // Add it to encounterArray
-	 * to print out
-	 * 
-	 * ArrayList<Player> tempArray = new ArrayList<Player>(); // When removed on the
-	 * currEncounterList, the remove() function removes the // memory area of that
-	 * space // So you need to make a duplicate of the array so when it gets deleted
-	 * the // memory area isnt deleted for(Player p : currEncounterList) {
-	 * tempArray.add(new Player(p)); }
-	 * 
-	 * encounterArray.add(tempArray); // Gets the index of what to delete for (int k
-	 * = 0; k < currEncounterList.size(); k++) { Player character =
-	 * currEncounterList.get(k); if (character.checkClass() == 1) { // Monster if
-	 * (character.getHealth() <= 0) { // remove(character.getName());
-	 * toDelete.add(k); } } else if (character.checkClass() == 2) { // Player if
-	 * (character.getHealth() <= -10) { toDelete.add(k); //
-	 * remove(character.getName()); } } }
-	 * 
-	 * int delsize = toDelete.size() - 1; // Delete out of the encounterArray for
-	 * (int l = delsize; l >= 0; l--) { Player temp =
-	 * currEncounterList.get(toDelete.get(l)); remove(temp.getName()); }
-	 * 
-	 * } else {
-	 * update("There are still monsters or players alive in the encounter"); return;
-	 * }
-	 * 
-	 * }
-	 */
-	public void next() {
-		ArrayList<Player> tempArray = new ArrayList<Player>();
-		for (Player p : currEncounterList) {
-			tempArray.add(new Player(p));
->>>>>>> origin/GUI
 		}
 
 		encounterArray.add(tempArray);
 	}
-<<<<<<< HEAD
-=======
 
 	public void setup() {
 		HashMap<String, Integer> temp = new HashMap<String, Integer>();
@@ -711,7 +669,7 @@ public class Game {
 		sortEncounter(temp);
 
 	}
->>>>>>> origin/GUI
+
 
 	/**
 	 * Method to sort the initiatives of each players
