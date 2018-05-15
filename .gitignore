@@ -11,3 +11,5 @@ doc/package-list
 *.css
 
 *.js
+
+.classpath
