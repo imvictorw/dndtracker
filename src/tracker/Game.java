@@ -76,6 +76,7 @@ public class Game {
 	String lastCommand;
 	int count = 0;
 	boolean isCommand = true;
+	boolean ranSetup;
 	String inputTemp;
 	String inputTemp1;
 	String inputTemp2;
@@ -406,7 +407,8 @@ public class Game {
 				+ "edit: Used to edit Player or Monster characters current level.\r\n"
 				+ "heal: Used to heal Player and Monster characters current health.\r\n"
 				+ "attack: Used to inflict select number of damage on any charcater in encounter.\r\n"
-				+ "alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n");
+				+ "alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n"
+				+ "stats: Shows statistics of the encounter by round.\r\n");
 	}
 
 	/**
@@ -649,65 +651,49 @@ public class Game {
 	 * 
 	 * @throws JSONException
 	 */
-/*	public void next() {
-
-		int ec = encounterCheck();
-
-		// Removes all characters with less than 1 health
-		if (ec == 1 || ec == 2) {
-
-			ArrayList<Integer> toDelete = new ArrayList<>();
-			// Add it to encounterArray to print out
-
-			ArrayList<Player> tempArray = new ArrayList<Player>();
-			// When removed on the currEncounterList, the remove() function removes the
-			// memory area of that space
-			// So you need to make a duplicate of the array so when it gets deleted the
-			// memory area isnt deleted
-				for(Player p : currEncounterList) {
-					tempArray.add(new Player(p));
-				}
-
-			encounterArray.add(tempArray);
-			// Gets the index of what to delete
-			for (int k = 0; k < currEncounterList.size(); k++) {
-				Player character = currEncounterList.get(k);
-				if (character.checkClass() == 1) { // Monster
-					if (character.getHealth() <= 0) {
-						// remove(character.getName());
-						toDelete.add(k);
-					}
-				} else if (character.checkClass() == 2) { // Player
-					if (character.getHealth() <= -10) {
-						toDelete.add(k);
-						// remove(character.getName());
-					}
-				}
-			}
-
-			int delsize = toDelete.size() - 1;
-			// Delete out of the encounterArray
-			for (int l = delsize; l >= 0; l--) {
-				Player temp = currEncounterList.get(toDelete.get(l));
-				remove(temp.getName());
-			}
-
-		} else {
-			update("There are still monsters or players alive in the encounter");
-			return;
-		}
-
-	}
-*/
+	/*
+	 * public void next() {
+	 * 
+	 * int ec = encounterCheck();
+	 * 
+	 * // Removes all characters with less than 1 health if (ec == 1 || ec == 2) {
+	 * 
+	 * ArrayList<Integer> toDelete = new ArrayList<>(); // Add it to encounterArray
+	 * to print out
+	 * 
+	 * ArrayList<Player> tempArray = new ArrayList<Player>(); // When removed on the
+	 * currEncounterList, the remove() function removes the // memory area of that
+	 * space // So you need to make a duplicate of the array so when it gets deleted
+	 * the // memory area isnt deleted for(Player p : currEncounterList) {
+	 * tempArray.add(new Player(p)); }
+	 * 
+	 * encounterArray.add(tempArray); // Gets the index of what to delete for (int k
+	 * = 0; k < currEncounterList.size(); k++) { Player character =
+	 * currEncounterList.get(k); if (character.checkClass() == 1) { // Monster if
+	 * (character.getHealth() <= 0) { // remove(character.getName());
+	 * toDelete.add(k); } } else if (character.checkClass() == 2) { // Player if
+	 * (character.getHealth() <= -10) { toDelete.add(k); //
+	 * remove(character.getName()); } } }
+	 * 
+	 * int delsize = toDelete.size() - 1; // Delete out of the encounterArray for
+	 * (int l = delsize; l >= 0; l--) { Player temp =
+	 * currEncounterList.get(toDelete.get(l)); remove(temp.getName()); }
+	 * 
+	 * } else {
+	 * update("There are still monsters or players alive in the encounter"); return;
+	 * }
+	 * 
+	 * }
+	 */
 	public void next() {
 		ArrayList<Player> tempArray = new ArrayList<Player>();
-		for(Player p : currEncounterList) {
+		for (Player p : currEncounterList) {
 			tempArray.add(new Player(p));
 		}
 
-		
 		encounterArray.add(tempArray);
 	}
+
 	public void setup() {
 		HashMap<String, Integer> temp = new HashMap<String, Integer>();
 		String tempname;
@@ -835,27 +821,52 @@ public class Game {
 					break;
 
 				case "edit":
-					update("Enter name for player or monster to edit");
-					isCommand = false;
+					// edit can only be done if there are players in the encounter
+					if (currEncounterList.size() > 0) {
+						update("Enter name for player or monster to edit");
+						isCommand = false;
+					} else {
+						update("Please add more characters to the encounter.");
+						resetVariables();
+					}
 					break;
 
 				case "remove":
-					update("Enter name for player or monster to remove");
-					isCommand = false;
+					if (currEncounterList.size() > 0) {
+						update("Enter name for player or monster to remove");
+						isCommand = false;
+					} else {
+						update("Please add more characters to the encounter.");
+						resetVariables();
+					}
 					break;
 
 				case "attack":
-					update("Enter name for player or monster to attack");
-					isCommand = false;
+					if (currEncounterList.size() > 0) {
+						update("Enter name for player or monster to attack");
+						isCommand = false;
+					} else {
+						update("Please add more characters to the encounter.");
+						resetVariables();
+					}
 					break;
 
 				case "heal":
-					update("Enter name for player or monster to heal");
-					isCommand = false;
+					if (currEncounterList.size() > 0) {
+						update("Enter name for player or monster to heal");
+						isCommand = false;
+					} else {
+						update("Please add more characters to the encounter.");
+					}
 					break;
 
 				case "next":
-					next();
+					if (currEncounterList.size() > 1) {
+						next();
+					} else {
+						update("Please add at least two characters before moving\non to the next round.");
+						resetVariables();
+					}
 					break;
 
 				case "stats":
@@ -867,7 +878,12 @@ public class Game {
 					break;
 
 				case "save":
-					save();
+					if (currEncounterList.size() > 1) {
+						save();
+					} else {
+						update("Please add at least two characters before saving.");
+						resetVariables();
+					}
 					break;
 
 				case "load":
@@ -875,34 +891,44 @@ public class Game {
 					break;
 
 				case "alive":
-					alive();
+					if (currEncounterList.size() > 0) {
+						alive();
+					} else {
+						update("There are currently no players in the encounter!");
+						resetVariables();
+					}
 					break;
 
 				case "setup":
 
-					// Tells user to roll for initiatives.
-					update("Roll die for each character in the encounter.");
+					// checks if setup has been ran previously
+					if (!ranSetup) {
+						// Tells user to roll for initiatives.
+						update("Roll die for each character in the encounter.");
 
-					// If there are 2 or more players, move on
-					if (currEncounterList.size() > 1) {
+						// If there are 2 or more players, move on
+						if (currEncounterList.size() > 1) {
 
-						// Checks if character is a monster or not. Format: [message] [name] "the"
-						// [type]
-						if (currEncounterList.get(0).checkClass() == 1) {
-							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
-									+ currEncounterList.get(0).getMtype() + ".");
+							// Checks if character is a monster or not. Format: [message] [name] "the"
+							// [type]
+							if (currEncounterList.get(0).checkClass() == 1) {
+								update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
+										+ currEncounterList.get(0).getMtype() + ".");
+							} else {
+								update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
+										+ currEncounterList.get(0).getType() + ".");
+							}
+
+							// increments count for lower loop
+							count++;
+							isCommand = false;
+
+							// Explain error
 						} else {
-							update("Dice Number? for " + currEncounterList.get(0).getName() + " the "
-									+ currEncounterList.get(0).getType() + ".");
+							update("Add at least two characters before setup.");
 						}
-
-						// increments count for lower loop
-						count++;
-						isCommand = false;
-
-						// Explain error
 					} else {
-						update("Add at least two characters before setup.");
+						update("Setup has already been completed.");
 					}
 					break;
 
@@ -1319,16 +1345,18 @@ public class Game {
 									try {
 										intTemp = Integer.parseInt(inputString);
 									} catch (NumberFormatException e) {
-										update("Please enter a valid number.");
+										// update("Please enter a valid number.");
 									}
-									if (intTemp != -1) {
+									if (intTemp > 0 && intTemp < 21) {
 										p.setLevel(intTemp);
 										update("Level changed successfully!");
+										resetVariables();
+									} else {
+										update("Level must be a number between 1 and 20!");
 									}
 									break;
 								}
 							}
-							resetVariables();
 							break;
 
 						case 3:
@@ -1339,14 +1367,14 @@ public class Game {
 									} catch (NumberFormatException e) {
 										update("Please enter a valid number.");
 									}
-									if (intTemp != -1) {
+									if (intTemp > 0) {
 										p.setHealth(intTemp);
 										update("Health changed successfully!");
+										resetVariables();
 									}
 									break;
 								}
 							}
-							resetVariables();
 							break;
 
 						default:
@@ -1525,6 +1553,7 @@ public class Game {
 						update("Characters successfully sorted by initiative!");
 						hashmap = new HashMap<String, Integer>();
 						resetVariables();
+						ranSetup = true;
 						break;
 					}
 					break;

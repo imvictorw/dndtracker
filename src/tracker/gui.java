@@ -185,7 +185,7 @@ public class gui implements igui {
 		lblMain.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
 		lblMain.setBounds(445, 58, 227, 297);
 		lblMain.setText(
-				"setup\r\nnext\r\nsave\r\nload\r\nadd player\r\nadd player2\r\nadd monster\r\nremove\r\nedit\r\nheal\r\nattack\r\nalive");
+				"setup\r\nnext\r\nsave\r\nload\r\nadd player\r\nadd player2\r\nadd monster\r\nremove\r\nedit\r\nheal\r\nattack\r\nalive\r\nstats");
 
 		Label label_2 = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label_2.setBounds(438, 414, 255, 2);
@@ -218,20 +218,21 @@ public class gui implements igui {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				JFrame newFrame = new JFrame();
-				JOptionPane.showMessageDialog(newFrame, "Prerequesite: Must add a minimum of two characters, run setup.\r\n" + 
-						"\r\n" + 
-						"setup: Used to enter in inititives for each active character and monster.\r\n" + 
-						"next: Used when all characters have taken turn and party is ready for next round.\r\n" + 
-						"save: Save the game in its current state including character initiatives and health. Will only work if 'next' was called at least 1 time.\r\n" + 
-						"load: Loads prior saved encounter data.\r\n" + 
-						"add player: Used when introducing new player characters into encounter.\r\n" + 
-						"add player2: When introducing a character that has a higher level than 1.\r\n" + 
-						"add monster: Used to add new nonplayer enemy into encounter.\r\n" + 
-						"remove: Used to remove Player or Monster character from encounter.\r\n" + 
-						"edit: Used to edit Player or Monster characters current level.\r\n" + 
-						"heal: Used to heal Player and Monster characters current health.\r\n" + 
-						"attack: Used to inflict select number of damage on any charcater in encounter.\r\n" + 
-						"alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n");
+				JOptionPane.showMessageDialog(newFrame,
+						"Prerequesite: Must add a minimum of two characters, run setup.\r\n" + "\r\n"
+								+ "setup: Used to enter in inititives for each active character and monster.\r\n"
+								+ "next: Used when all characters have taken turn and party is ready for next round.\r\n"
+								+ "save: Save the game in its current state including character initiatives and health. Will only work if 'next' was called at least 1 time.\r\n"
+								+ "load: Loads prior saved encounter data.\r\n"
+								+ "add player: Used when introducing new player characters into encounter.\r\n"
+								+ "add player2: When introducing a character that has a higher level than 1.\r\n"
+								+ "add monster: Used to add new nonplayer enemy into encounter.\r\n"
+								+ "remove: Used to remove Player or Monster character from encounter.\r\n"
+								+ "edit: Used to edit Player or Monster characters current level.\r\n"
+								+ "heal: Used to heal Player and Monster characters current health.\r\n"
+								+ "attack: Used to inflict select number of damage on any charcater in encounter.\r\n"
+								+ "alive: Used to view current Player and Nonplayer characters in the current encounter.\r\n"
+								+ "stats: Shows statistics of the encounter by round.\r\n");
 			}
 		});
 		btnLog.setBounds(448, 424, 112, 30);
@@ -245,7 +246,7 @@ public class gui implements igui {
 				updateLogText();
 			}
 		});
-		btnNewEncounter.setText("New Encounter");
+		btnNewEncounter.setText("New Round");
 		btnNewEncounter.setBounds(448, 471, 112, 30);
 
 		// Allows users to add characters with button prompts instead of typing
@@ -621,13 +622,11 @@ public class gui implements igui {
 		});
 		logText.setDoubleClickEnabled(false);
 		logText.setEditable(false);
-		logText.setText(
-				"*****************************************\n"
+		logText.setText("*****************************************\n"
 				+ "Welcome to Dungeons And Dragons 5th Edition\nBattle Tracker!\nCurrently it tracks health throughout every encounter.\n"
-						+ "Begin adding monsters and players to the\nencounter to start the journey!\nLook at the help box on the right, or type\n"
-						+ "help in the textbox below to get started!\n"
-						+ "*****************************************\n"
-						+ "When you are complete with adding all the players\nand monsters, use the setup command to get started.");
+				+ "Begin adding monsters and players to the\nencounter to start the journey!\nLook at the help box on the right, or type\n"
+				+ "help in the textbox below to get started!\n" + "*****************************************\n"
+				+ "When you are complete with adding all the players\nand monsters, use the setup command to get started.");
 		logText.setBounds(31, 126, 376, 343);
 
 		CLabel lblTest = new CLabel(shell, SWT.NONE);
