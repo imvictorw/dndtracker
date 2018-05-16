@@ -821,6 +821,7 @@ public class Game {
 
 				case "next":
 					if (currEncounterList.size() > 1) {
+						update("New round started!");
 						next();
 					} else {
 						update("Please add at least two characters before moving\non to the next round.");
@@ -1276,6 +1277,7 @@ public class Game {
 
 							case 4:
 								resetVariables();
+								update("No changes have been made.");
 								break;
 
 							default:
