@@ -273,7 +273,7 @@ public class Game {
 		int currHealth = attacked.getHealth(); //Gets the current health
 
 		if (attacked.checkClass() == 1) { //Checks type of monster
-			if (currHealth > 0) { //For monsters once they are less than 0 health they are dead
+			if (currHealth > -10) { //For monsters once they are less than 0 health they are dead
 				attacked.setHealth(currHealth - amount);
 				update(attack + " was hit with " + amount + " damage!");
 				return true;
@@ -324,7 +324,7 @@ public class Game {
 
 			return true;
 		} else if (healed.checkClass() == 1) {
-			if (healed.getHealth() < 0) {
+			if (healed.getHealth() < -10) {
 				update("Character is dead");
 				return false;
 			}
