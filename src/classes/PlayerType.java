@@ -6,6 +6,7 @@ public enum PlayerType{
 	CLERIC,
 	DRUID,
 	FIGHTER,
+	MAGE,
 	MONK,
 	PALADIN,
 	RANGER,

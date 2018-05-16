@@ -413,25 +413,27 @@ public class Game {
 	 */
 	public void alive() {
 
+		int columnLength = maxColumn();
+		int columnhead = columnLength - 3;
+		System.out.println(columnLength);
 		Player character;
 		update("\n");
-		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health(Max)");
+//		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health(Max)");
+		update(String.format("%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s", "Order", "Name", "Type", "Health(Max)"));
 
 		//Goes through the current encounter to spit out data
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			character = currEncounterList.get(i);
 			int j = i + 1;
 			if (character.checkClass() == 1) {
-				update(j + "\t\t\t" + character.getName() + "\t\t\t" + character.getMtype() + "\t\t"
-						+ character.getHealth() + "(" + character.getMaxHealth() + ")");
+				update(String.format("%-" + columnLength + "s%-" + columnLength + "s%-" + columnLength + "s%s(%s)", j, character.getName(), character.getMtype(), character.getHealth(), character.getMaxHealth()));
 			} else {
-				update(j + "\t\t\t" + character.getName() + "\t\t\t" + character.getType() + "\t\t"
-						+ character.getHealth() + "(" + character.getMaxHealth() + ")");
+				update(String.format("%-" + columnLength + "s%-" + columnLength + "s%-" + columnLength + "s%s(%s)", j, character.getName(), character.getType(), character.getHealth(), character.getMaxHealth()));
 			}
 
 		}
 	}
-
+		
 	/**
 	 * Checks the player type there are still human or monsters alive in the encounter (Used for checking for next encounter but unused right now)
 	 * 
@@ -612,25 +614,28 @@ public class Game {
 	 * Read from the file saved from save function
 	 */
 	public void load() {
-		try {
-			// Read from file
-			File file = new File("savefile.txt");
-			Scanner input = new Scanner(file);
-
-			while (input.hasNextLine()) {
-				String line = input.nextLine();
-				decode(line);
-				update("Successfully loaded previous save file");
+		
+		if(encounterArray.isEmpty() && currEncounterList.isEmpty()) {
+			
+			try {
+				// Read from file
+				File file = new File("savefile.txt");
+				Scanner input = new Scanner(file);
+		
+				while (input.hasNextLine()) {
+					String line = input.nextLine();
+					decode(line);
+					update("Successfully loaded previous save file");
+				}
+		
+				input.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
-			input.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		}
-
-	}
-
+}
 
 	/**
 	 * Saves the current round into the new array
@@ -1588,6 +1593,48 @@ public class Game {
 		logString.add(addString);
 	}
 
+	/*Finds the maximum length for each column needed, Round, Name, Type and Health*/
+	public int maxColumn() {
+		
+		//Sets the default number of length space
+		int length = 0;
+		Player character;
+		
+		for (int i = 0; i < currEncounterList.size(); i++) {
+			character = currEncounterList.get(i);
+			
+			if(length < String.valueOf(currEncounterList.size()).length()) {
+				length = String.valueOf(currEncounterList.size()).length();
+			}
+			
+			if(length < character.getName().length()) {
+				length = character.getName().length();
+			}
+			
+			
+			if (character.checkClass() == 1) {//Monster
+				if(length < character.getMtype().toString().length()) {
+					length = character.getMtype().toString().length();
+				}
+			}else {
+				if(length < character.getType().toString().length()) {
+					length = character.getType().toString().length();
+				}
+			}
+
+			int health = character.getHealth();
+			if(health < 0) {
+				health = -health;
+			}
+			
+			if(length < String.valueOf(health).length()) {
+				length = health;
+			}
+			
+		}
+		
+		return length + 5;
+	}
 }
 
 /** UNUSED METHODS FOR LATER USE **/
