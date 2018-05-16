@@ -1434,16 +1434,17 @@ public class Game {
 							isInt = true;
 						} catch (NumberFormatException e) {
 							// if exception is thrown, input is not an integer
-
+							boolean check = false;
 							for (Player p : currEncounterList) {
 								if (p.getName().equalsIgnoreCase(inputString)) {
 									inputTemp = inputString;
 									update("Enter the amount of healing done.");
 									count++;
-								} else {
-									update("Player must be in the encounter.");
-									count = 0;
+									check = true;
 								}
+							}
+							if(check == false) {
+								update("Enter a valid character");
 							}
 						}
 						if (isInt) {
