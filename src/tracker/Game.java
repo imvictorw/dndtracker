@@ -415,10 +415,8 @@ public class Game {
 
 		int columnLength = maxColumn();
 		int columnhead = columnLength - 3;
-		System.out.println(columnLength);
 		Player character;
 		update("\n");
-//		update("Order" + "\t\t" + "Name" + "\t\t" + "Type" + "\t\t" + "Health(Max)");
 		update(String.format("%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s", "Order", "Name", "Type", "Health(Max)"));
 
 		//Goes through the current encounter to spit out data
