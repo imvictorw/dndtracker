@@ -243,6 +243,7 @@ public class gui implements igui {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				gameObj.next();
+				gameObj.update("New round started!");
 				updateLogText();
 			}
 		});
