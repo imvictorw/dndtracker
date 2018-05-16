@@ -1,1 +1,1 @@
-{1={"0":{"Attributes":{"Type":"BARD","Health":8,"Level":0},"Name":"DOn"},"1":{"Attributes":{"Type":"BARD","Health":8,"Level":0},"Name":"Lez"},"2":{"Attributes":{"Type":"UNDEAD","Health":-111,"Level":20},"Name":"Len"},"3":{"Attributes":{"Type":"FEY","Health":-243222,"Level":1},"Name":"Evil"}}}
+{}
