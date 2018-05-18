@@ -74,15 +74,17 @@ public class Game {
 		update("Welcome " + type + " " + name);
 		currEncounterList.add(temp);
 	}
-	
+
 	/**
-	 * Creates a default character with the default stats given by DnD.
-	 * They are level 1
+	 * Creates a default character with the default stats given by DnD. They are
+	 * level 1
 	 * 
 	 * 
-	 * @param name		Name of the Player
-	 * @param type		Type of the Player
-	 * @return Player	Object
+	 * @param name
+	 *            Name of the Player
+	 * @param type
+	 *            Type of the Player
+	 * @return Player Object
 	 */
 	public boolean addPlayer(String name, String type) {
 
@@ -97,7 +99,7 @@ public class Game {
 			}
 		}
 
-		//Checks if there is the name is already in the encounter
+		// Checks if there is the name is already in the encounter
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equalsIgnoreCase(name)) {
 				update("Cannot have the same name with somebody in the encounter");
@@ -113,7 +115,7 @@ public class Game {
 			return false;
 		}
 
-		//Adds player to the encounter array
+		// Adds player to the encounter array
 		Player temp = new Player(name, PlayerType.valueOf(type));
 		update("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
@@ -123,15 +125,20 @@ public class Game {
 	}
 
 	/**
-	 * Advanced version of adding a player. This can be used when a player is introduced to an encounter with a higher level than 1
+	 * Advanced version of adding a player. This can be used when a player is
+	 * introduced to an encounter with a higher level than 1
 	 * 
-	 * @param name		Name of Player
-	 * @param type		Type of Player
-	 * @param health	Amount of Health for Player
-	 * @param level		Level of Player
-	 * @return			Player Object
+	 * @param name
+	 *            Name of Player
+	 * @param type
+	 *            Type of Player
+	 * @param health
+	 *            Amount of Health for Player
+	 * @param level
+	 *            Level of Player
+	 * @return Player Object
 	 */
-	
+
 	public boolean addPlayer2(String name, String type, int health, int level) {
 
 		boolean check = false;
@@ -145,7 +152,7 @@ public class Game {
 			}
 		}
 
-		//Checks if there is the name is already in the encounter
+		// Checks if there is the name is already in the encounter
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
 				return false;
@@ -160,7 +167,7 @@ public class Game {
 			return false;
 		}
 
-		//Adds player to the encounter array
+		// Adds player to the encounter array
 		Player temp = new Player(name, PlayerType.valueOf(type), health, level);
 		update("Welcome " + name + " the " + type);
 		currEncounterList.add(temp);
@@ -172,11 +179,15 @@ public class Game {
 	/**
 	 * Method which allows adding monsters to the encounter list
 	 * 
-	 * @param name		Name of Monster
-	 * @param type		Type of Monster
-	 * @param health	Health Monster has
-	 * @param level		Level Monster is
-	 * @return			Player object
+	 * @param name
+	 *            Name of Monster
+	 * @param type
+	 *            Type of Monster
+	 * @param health
+	 *            Health Monster has
+	 * @param level
+	 *            Level Monster is
+	 * @return Player object
 	 */
 	public boolean addMonster(String name, String type, int health, int level) {
 		boolean check = false;
@@ -190,7 +201,7 @@ public class Game {
 			}
 		}
 
-		//Checks if there is the name is already in the encounter
+		// Checks if there is the name is already in the encounter
 		for (Player checkName : currEncounterList) {
 			if (checkName.getName().equals(name)) {
 				update("Cannot have the same name with somebody in the encounter.\nIf same type of monster, add a \nnumber. Eg. Zombie, Zombie1");
@@ -207,7 +218,7 @@ public class Game {
 			return false;
 		}
 
-		//Adds monster to the encounter array
+		// Adds monster to the encounter array
 		Player temp = new Player(name, MonsterType.valueOf(type), health, level);
 		update("Welcome " + type + " " + name);
 		currEncounterList.add(temp);
@@ -218,8 +229,9 @@ public class Game {
 	/**
 	 * Finder method to find a player in the encounter through the name provided
 	 * 
-	 * @param name		Name of the Player
-	 * @return			Player object
+	 * @param name
+	 *            Name of the Player
+	 * @return Player object
 	 */
 	public Player find(String name) {
 		for (int i = 0; i < currEncounterList.size(); i++) {
@@ -233,17 +245,18 @@ public class Game {
 	/**
 	 * Remove player from the round
 	 * 
-	 * @param del		Name of player being deleted
+	 * @param del
+	 *            Name of player being deleted
 	 */
 	public void remove(String del) {
 
-		Player delPlayer = find(del); //Gets the player object name
+		Player delPlayer = find(del); // Gets the player object name
 		if (delPlayer == null) {
 			update("Invalid name");
 			return;
 		}
 
-		//Remove the player
+		// Remove the player
 		if (currEncounterList != null && currEncounterList.contains(delPlayer)) {
 			currEncounterList.remove(delPlayer);
 			update("Successfully removed " + del);
@@ -256,24 +269,26 @@ public class Game {
 	/** MOVES INCLUDING ATTACK & HEAL CHARACTER **/
 
 	/**
-	 * Attacks the player object 
+	 * Attacks the player object
 	 * 
-	 * @param attack	Name of the player being attacked
-	 * @param amount	Amount of damage taken by player
-	 * @return			If successful attack
+	 * @param attack
+	 *            Name of the player being attacked
+	 * @param amount
+	 *            Amount of damage taken by player
+	 * @return If successful attack
 	 */
 	public boolean attack(String attack, int amount) {
 
-		Player attacked = find(attack); //finds player object
+		Player attacked = find(attack); // finds player object
 		if (attacked == null) {
 			update("Invalid name");
 			return false;
 		}
 
-		int currHealth = attacked.getHealth(); //Gets the current health
+		int currHealth = attacked.getHealth(); // Gets the current health
 
-		if (attacked.checkClass() == 1) { //Checks type of monster
-			if (currHealth > -10) { //For monsters once they are less than 0 health they are dead
+		if (attacked.checkClass() == 1) { // Checks type of monster
+			if (currHealth > -10) { // For monsters once they are less than 0 health they are dead
 				attacked.setHealth(currHealth - amount);
 				update(attack + " was hit with " + amount + " damage!");
 				return true;
@@ -281,7 +296,8 @@ public class Game {
 				update("Monster is already dead");
 			}
 		} else if (attacked.checkClass() == 2) {
-			if (currHealth > -10) { //For humans if they are below 0 but above 10 they are still alive but cannot move
+			if (currHealth > -10) { // For humans if they are below 0 but above 10 they are still alive but cannot
+									// move
 				attacked.setHealth(currHealth - amount);
 				update(attack + " was hit with " + amount + " damage!");
 				return true;
@@ -296,13 +312,15 @@ public class Game {
 	/**
 	 * Heals the player by an amount
 	 * 
-	 * @param heal		The player name which is being healed
-	 * @param amount	Amount of health being healed
-	 * @return			If successfully healed
+	 * @param heal
+	 *            The player name which is being healed
+	 * @param amount
+	 *            Amount of health being healed
+	 * @return If successfully healed
 	 */
 	public boolean heal(String heal, int amount) {
 
-		Player healed = find(heal); //Finds player object
+		Player healed = find(heal); // Finds player object
 
 		if (healed == null) {
 			update("Invalid name");
@@ -310,11 +328,13 @@ public class Game {
 		}
 
 		if (healed.checkClass() == 2) {
-			if (healed.getHealth() <= -10) { //For humans if they are below 0 but above 10 they are still alive but cannot move
+			if (healed.getHealth() <= -10) { // For humans if they are below 0 but above 10 they are still alive but
+												// cannot move
 				update("Character is dead");
 				return false;
 			}
-			if (healed.getMaxHealth() < healed.getHealth() + amount) { //Checks to make sure healing doesnt go past max health
+			if (healed.getMaxHealth() < healed.getHealth() + amount) { // Checks to make sure healing doesnt go past max
+																		// health
 				healed.setHealth(healed.getMaxHealth());
 				update(heal + " is now full health " + "(" + healed.getMaxHealth() + ")");
 			} else {
@@ -364,26 +384,23 @@ public class Game {
 				+ "stats: Shows statistics of the encounter by round.\r\n");
 	}
 
-
 	/**
-	 * Shows the each set of rounds
-	 * Format is
-	 * Round #
-	 * Order (Initiative)		Name of Player		Type of Player		Health of Player
+	 * Shows the each set of rounds Format is Round # Order (Initiative) Name of
+	 * Player Type of Player Health of Player
 	 * 
 	 */
 	public void stats() {
 		int counter = 1;
 
-		if (encounterArray.size() > 0) { //Checks if there are players in the encounter
+		if (encounterArray.size() > 0) { // Checks if there are players in the encounter
 
-			for (ArrayList<Player> list : encounterArray) { //Goes through every round
+			for (ArrayList<Player> list : encounterArray) { // Goes through every round
 
 				Player character;
 				update("Round " + counter);
 				update("Order" + "\t" + "Name" + "\t" + "Type" + "\t" + "Health");
 
-				//Prints out of the data
+				// Prints out of the data
 				for (int i = 0; i < list.size(); i++) {
 					character = list.get(i);
 					int j = i + 1;
@@ -404,10 +421,8 @@ public class Game {
 	}
 
 	/**
-	 * Checks the stats of the players in the round
-	 * Format is
-	 * Round #
-	 * Order (Initiative)		Name of Player		Type of Player		Health of Player
+	 * Checks the stats of the players in the round Format is Round # Order
+	 * (Initiative) Name of Player Type of Player Health of Player
 	 * 
 	 * 
 	 */
@@ -417,28 +432,31 @@ public class Game {
 		int columnhead = columnLength - 3;
 		Player character;
 		update("\n");
-		update(String.format("%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s", "Order", "Name", "Type", "Health(Max)"));
+		update(String.format("%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s%-" + columnhead + "s",
+				"Order", "Name", "Type", "Health(Max)"));
 
-		//Goes through the current encounter to spit out data
+		// Goes through the current encounter to spit out data
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			character = currEncounterList.get(i);
 			int j = i + 1;
 			if (character.checkClass() == 1) {
-				update(String.format("%-" + columnLength + "s%-" + columnLength + "s%-" + columnLength + "s%s(%s)", j, character.getName(), character.getMtype(), character.getHealth(), character.getMaxHealth()));
+				update(String.format("%-" + columnLength + "s%-" + columnLength + "s%-" + columnLength + "s%s(%s)", j,
+						character.getName(), character.getMtype(), character.getHealth(), character.getMaxHealth()));
 			} else {
-				update(String.format("%-" + columnLength + "s%-" + columnLength + "s%-" + columnLength + "s%s(%s)", j, character.getName(), character.getType(), character.getHealth(), character.getMaxHealth()));
+				update(String.format("%-" + columnLength + "s%-" + columnLength + "s%-" + columnLength + "s%s(%s)", j,
+						character.getName(), character.getType(), character.getHealth(), character.getMaxHealth()));
 			}
 
 		}
 	}
-		
+
 	/**
-	 * Checks the player type there are still human or monsters alive in the encounter (Used for checking for next encounter but unused right now)
+	 * Checks the player type there are still human or monsters alive in the
+	 * encounter (Used for checking for next encounter but unused right now)
 	 * 
-	 * Monster Alive - 1 Player Alive - 2
-	 * Both Alive = 3 Both Dead = 0
+	 * Monster Alive - 1 Player Alive - 2 Both Alive = 3 Both Dead = 0
 	 * 
-	 * @return	The result of the Player type object
+	 * @return The result of the Player type object
 	 */
 	public int encounterCheck() {
 
@@ -466,7 +484,8 @@ public class Game {
 	 * and adds them all back to the encounter array Adds the current round to the
 	 * currEncounterList
 	 * 
-	 * @param savefile	Output file 
+	 * @param savefile
+	 *            Output file
 	 */
 
 	public void decode(String savefile) {
@@ -474,15 +493,15 @@ public class Game {
 		boolean ptypeCheck = false;
 
 		try {
-			JSONObject jsonObject = new JSONObject(savefile); //Creates a JSONObject
-			
-			//Sorts through all of the savefile data
+			JSONObject jsonObject = new JSONObject(savefile); // Creates a JSONObject
+
+			// Sorts through all of the savefile data
 			for (int i = 1; i < jsonObject.names().length() + 1; i++) {
-				
+
 				JSONObject newJSON = jsonObject.getJSONObject(Integer.toString(i));
 				ArrayList<Player> loadArray = new ArrayList<>();
-				
-				//Gets all the data and puts it in variables
+
+				// Gets all the data and puts it in variables
 				for (int j = 0; j < newJSON.names().length(); j++) {
 					ptypeCheck = false;
 					JSONObject playerObject = newJSON.getJSONObject(Integer.toString(j));
@@ -491,17 +510,16 @@ public class Game {
 					int health = playerObject.getJSONObject("Attributes").getInt("Health");
 					int level = playerObject.getJSONObject("Attributes").getInt("Level");
 
-					
 					for (PlayerType typeTemp : PlayerType.values()) { // Checks if player or monster
 						if (type.equals(typeTemp.toString())) {
 							ptypeCheck = true;
 							break;
 						}
 					}
-					
-					//Adds players back in with the variables being stored
+
+					// Adds players back in with the variables being stored
 					Player temp = null;
-					
+
 					if (ptypeCheck == true) {
 						temp = new Player(name, PlayerType.valueOf(type), health, level);
 					} else {
@@ -535,29 +553,29 @@ public class Game {
 
 		LinkedHashMap<String, Object> mapOrdered = new LinkedHashMap<>();
 
-		int counter = 1; //Round #
+		int counter = 1; // Round #
 
-		//Goes through every round array
+		// Goes through every round array
 		for (ArrayList<Player> list : encounterArray) {
 
 			JSONObject round = new JSONObject();
 			JSONObject characterJSON = new JSONObject();
 			Player character;
 
-			//Stores all the information into a JSON array
+			// Stores all the information into a JSON array
 			for (int i = 0; i < list.size(); i++) {
 				character = list.get(i);
-				
-				//Checks if the player is a monster or a human
+
+				// Checks if the player is a monster or a human
 				if (character.checkClass() == 1) { // Monster
 					JSONObject attr = new JSONObject();
 					attr.put("Type", character.getMtype());
 					attr.put("Health", character.getHealth());
 					attr.put("Level", character.getLevel());
 
-					round.put("Attributes", attr); //Attribute is nested with other attributes with player
+					round.put("Attributes", attr); // Attribute is nested with other attributes with player
 					round.put("Name", character.getName());
-					characterJSON.put(Integer.toString(i), round); //Stores the information into a JSON Object
+					characterJSON.put(Integer.toString(i), round); // Stores the information into a JSON Object
 				} else { // Human
 					JSONObject attr = new JSONObject();
 					attr.put("Type", character.getType());
@@ -570,7 +588,7 @@ public class Game {
 				}
 				round = new JSONObject();
 			}
-			mapOrdered.put(Integer.toString(counter), characterJSON); //Each round is stored
+			mapOrdered.put(Integer.toString(counter), characterJSON); // Each round is stored
 			counter++;
 		}
 		String result = mapOrdered.toString();
@@ -585,7 +603,7 @@ public class Game {
 	 */
 	public void save() {
 		try {
-			//Encodes the string which was encoded in a JSON format
+			// Encodes the string which was encoded in a JSON format
 			String result = encode();
 
 			// Write to file
@@ -612,28 +630,28 @@ public class Game {
 	 * Read from the file saved from save function
 	 */
 	public void load() {
-		
-		if(encounterArray.isEmpty() && currEncounterList.isEmpty()) {
-			
+
+		if (encounterArray.isEmpty() && currEncounterList.isEmpty()) {
+
 			try {
 				// Read from file
 				File file = new File("savefile.txt");
 				Scanner input = new Scanner(file);
-		
+
 				while (input.hasNextLine()) {
 					String line = input.nextLine();
 					decode(line);
 					update("Successfully loaded previous save file");
 				}
-		
+
 				input.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+
 		}
-}
+	}
 
 	/**
 	 * Saves the current round into the new array
@@ -641,7 +659,8 @@ public class Game {
 	public void next() {
 		ArrayList<Player> tempArray = new ArrayList<Player>();
 		for (Player p : currEncounterList) {
-			tempArray.add(new Player(p)); //Creates a new memory point by creating a new player so it doesnt reference the current player
+			tempArray.add(new Player(p)); // Creates a new memory point by creating a new player so it doesnt reference
+											// the current player
 		}
 
 		encounterArray.add(tempArray);
@@ -673,19 +692,20 @@ public class Game {
 
 	}
 
-
 	/**
 	 * Method to sort the initiatives of each players
-	 *    
-	 * @param unsorted The current map which contains the name of the player and the initiative which was rolled
+	 * 
+	 * @param unsorted
+	 *            The current map which contains the name of the player and the
+	 *            initiative which was rolled
 	 */
 	public void sortEncounter(HashMap<String, Integer> unsorted) {
 
 		ArrayList<Player> sorted = new ArrayList<Player>();
 
 		Comparator<Entry<String, Integer>> valueComparator = new Comparator<Entry<String, Integer>>() {
-			
-			//Compare function to see what number is learger
+
+			// Compare function to see what number is learger
 			@Override
 			public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
 				int v1 = (int) obj1.getValue();
@@ -703,7 +723,7 @@ public class Game {
 		ArrayList<Entry<String, Integer>> listOfEntries = new ArrayList<Entry<String, Integer>>(unsorted.entrySet());
 		Collections.sort(listOfEntries, valueComparator); // sorted
 
-		//Sorts the current encounter array and replaces it with the sorted array
+		// Sorts the current encounter array and replaces it with the sorted array
 		for (Entry<String, Integer> pair : listOfEntries) {
 			for (int j = 0; j < currEncounterList.size(); j++) {
 				if (currEncounterList.get(j).getName().equalsIgnoreCase(pair.getKey())) {
@@ -731,11 +751,13 @@ public class Game {
 		}
 	}
 
-	// 
+	//
 	/**
-	 * Reads the input given by the user and provides action depending on the command given
+	 * Reads the input given by the user and provides action depending on the
+	 * command given
 	 * 
-	 * @param inputString	Input given by the user
+	 * @param inputString
+	 *            Input given by the user
 	 */
 	public void scanInput(String inputString) {
 
@@ -1107,7 +1129,7 @@ public class Game {
 
 						if (isInt3) {
 							if (addPlayer2(inputTemp, inputTemp1, intTemp, intTemp1)) {
-								
+
 								resetVariables();
 							}
 						} else {
@@ -1413,7 +1435,7 @@ public class Game {
 							count = 1;
 						}
 
-						if (intTemp > 0) {
+						if (intTemp >= 0) {
 							// successful end of logic
 							attack(inputTemp, intTemp);
 							resetVariables();
@@ -1443,7 +1465,7 @@ public class Game {
 									check = true;
 								}
 							}
-							if(check == false) {
+							if (check == false) {
 								update("Enter a valid character");
 							}
 						}
@@ -1461,7 +1483,7 @@ public class Game {
 							count = 1;
 						}
 
-						if (intTemp > 0) {
+						if (intTemp >= 0) {
 							// successful end of logic
 							heal(inputTemp, intTemp);
 							resetVariables();
@@ -1574,7 +1596,6 @@ public class Game {
 		logString = stringlist;
 	}
 
-
 	/**
 	 * Getter Method for LogString
 	 * 
@@ -1594,53 +1615,54 @@ public class Game {
 		logString.add(addString);
 	}
 
-	/*Finds the maximum length for each column needed, Round, Name, Type and Health*/
+	/*
+	 * Finds the maximum length for each column needed, Round, Name, Type and Health
+	 */
 	public int maxColumn() {
-		
-		//Sets the default number of length space
+
+		// Sets the default number of length space
 		int length = 0;
 		Player character;
-		
+
 		for (int i = 0; i < currEncounterList.size(); i++) {
 			character = currEncounterList.get(i);
-			
-			if(length < String.valueOf(currEncounterList.size()).length()) {
+
+			if (length < String.valueOf(currEncounterList.size()).length()) {
 				length = String.valueOf(currEncounterList.size()).length();
 			}
-			
-			if(length < character.getName().length()) {
+
+			if (length < character.getName().length()) {
 				length = character.getName().length();
 			}
-			
-			
-			if (character.checkClass() == 1) {//Monster
-				if(length < character.getMtype().toString().length()) {
+
+			if (character.checkClass() == 1) {// Monster
+				if (length < character.getMtype().toString().length()) {
 					length = character.getMtype().toString().length();
 				}
-			}else {
-				if(length < character.getType().toString().length()) {
+			} else {
+				if (length < character.getType().toString().length()) {
 					length = character.getType().toString().length();
 				}
 			}
 
 			int health = character.getHealth();
-			if(health < 0) {
+			if (health < 0) {
 				health = -health;
 			}
-			
-			if(length < String.valueOf(health).length()) {
+
+			if (length < String.valueOf(health).length()) {
 				length = health;
 			}
-			
+
 		}
-		
+
 		return length + 5;
 	}
 }
 
 /** UNUSED METHODS FOR LATER USE **/
 
-/** NEW ENCOUNTER CREATOR**/
+/** NEW ENCOUNTER CREATOR **/
 /**
  * Sort through encounter list to see if there are no more monsters left or no
  * more humans left Delete all of the players with < 0 health Recreate
