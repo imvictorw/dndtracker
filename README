@@ -1,7 +1,9 @@
 Project Overview:
+
 The purpose of this document is to coordinate all project planning documents, with the aim of creating Dungeons and Dragons (D&D) battle tracking software with a comprehensive plan for all process of execution and control. We will outline all project assumptions, decisions, define the context extent and timing of the key points as well as baseline for the progress of the project. This document will also include a timeline or project schedule, work breakdown structure and project resources and budget.
 
 Project Objectives:
+
 The D&D Role Playing Game (RPG) battle tracking software has three deliverables for its successful implementation
     · To implement of the tracking software.
     · It will be able to track Player Characters, Non-Player Characters, Monsters, Initiative, Rounds, Health and Logs
@@ -11,6 +13,7 @@ The D&D Role Playing Game (RPG) battle tracking software has three deliverables 
   This will be main project or game which connects to the tracking software and the database system.
 
 Project Scope:
+
 This section is to preview a more detailed view of the tasks needed to complete the deliverables and successfully complete the project.
 
 	1. Implementation of the tracking software which allow to track at a minimum of Player Characters, Non-Player Characters, Monsters, Initiative, Rounds, Health, Logs
@@ -32,6 +35,7 @@ This section is to preview a more detailed view of the tasks needed to complete 
 		e. Develop a method to check data validation of all data
     
 Deliverables:
+
   · User manuals to help new users understand how to play the game and the rules
   · Tracking software which is assists in the Dungeons and Dragons Game
   · Database system which stores the tracking software information
