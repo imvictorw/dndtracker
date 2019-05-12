@@ -3,30 +3,33 @@ The purpose of this document is to coordinate all project planning documents, wi
 
 Project Objectives:
 The D&D Role Playing Game (RPG) battle tracking software has three deliverables for its successful implementation
-    To implement of the tracking software.
-    It will be able to track Player Characters, Non-Player Characters, Monsters, Initiative, Rounds, Health and Logs
-    Create a database system which can store all of the data which is being collected from the tracking software
-    This will be interacting with the tracking software where it saves all the information being tracked into the database.
-    Design and implement a large, complex project
+    · To implement of the tracking software.
+    · It will be able to track Player Characters, Non-Player Characters, Monsters, Initiative, Rounds, Health and Logs
+    · Create a database system which can store all of the data which is being collected from the tracking software
+    · This will be interacting with the tracking software where it saves all the information being tracked into the database.
+    · Design and implement a large, complex project
   This will be main project or game which connects to the tracking software and the database system.
 
 Project Scope:
 This section is to preview a more detailed view of the tasks needed to complete the deliverables and successfully complete the project.
-1. Implementation of the tracking software which allow to track at a minimum of Player Characters, Non-Player Characters, Monsters, Initiative, Rounds, Health, Logs
-    a. Create a system which emulates the D&D board game gameplay
-    b. Create a data structure which can store all the data needed
-    c. Testing the gameplay of the system and if the data is stored correctly
-    d. Create a user manual to help users understand the system
-2. Create a database system which can store all of the data which is being collected from the tracking software
-    a. Create different tables for specific characters, monsters, actions
-    b. Create relationships between the table
-    c. Design and implement a large, complex project which implements SQL statements to access the database
-3. Create statements which interact with the database system. This includes inserting data, modifying data, reading data and deleting data
-    a. Utilize the tracking software to connect with the database
-    b. Create commands or scripts in the tracking software to run the SQL statements
-    c. Create an effective user interface
-    d. Create Advanced queries of the data, allowing analysis and future planning for the business
-    e. Develop a method to check data validation of all data
+
+	1. Implementation of the tracking software which allow to track at a minimum of Player Characters, Non-Player Characters, Monsters, Initiative, Rounds, Health, Logs
+		a. Create a system which emulates the D&D board game gameplay
+		b. Create a data structure which can store all the data needed
+		c. Testing the gameplay of the system and if the data is stored correctly
+		d. Create a user manual to help users understand the system
+
+	2. Create a database system which can store all of the data which is being collected from the tracking software
+		a. Create different tables for specific characters, monsters, actions
+		b. Create relationships between the table
+		c. Design and implement a large, complex project which implements SQL statements to access the database
+
+	3. Create statements which interact with the database system. This includes inserting data, modifying data, reading data and deleting data
+		a. Utilize the tracking software to connect with the database
+		b. Create commands or scripts in the tracking software to run the SQL statements
+		c. Create an effective user interface
+		d. Create Advanced queries of the data, allowing analysis and future planning for the business
+		e. Develop a method to check data validation of all data
     
 Deliverables:
   · User manuals to help new users understand how to play the game and the rules
